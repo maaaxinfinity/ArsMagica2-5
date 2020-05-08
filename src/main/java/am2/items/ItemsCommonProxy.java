@@ -892,27 +892,27 @@ public class ItemsCommonProxy{
 		GameRegistry.addShapelessRecipe(new ItemStack(lesserManaPotion), new Object[]{
 				new ItemStack(Items.wheat_seeds),
 				new ItemStack(Items.sugar),
-				new ItemStack(Items.potionitem, 1, Short.MAX_VALUE)
+				new ItemStack(Items.potionitem, 1, AMCore.ANY_META)
 		});
 
 		GameRegistry.addShapelessRecipe(new ItemStack(standardManaPotion), new Object[]{
 				new ItemStack(Items.gunpowder),
-				new ItemStack(lesserManaPotion, 1, Short.MAX_VALUE)
+				new ItemStack(lesserManaPotion, 1, AMCore.ANY_META)
 		});
 
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(greaterManaPotion), new Object[]{
 				"dustVinteum",
-				new ItemStack(standardManaPotion, 1, Short.MAX_VALUE)
+				new ItemStack(standardManaPotion, 1, AMCore.ANY_META)
 		}));
 
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(epicManaPotion), new Object[]{
 				"arcaneAsh",
-				new ItemStack(greaterManaPotion, 1, Short.MAX_VALUE)
+				new ItemStack(greaterManaPotion, 1, AMCore.ANY_META)
 		}));
 
 		GameRegistry.addShapelessRecipe(new ItemStack(legendaryManaPotion), new Object[]{
 				new ItemStack(itemOre, 1, itemOre.META_PURIFIEDVINTEUM),
-				new ItemStack(epicManaPotion, 1, Short.MAX_VALUE)
+				new ItemStack(epicManaPotion, 1, AMCore.ANY_META)
 		});
 
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(liquidEssenceBottle), new Object[]{
@@ -1009,7 +1009,7 @@ public class ItemsCommonProxy{
 		));
 
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(inscriptionUpgrade, 1, 1),
-				new ItemStack(Blocks.carpet, 1, Short.MAX_VALUE),
+				new ItemStack(Blocks.carpet, 1, AMCore.ANY_META),
 				new ItemStack(Items.book),
 				new ItemStack(wizardChalk)
 		));
@@ -1022,9 +1022,9 @@ public class ItemsCommonProxy{
 				new ItemStack(Items.book)
 		));
 
-		GameRegistry.addShapelessRecipe(new ItemStack(workbenchUpgrade), new ItemStack(BlocksCommonProxy.magiciansWorkbench), new ItemStack(Blocks.chest), new ItemStack(Blocks.crafting_table), new ItemStack(Blocks.crafting_table), new ItemStack(Items.gold_ingot));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(workbenchUpgrade), new ItemStack(BlocksCommonProxy.magiciansWorkbench), "chestWood", "craftingTableWood", "craftingTableWood", "ingotGold"));
 
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(deficitCrystal), new ItemStack(Items.diamond), "arcaneAsh", new ItemStack(Items.ender_eye)));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(deficitCrystal), "gemDiamond", "arcaneAsh", new ItemStack(Items.ender_eye)));
 	}
 
 	public void postInit(){
