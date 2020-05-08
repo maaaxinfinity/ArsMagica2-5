@@ -44,6 +44,7 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
+import net.minecraftforge.common.BiomeManager.BiomeType;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -107,7 +108,7 @@ public class AMCore{
 
 		if (AMCore.config.getEnableWitchwoodForest()){
 			BiomeDictionary.registerBiomeType(BiomeWitchwoodForest.instance, Type.FOREST, Type.MAGICAL);
-			BiomeManager.warmBiomes.add(new BiomeEntry(BiomeWitchwoodForest.instance, 6));
+			BiomeManager.addBiome(BiomeType.WARM, new BiomeEntry(BiomeWitchwoodForest.instance, 6));
 		}
 	}
 
