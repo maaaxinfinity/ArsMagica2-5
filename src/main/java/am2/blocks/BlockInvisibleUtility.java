@@ -42,11 +42,15 @@ import java.util.Random;
 public class BlockInvisibleUtility extends AMBlock{
 
 	public BlockInvisibleUtility(){
-		super(Material.glass);
+		super(Material.air);
 		this.setBlockBounds(0, 0, 0, 0.01f, 0.01f, 0.01f);
 		this.setTickRandomly(true);
 	}
 
+    public boolean canReplace(World worldIn, int p_149705_2_, int p_149705_3_, int p_149705_4_, int p_149705_5_, ItemStack stackIn) {
+        return true;
+    }
+	
 	@Override
 	public int tickRate(World par1World){
 		return 5;
