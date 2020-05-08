@@ -46,6 +46,7 @@ public class IllusionBlock extends AMBlock{
 		super(Material.wood);
 		setTickRandomly(true);
 		setLightOpacity(255);
+		setStepSound(soundTypeGlass);
 
 		this.setHardness(3.0f);
 		this.setResistance(3.0f);

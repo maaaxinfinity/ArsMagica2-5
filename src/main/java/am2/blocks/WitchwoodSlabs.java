@@ -1,6 +1,7 @@
 package am2.blocks;
 
 import am2.texture.ResourceManager;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockWoodSlab;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,6 +22,7 @@ public class WitchwoodSlabs extends BlockWoodSlab{
 		this.setHardness(2.0f);
 		this.setResistance(2.0f);
 		this.setHarvestLevel("axe", 2);
+		this.setStepSound(Block.soundTypeWood);
 	}
 
 	@Override

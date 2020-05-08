@@ -19,6 +19,7 @@ public class BlockOcculus extends AMSpecialRenderBlockContainer{
 		super(Material.rock);
 		setHardness(3.0f);
 		setResistance(3.0f);
+		setStepSound(soundTypeMetal);
 	}
 
 	@Override

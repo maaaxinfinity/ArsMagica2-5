@@ -20,6 +20,7 @@ public class WitchwoodSapling extends BlockFlower{
 
 	protected WitchwoodSapling(){
 		super(0);
+		this.setStepSound(Block.soundTypeGrass);
 	}
 
 	@Override

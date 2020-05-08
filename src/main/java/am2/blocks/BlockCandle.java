@@ -20,6 +20,7 @@ public class BlockCandle extends AMSpecialRenderBlockContainer{
 		setHardness(1.0f);
 		setResistance(1.0f);
 		setBlockBounds(0.35f, 0f, 0.35f, 0.65f, 0.45f, 0.65f);
+		setStepSound(soundTypeCloth);
 	}
 
 	@Override

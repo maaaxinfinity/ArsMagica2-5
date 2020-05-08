@@ -22,6 +22,7 @@ public class BlockOtherworldAura extends PoweredBlock{
 		setHardness(2.0f);
 		setResistance(2.0f);
 		setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+		setStepSound(soundTypeCloth);
 	}
 
 	@Override

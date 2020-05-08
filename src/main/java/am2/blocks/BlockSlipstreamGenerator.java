@@ -2,6 +2,7 @@ package am2.blocks;
 
 import am2.blocks.tileentities.TileEntitySlipstreamGenerator;
 import am2.texture.ResourceManager;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
@@ -11,6 +12,7 @@ public class BlockSlipstreamGenerator extends PoweredBlock{
 
 	public BlockSlipstreamGenerator(){
 		super(Material.wood);
+		this.setStepSound(Block.soundTypeGlass);
 	}
 
 	@Override

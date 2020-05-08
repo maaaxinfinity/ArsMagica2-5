@@ -32,6 +32,7 @@ public class BlockInscriptionTable extends AMSpecialRenderBlockContainer{
 		setResistance(2.0f);
 		setLightLevel(0.8f);
 		this.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.3f, 1.0f);
+		this.setStepSound(Block.soundTypeWood);
 	}
 
 	@Override

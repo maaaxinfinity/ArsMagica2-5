@@ -6,6 +6,7 @@ import am2.particles.ParticleFloatUpward;
 import am2.texture.ResourceManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,6 +24,7 @@ public class VinteumTorch extends BlockTorch{
 
 	public VinteumTorch(){
 		super();
+		this.setStepSound(Block.soundTypeWood);
 	}
 
 	@Override

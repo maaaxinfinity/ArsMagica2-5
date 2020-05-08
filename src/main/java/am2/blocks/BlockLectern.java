@@ -24,6 +24,7 @@ public class BlockLectern extends AMSpecialRenderBlockContainer{
 		super(Material.wood);
 		setHardness(2.0f);
 		setResistance(2.0f);
+		setStepSound(soundTypeWood);
 	}
 
 	@Override

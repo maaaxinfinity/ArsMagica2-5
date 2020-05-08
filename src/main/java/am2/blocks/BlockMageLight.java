@@ -27,6 +27,8 @@ public class BlockMageLight extends AMSpecialRenderBlock{
 	protected BlockMageLight(){
 		super(Material.circuits);
 		setBlockBounds(0.35f, 0.35f, 0.35f, 0.65f, 0.65f, 0.65f);
+		setStepSound(soundTypeCloth);
+
 		this.setTickRandomly(true);
 	}
 

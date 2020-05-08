@@ -32,6 +32,7 @@ public class BlockArcaneDeconstructor extends PoweredBlock{
 		super(Material.iron);
 		setHardness(2.0f);
 		setResistance(2.0f);
+		this.setStepSound(Block.soundTypeGlass);
 	}
 
 	@Override

@@ -38,6 +38,7 @@ public class BlockEssenceGenerator extends AMSpecialRenderPoweredBlock{
 		setTickRandomly(true);
 		setHardness(2f);
 		setResistance(2f);
+		setStepSound(soundTypeCloth);
 		this.NexusType = nexusType;
 		switch (this.NexusType){
 		case NEXUS_STANDARD:
