@@ -35,7 +35,7 @@ public class AMLineArc extends EntityFX{
 	ResourceLocation rl;
 	float forwardFactor;
 
-	public AMLineArc(World world, double x, double y, double z, double targetX, double targetY, double targetZ, String IIconName){
+	public AMLineArc(World world, double x, double y, double z, double targetX, double targetY, double targetZ, String IIconName) {
 		super(world, x, y, z);
 		targetPoint = new AMVector3(targetX, targetY, targetZ);
 		currentTargetPoint = targetPoint.copy();
@@ -48,14 +48,14 @@ public class AMLineArc extends EntityFX{
 		forwardFactor = 0;
 	}
 
-	public AMLineArc(World world, double x, double y, double z, Entity targetEntity, String IIconName){
+	public AMLineArc(World world, double x, double y, double z, Entity targetEntity, String IIconName) {
 		this(world, x, y, z, targetEntity.posX, targetEntity.posY + targetEntity.getEyeHeight() - (targetEntity.height * 0.2f), targetEntity.posZ, IIconName);
 		this.targetEntity = targetEntity;
 
 		hadTarget = true;
 	}
 
-	public AMLineArc(World world, Entity sourceEntity, Entity targetEntity, String IIconName){
+	public AMLineArc(World world, Entity sourceEntity, Entity targetEntity, String IIconName) {
 		this(world, sourceEntity.posX, sourceEntity.posY + sourceEntity.getEyeHeight() - (sourceEntity.height * 0.2f), sourceEntity.posZ, targetEntity.posX, targetEntity.posY + targetEntity.getEyeHeight() - (targetEntity.height * 0.2f), targetEntity.posZ, IIconName);
 		this.targetEntity = targetEntity;
 		this.sourceEntity = sourceEntity;
@@ -64,58 +64,58 @@ public class AMLineArc extends EntityFX{
 		hadTarget = true;
 	}
 
-	public AMLineArc setExtendToTarget(){
+	public AMLineArc setExtendToTarget() {
 		extendToTarget = true;
 		return this;
 	}
 
-	public AMLineArc setIgnoreAge(boolean ignore){
+	public AMLineArc setIgnoreAge(boolean ignore) {
 		ignoreAge = ignore;
 		return this;
 	}
 
 	@Override
-	public void onUpdate(){
+	public void onUpdate() {
 		this.ticksExisted++;
 
 		prevPosX = posX;
 		prevPosY = posY;
 		prevPosZ = posZ;
 
-		if (this.ticksExisted >= this.particleMaxAge){
+		if (this.ticksExisted >= this.particleMaxAge) {
 			this.setDead();
 			return;
 		}
 
-		if (targetEntity != null){
+		if (targetEntity != null) {
 			if (ignoreAge)
 				this.ticksExisted = 0;
-			if (targetEntity.isDead){
+			if (targetEntity.isDead) {
 				this.setDead();
 				return;
 			}
 			targetPoint = new AMVector3(targetEntity.posX, targetEntity.posY + targetEntity.getEyeHeight() - (targetEntity.height * 0.2f), targetEntity.posZ);
 			currentTargetPoint = targetPoint.copy();
-		}else if (hadTarget){
+		} else if (hadTarget) {
 			this.setDead();
 			return;
 		}
 
-		if (sourceEntity != null){
+		if (sourceEntity != null) {
 			if (ignoreAge)
 				this.ticksExisted = 0;
-			if (sourceEntity.isDead){
+			if (sourceEntity.isDead) {
 				this.setDead();
 				return;
 			}
 			sourcePoint = new AMVector3(sourceEntity.posX, sourceEntity.posY + sourceEntity.getEyeHeight() - (sourceEntity.height * 0.2f), sourceEntity.posZ);
-		}else if (hadSource){
+		} else if (hadSource) {
 			this.setDead();
 			return;
 		}
 
 
-		if (extendToTarget && extensionProgress < 1.0f){
+		if (extendToTarget && extensionProgress < 1.0f) {
 			extensionProgress += 0.08;
 			AMVector3 delta = targetPoint.copy().sub(sourcePoint);
 			delta.scale(extensionProgress);
@@ -124,8 +124,8 @@ public class AMLineArc extends EntityFX{
 	}
 
 	@Override
-	public void renderParticle(Tessellator par1Tessellator, float partialTicks, float rotationX, float rotationXZ, float rotationZ, float rotationYZ, float rotationXY){
-		if (targetEntity != null && sourceEntity != null){
+	public void renderParticle(Tessellator par1Tessellator, float partialTicks, float rotationX, float rotationXZ, float rotationZ, float rotationYZ, float rotationXY) {
+		if (targetEntity != null && sourceEntity != null) {
 			drawArcingLine(
 					sourceEntity.prevPosX + (sourceEntity.posX - sourceEntity.prevPosX) * partialTicks,
 					(sourceEntity.prevPosY + (sourceEntity.posY - sourceEntity.prevPosY) * partialTicks) + (sourceEntity.getEyeHeight() - (sourceEntity.height * 0.2f)),
@@ -134,7 +134,7 @@ public class AMLineArc extends EntityFX{
 					(targetEntity.prevPosY + (targetEntity.posY - targetEntity.prevPosY) * partialTicks) + (targetEntity.getEyeHeight() - (targetEntity.height * 0.2f)),
 					targetEntity.prevPosZ + (targetEntity.posZ - targetEntity.prevPosZ) * partialTicks,
 					partialTicks, speed, deviation);
-		}else if (targetEntity != null){
+		} else if (targetEntity != null) {
 			drawArcingLine(
 					prevPosX + (posX - prevPosX) * partialTicks,
 					prevPosY + (posY - prevPosY) * partialTicks,
@@ -143,12 +143,12 @@ public class AMLineArc extends EntityFX{
 					(targetEntity.prevPosY + (targetEntity.posY - targetEntity.prevPosY) * partialTicks) + (targetEntity.getEyeHeight() - (targetEntity.height * 0.2f)),
 					targetEntity.prevPosZ + (targetEntity.posZ - targetEntity.prevPosZ) * partialTicks,
 					partialTicks, speed, deviation);
-		}else{
+		} else {
 			drawArcingLine(prevPosX + (posX - prevPosX) * partialTicks, prevPosY + (posY - prevPosY) * partialTicks, prevPosZ + (posZ - prevPosZ) * partialTicks, currentTargetPoint.x, currentTargetPoint.y, currentTargetPoint.z, partialTicks, speed, deviation);
 		}
 	}
 
-	public void drawArcingLine(double srcX, double srcY, double srcZ, double dstX, double dstY, double dstZ, float partialTicks, float speed, double distance){
+	public void drawArcingLine(double srcX, double srcY, double srcZ, double dstX, double dstY, double dstZ, float partialTicks, float speed, double distance) {
 
 		GL11.glPushMatrix();
 
@@ -183,7 +183,7 @@ public class AMLineArc extends EntityFX{
 		double wGain = (width * 3) / (length * distance);
 		float curWidth = width * 3;
 
-		for (int i = 0; i <= length * distance; i++){
+		for (int i = 0; i <= length * distance; i++) {
 			float lengthFactor = i / length;
 			float f3 = 1.0F - Math.abs(i - length / 2.0F) / (length / 2.0F);
 
@@ -206,4 +206,5 @@ public class AMLineArc extends EntityFX{
 		forwardFactor = (forwardFactor + 0.01f) % 1.0f;
 		GL11.glPopMatrix();
 	}
+
 }
