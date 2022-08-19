@@ -1,63 +1,7 @@
-ArsMagica2
+Ars Magica 2.5
 ==========
 
-Ars Magica 2 Repository
-
-### IRC
- #ArsMagica on Espernet
-
-Webchat link: http://webchat.esper.net/?nick=&channels=ArsMagica
-
-### Useful Links
-* [Homepage](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1292222)
-* [Unofficial Wiki](http://am2.wikia.com/wiki/Ars_Magica_2_Wiki)
-* [How to Report a Bug Properly](http://pastebin.com/29r0Nhe0)
-
-### Commit structure
-Make sure to keep your commits limited to one issue.  If you try to do too much in a single commit, you will be asked to split it out.
-The reason for this is that if there is an issue with a commit requiring a rollback, this can be done without undoing all the other work.
-
-### Code Style Guidelines
-If you are interested in contributing to the project, you must follow the coding style guidelines.
-There is a settings file for IDEA [here] (https://github.com/Mithion/ArsMagica2/blob/master/.idea/codeStyleSettings.xml)
-It is part of the repo, and will be downloaded automatically.
-
-The general gist of it is:
-* Conditional blocks and their opening braces go on the same line with no space between the closing bracket and the opening brace (1)
-	* This is the same for classes/methods
-* Else if / else blocks go on the same line as the closing brace for the previous conditional (2)
-	* No spaces between the braces and else
-* Single line if statements should be braceless (3)
-* Casts should not have spaces between the type and the variable (4)
-* Look at existing files for further examples and formatting - just try to match our style!  It makes it easier to read and consistent :)
-
-(1) Example:
-```
-if (distance_to_entity < 2f){ 
-
-}
-```
-
-(2) Example:
-```
-if (distance_to_entity < 2f){
-
-}else{
-
-}
-```
-
-(3) Example:
-```
-if (entitySenses.canSee(entity))
-	this.target = entity;
-```
-
-(4) Example:
-```
-((EntityLivingBase)entity).posX = 5;
-```
-
+Ars Magica 2.5 Source Code Repository
 
 ### License
 This mod is open sourced under the Creative Commons 3.0 Attribution Non-Commercial License
