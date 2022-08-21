@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.init.Items;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +77,8 @@ public class SpellTextureHelper{
 				}
 				jarFile.close();
 			}else if (jar.getProtocol().equals("file")){
-				String path = jar.toURI().toString().replace("/am2/AMCore.class", iconsPath).replace("file:/", "").replace("%20", " ").replace("/", "\\");
+				String path = (Util.getOSType() == Util.EnumOS.LINUX ? "/" : "") + jar.toURI().toString().replace("/am2/AMCore.class", iconsPath).replace("file:/", "").replace("%20", " ").replace('/', File.separatorChar);
+				System.out.println(path);
 				File file = new File(path);
 				if (file.exists() && file.isDirectory()){
 					for (File sub : file.listFiles()){

@@ -182,20 +182,8 @@ public class ArcaneCompendium implements ILoreHelper{
 		aliases.clear();
 		zeroItemTexts.clear();
 
-		//check for mod updates
-		if (AMCore.config.allowVersionChecks())
-			checkForModUpdates();
-		else
-			LogHelper.info("Skipping version check due to config");
-
 		//load the version of the compendium only
 		loadDocumentVersion(lang);
-
-		//check for compendium updates
-		if (AMCore.config.allowCompendiumUpdates())
-			updateCompendium(lang);
-		else
-			LogHelper.info("Skipping Compendium auto-update due to config");
 
 		//get the compendium stream again, either from an updated version or the default packaged one
 		InputStream stream = getCompendium(lang);
@@ -211,81 +199,6 @@ public class ArcaneCompendium implements ILoreHelper{
 		}catch (IOException e){
 			e.printStackTrace();
 		}
-	}
-
-	private boolean updateCompendium(Language lang){
-		if (!AMCore.config.allowCompendiumUpdates())
-			return false;
-
-		try{
-			String txt = WebRequestUtils.sendPost("http://arcanacraft.qorconcept.com/mc/CompendiumVersioning.txt", new HashMap<String, String>());
-			String[] lines = txt.replace("\r\n", "\n").split("\n");
-			for (String s : lines){
-				if (s.startsWith("#"))
-					continue;
-				String[] sections = s.split("\\|");
-
-				//check MC version and language
-				if (!sections[1].trim().equalsIgnoreCase(languageCode) || !MCVersion.startsWith(sections[0].trim()))
-					continue;
-				if (versionCompare(sections[2], this.compendiumVersion) > 0){
-					if (modVersion.startsWith(sections[3])){
-						//if we're here, an update is needed!
-						String compendiumFileName = "ArcaneCompendium_" + lang.getLanguageCode() + ".xml";
-						String compendiumData = WebRequestUtils.sendPost("http://arcanacraft.qorconcept.com/mc/" + MCVersion + "/" + compendiumFileName, new HashMap<String, String>());
-
-						//we have the data, save it to the local repository
-						saveCompendiumData(compendiumData, compendiumFileName);
-						LogHelper.info("Updated Compendium");
-						return true;
-					}
-				}
-			}
-		}catch (Throwable t){
-			LogHelper.warn("Unable to update the compendium!");
-			t.printStackTrace();
-		}
-		return false;
-	}
-
-	private void checkForModUpdates(){
-		try{
-			LogHelper.info("Checking Version.  MC Version: %s", MCVersion);
-			this.latestModVersion = this.modVersion;
-			String txt = WebRequestUtils.sendPost("http://arcanacraft.qorconcept.com/mc/AM2Versioning.txt", new HashMap<String, String>());
-			String[] lines = txt.replace("\r\n", "\n").split("\n");
-			for (String s : lines){
-				if (s.startsWith("#"))
-					continue;
-				String[] sections = s.split("\\|");
-				if (!MCVersion.startsWith(sections[0].trim()))
-					continue;
-				if (versionCompare(sections[1], this.latestModVersion) > 0){
-					LogHelper.info("An update is available.  Version %s is released, detected local version of %s.", this.modVersion, sections[1]);
-					this.latestModVersion = sections[1];
-					this.latestDownloadLink = sections.length >= 3 ? sections[2] : "";
-					this.latestPatchNotesLink = sections.length >= 4 ? sections[3] : "";
-					modUpdateAvailable = true;
-				}else{
-					LogHelper.info("You are running the latest version of AM2.  Latest Released Version: %s.  Your Version: %s.", this.latestModVersion, this.modVersion);
-				}
-			}
-
-		}catch (Throwable t){
-			t.printStackTrace();
-		}
-	}
-
-	private void saveCompendiumData(String compendium, String fileName) throws Exception{
-		if (compendium == null){
-			throw new Exception("No compendium data received");
-		}
-		String path = updatesFolderLocation + File.separatorChar + MCVersion + File.separatorChar + modVersion;
-		File dirPath = new File(path);
-		if (!dirPath.exists())
-			dirPath.mkdirs();
-		File f = new File(path + File.separatorChar + fileName);
-		FileUtils.writeStringToFile(f, compendium);
 	}
 
 	/**
