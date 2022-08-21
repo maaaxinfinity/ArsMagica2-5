@@ -84,7 +84,7 @@ public class AM2PreloaderContainer extends DummyModContainer implements IFMLLoad
 
 	@Override
 	public void injectData(Map<String, Object> data){
-		if (((String)data.get("coremodList")).contains("DragonAPIASMHandler")){
+		if ((data.get("coremodList").toString()).contains("DragonAPIASMHandler")){
 			LogHelper.info("Core: Located DragonAPI in list of coremods");
 			foundDragonAPI = true;
 		}

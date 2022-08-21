@@ -1242,7 +1242,7 @@ public class BytecodeTransformers implements IClassTransformer{
 					  InsnList new_if = new InsnList();
 					  new_if.add(new VarInsnNode(Opcodes.ALOAD, 1));
 					  new_if.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, method1_searchinstruction_owner.getVal(is_obfuscated), method1_checkinstruction_function, method1_checkinstruction_desc, false));
-					  new_if.add(new IntInsnNode(Opcodes.BIPUSH, 8));
+					  new_if.add(new IntInsnNode(Opcodes.BIPUSH, Integer.BYTES));
 					  LabelNode elseLabel = new LabelNode();
 					  new_if.add(new JumpInsnNode(Opcodes.IF_ICMPNE, elseLabel));
 					  new_if.add(new VarInsnNode(Opcodes.ALOAD, 0));
