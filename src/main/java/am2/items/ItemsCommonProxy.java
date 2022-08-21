@@ -437,6 +437,117 @@ public class ItemsCommonProxy{
 	}
 
 	public void InitRecipes(){
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_GENERAL),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), deficitCrystal,
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_PURE),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_ARCANE),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_ARCANE),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_WATER),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_WATER),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_FIRE),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_FIRE),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_EARTH),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_EARTH),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_AIR),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_AIR),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_LIGHTNING),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIGHTNING),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_ICE),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_ICE),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_NATURE),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_NATURE),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_LIFE),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIFE),
+						}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(bookAffinity, 1, bookAffinity.META_ENDER),
+				new Object[]
+						{
+								"VGV", "RBR", "VGV",
+								Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PURIFIEDVINTEUM),
+								Character.valueOf('B'), Items.book,
+								Character.valueOf('R'), new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_INF_ORB_RED),
+								Character.valueOf('G'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_ENDER),
+						}));
 		//crafting recipes
 		GameRegistry.addRecipe(new ShapedOreRecipe(
 				new ItemStack(itemOre, 1, itemOre.META_ARCANECOMPOUND),
