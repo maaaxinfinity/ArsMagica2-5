@@ -55,6 +55,8 @@ public class SpellHelper{
 			return SpellCastResult.MALFORMED_SPELL_STACK;
 		}
 
+		float mana = SpellUtils.instance.getSpellRequirements(stack, caster).manaCost;
+
 		ISpellComponent[] components = SpellUtils.instance.getComponentsForStage(stack, 0);
 
 		for (ISpellComponent component : components){
@@ -82,7 +84,7 @@ public class SpellHelper{
 					component.spawnParticles(world, blockX, blockY, blockZ, caster, caster, world.rand, color);
 				}
 				if (consumeMBR)
-					SpellUtils.instance.doAffinityShift(caster, component, stageShape);
+					SpellUtils.instance.doAffinityShift(caster, component, stageShape, mana);
 			}
 		}
 
@@ -96,6 +98,8 @@ public class SpellHelper{
 		if ((!AMCore.config.getAllowCreativeTargets()) && target instanceof EntityPlayerMP && ((EntityPlayerMP) target).capabilities.isCreativeMode) {
 			return SpellCastResult.EFFECT_FAILED;
 		}
+
+		float mana = SpellUtils.instance.getSpellRequirements(stack, caster).manaCost;
 
 		ISpellComponent[] components = SpellUtils.instance.getComponentsForStage(stack, 0);
 
@@ -123,7 +127,7 @@ public class SpellHelper{
 					component.spawnParticles(world, target.posX, target.posY + target.getEyeHeight(), target.posZ, caster, target, world.rand, color);
 				}
 				if (shiftAffinityAndXP)
-					SpellUtils.instance.doAffinityShift(caster, component, stageShape);
+					SpellUtils.instance.doAffinityShift(caster, component, stageShape, mana);
 			}
 		}
 

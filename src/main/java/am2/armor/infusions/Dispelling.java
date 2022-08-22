@@ -47,7 +47,12 @@ public class Dispelling implements IArmorImbuement{
 		Object[] safeCopy = player.getActivePotionEffects().toArray();
 		for (Object o : safeCopy){
 			PotionEffect pe = (PotionEffect)o;
-			boolean badEffect = ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[pe.getPotionID()], 35);
+			boolean badEffect;
+			if (ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[pe.getPotionID()], 35) instanceof Boolean) {
+				badEffect = ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[pe.getPotionID()], 35);
+			} else {
+				badEffect = true; // just get rid of all potion effects if can't determine if it's good or bad, hotfix for crash
+			}
 			if (pe.getIsAmbient() || !badEffect) continue;
 			effectsToRemove.add(pe.getPotionID());
 		}

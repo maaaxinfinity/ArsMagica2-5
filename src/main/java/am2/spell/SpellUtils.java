@@ -785,7 +785,7 @@ public class SpellUtils implements ISpellUtils{
 		return Affinity.values()[highestID];
 	}
 
-	public void doAffinityShift(EntityLivingBase caster, ISpellComponent component, ISpellShape governingShape){
+	public void doAffinityShift(EntityLivingBase caster, ISpellComponent component, ISpellShape governingShape, float mana){
 		if (!(caster instanceof EntityPlayer)) return;
 		AffinityData aff = AffinityData.For(caster);
 		EnumSet<Affinity> affList = component.getAffinity();
@@ -815,6 +815,7 @@ public class SpellUtils implements ISpellUtils{
 			}
 			if (xp > 0){
 				xp *= caster.getAttributeMap().getAttributeInstance(ArsMagicaApi.xpGainModifier).getAttributeValue();
+				xp *= mana / 300; // amount of XP is proportional to amount of mana spent, unlike the previous autoclicker mod system
 				ExtendedProperties.For(caster).addMagicXP(xp);
 			}
 		}

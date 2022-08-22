@@ -75,6 +75,7 @@ public class IllusionBlock extends AMBlock{
 	 */
 	private ForgeDirection getFacing(IBlockAccess blockAccess, int x, int y, int z){
 		int meta = blockAccess.getBlockMetadata(x, y, z) & 7;
+		meta = Math.min(ForgeDirection.values().length - 1, meta); // crash fix
 		return ForgeDirection.values()[meta];
 	}
 

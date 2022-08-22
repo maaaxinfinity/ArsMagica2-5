@@ -65,7 +65,7 @@ public class TileEntityArcaneDeconstructor extends TileEntityAMPower implements 
 	@Override
 	public void updateEntity(){
 		super.updateEntity();
-
+		System.out.println("errrere");
 		if (worldObj.isRemote){
 			if (particleCounter == 0 || particleCounter++ > 1000){
 				particleCounter = 1;

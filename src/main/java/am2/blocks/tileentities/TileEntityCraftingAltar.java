@@ -530,6 +530,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 
 	private void updateLecternInformation(){
 		if (podiumLocation == null) return;
+		if (!(worldObj.getTileEntity(xCoord + podiumLocation.getX(), yCoord + podiumLocation.getY(), zCoord + podiumLocation.getZ()) instanceof TileEntityLectern)) return; // crash fix
 		TileEntityLectern lectern = (TileEntityLectern)worldObj.getTileEntity(xCoord + podiumLocation.getX(), yCoord + podiumLocation.getY(), zCoord + podiumLocation.getZ());
 		if (lectern != null){
 			if (lectern.hasStack()){
