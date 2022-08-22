@@ -149,6 +149,7 @@ item.arsmagica2:wizardChalk.name=Мел волшебника
 item.arsmagica2:woodenLeg.name=Деревянная нога
 item.arsmagica2:workbenchUpgrade.name=Улучшение верстака мага: Создание
 item.arsmagica2:yellowRune.name=Жёлтая руна
+item.arsmagica2:mana_stone.name=Камень маны
 
 #blocks
 tile.arsmagica2:altarOfCreation.name=Алтарь создания
@@ -394,6 +395,7 @@ am2.tooltip.cantSummonSelf=Вы не можете призвать себя че
 am2.tooltip.charge=Заряд
 am2.tooltip.clearKey=Очистите краеугольную комбинацию перед тем как сломать этот блок!
 am2.tooltip.containedXP=Содержится опыта: %d
+am2.tooltip.containedMana=Содержится маны: %d
 am2.tooltip.dispel=Рассеивание
 am2.tooltip.dr_drn=Сопротивление урону от утопления
 am2.tooltip.dr_exp=Сопротивление урону от взрывов
@@ -430,6 +432,7 @@ am2.tooltip.infOrbRed=Вы получили §4красное§f очко уме
 am2.tooltip.journalOwner2=Владелец: %s
 am2.tooltip.journalOwner=Надпись на первой странице говорит:
 am2.tooltip.journalUse=ПКМ, для получения опыта, SHIFT-ПКМ, чтобы отдать опыт.
+am2.tooltip.stoneUse=ПКМ, для получения маны, SHIFT-ПКМ, чтобы отдать ману. Заклинания автоматически потребляют ману, если у вас её нет.
 am2.tooltip.life_ward2=§3У тебя нет силы здесь!§f
 am2.tooltip.life_ward=§3Gray Walker, уходи отсюда.§f
 am2.tooltip.lifesave=Сохранение жизни

@@ -155,6 +155,7 @@ item.arsmagica2:wizardChalk.name=Zauberer's Kreide
 item.arsmagica2:woodenLeg.name=Holzbein
 item.arsmagica2:workbenchUpgrade.name=Zauberkünstlers-Werkbank Upgrade: Crafting
 item.arsmagica2:yellowRune.name=Gelbe Rune
+item.arsmagica2:mana_stone.name=Mana Stein
 
 #blocks
 tile.arsmagica2:altarOfCreation.name=Werkaltar
@@ -414,6 +415,7 @@ am2.tooltip.charge=Ladung
 am2.tooltip.clearKey=Säubere die Schlussstein-Kombination, bevor du diesen Block abbaust
 am2.tooltip.compEntryNotFound=Kompendium Eintrag (von: %s) nicht gefunden
 am2.tooltip.containedXP=Enthaltene XP: %d
+am2.tooltip.containedMana=Enthaltene Mana: %d
 am2.tooltip.det_eth=Ermittelte %s%s§f Ätherium: %s
 am2.tooltip.diffDimMark=Deine Markierung ist in einer anderen Dimension
 am2.tooltip.disconnectPower=Aller Energiequellen des Block wurden getrennt.
@@ -453,6 +455,7 @@ am2.tooltip.infOrbRed=Du hast einen §4roten§f Skillpunkt bekommen!
 am2.tooltip.journalOwner2=Eigentum von %s
 am2.tooltip.journalOwner=Die Inskription der ersten Seite sagt:
 am2.tooltip.journalUse=Rechtsklick um die XP zu erhalten | Ducken + Rechtklick um XP zu speichern
+am2.tooltip.stoneUse=Rechtsklick zum Abrufen von Mana, Schleichen+Rechtsklick zum Speichern von Mana. Zaubersprüche verbrauchen automatisch Mana, wenn du keines hast.
 am2.tooltip.life_ward2=§3Du hast hier keine Kräfte.§f
 am2.tooltip.life_ward=§3Gray Walker verschwinde von diesem Ort.§f
 am2.tooltip.lifesave=Lebensrettend

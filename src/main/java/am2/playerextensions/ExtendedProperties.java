@@ -17,6 +17,7 @@ import am2.bosses.EntityLifeGuardian;
 import am2.buffs.BuffList;
 import am2.damage.DamageSources;
 import am2.guis.AMGuiHelper;
+import am2.items.ItemManaStone;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMDataReader;
 import am2.network.AMDataWriter;
@@ -1083,6 +1084,25 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	public void deductMana(float manaCost){
 		float leftOver = manaCost - currentMana;
 		this.setCurrentMana(currentMana - manaCost);
+		if (leftOver > 0){
+			if (this.entity instanceof EntityPlayer){
+				EntityPlayer casterPlayer = (EntityPlayer) this.entity;
+				for (int i = 0; i < casterPlayer.inventory.mainInventory.length; i++) {
+					if (casterPlayer.inventory.mainInventory[i] != null){
+						if (casterPlayer.inventory.mainInventory[i].getItem() instanceof ItemManaStone){
+							int availablemana = ItemManaStone.getManaInStone(casterPlayer.inventory.mainInventory[i]);
+							float amt = Math.min(availablemana, leftOver);
+							if (amt > 0){
+								ItemManaStone.deductManaFromStone(casterPlayer.inventory.mainInventory[i], (int)amt);
+								leftOver -= amt;
+								if (leftOver <= 0)
+									break;
+							}
+						}
+					}
+				}
+			}
+		}
 		if (leftOver > 0){
 			for (ManaLinkEntry entry : this.manaLinks){
 				leftOver -= entry.deductMana(entity.worldObj, entity, leftOver);

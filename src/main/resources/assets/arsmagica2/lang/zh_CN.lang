@@ -155,6 +155,7 @@ item.arsmagica2:wizardChalk.name=巫师粉笔
 item.arsmagica2:woodenLeg.name=木腿
 item.arsmagica2:workbenchUpgrade.name==巫师工作台升级:合成
 item.arsmagica2:yellowRune.name=黄色符文
+item.arsmagica2:mana_stone.name=法力石
 
 #blocks
 tile.arsmagica2:altarOfCreation.name=创造祭坛
@@ -412,6 +413,7 @@ am2.tooltip.charge=充能
 am2.tooltip.clearKey=在破坏方块前先清除楔石组合!
 am2.tooltip.compEntryNotFound=摘要词条(提示符: %s)未找到
 am2.tooltip.containedXP=包含经验 %d
+am2.tooltip.containedMana=包含法力
 am2.tooltip.det_eth=探测到%s%s§f乙金: %s
 am2.tooltip.diffDimMark=你的标记在另一个世界
 am2.tooltip.disconnectPower=所有能源到此方块的连接均已中断.
@@ -451,6 +453,7 @@ am2.tooltip.infOrbRed=你获得了一个§4红色§f 技能点!
 am2.tooltip.journalOwner2=日记之主:%s
 am2.tooltip.journalOwner=扉页上的铭文如是:
 am2.tooltip.journalUse=右击取回经验,潜行右击存储经验.
+am2.tooltip.stoneUse=右键获取法力值，潜行+右键存储法力值。 如果你没有法术力，法术会自动消耗法术力。
 am2.tooltip.life_ward2=§3你在这里没有力量!§f(《魔戒》梗)
 am2.tooltip.life_ward=§3灰色的行者,滚出此地.§f
 am2.tooltip.lifesave=救命
@@ -691,7 +694,6 @@ am2.affinity.photosynthesis=光合作用
 am2.affinity.rooted=根须之脚
 am2.affinity.thorns=荆棘之环
 
- 
 ##lightning
 am2.affinity.fulmination=爆鸣
 am2.affinity.reflexes=闪电反应
@@ -707,4 +709,20 @@ achievement.componentUnlock=发现法术组件
 
 Epic Mana Restoration.postfix=史诗魔力药水
 Greater Mana Restoration.postfix=卓越魔力药水
-Legendary Mana Restoration.postfix=传奇魔力药水
+Legendary Mana Restoration.postfix=传奇魔力药水tile.arsmagica2:spell_sealed_door.name=Spell-Sealed Door
+tile.arsmagica2:witchwoodSingleSlab.oak.name=Witchwood Slab
+tile.arsmagica2:wizardChalk.name=Wizard's Chalk Rune
+am2.spell.nauseate=Nauseate
+am2.spell.scramblesynapses=Scramble synapses
+am2.tooltip.cantTeleport=The distortion around you is preventing all teleportation!
+am2.tooltip.shaken=Shaken, not stirred.
+am2.tooltip.spellbookWarning1=WARNING:  If you're going to dye this,
+am2.tooltip.spellbookWarning2=remove your spells first!
+key.am2.category=ArsMagica2
+key.ActivateAffinityAbility=Activate affinity ability
+key.AuraCustomization=Aura customization
+key.ShapeGroups=Shape groups
+key.SpellBookNext=Spell book, Next
+key.SpellBookPrev=Spell book, Previous
+key.ToggleManaDisplay=Toggle mana display
+am2.affinity.leaflike=Leaf on the Wind

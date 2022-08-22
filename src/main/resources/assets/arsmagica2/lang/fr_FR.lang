@@ -152,6 +152,7 @@ item.arsmagica2:lifeward.name=§6Protection Vitale§f
 item.arsmagica2:rawEssence.name=Etherium
 item.arsmagica2:animalfat.name=Graisse de Porc
 item.arsmagica2:playerjournal.name=Journal
+item.arsmagica2:mana_stone.name=Pierre de Mana
 
 #blocks
 tile.arsmagica2:essence_refiner.name=Raffineur d'Essence
@@ -471,7 +472,9 @@ am2.tooltip.step_up=Assistance de Marche
 am2.tooltip.shiftForDetails=Maintenir LSHIFT pour des détails
 am2.tooltip.notYourJournal=Ce n'est pas votre journal!  Pas d'indiscrétions!
 am2.tooltip.containedXP=XP contenue: %d
+am2.tooltip.containedMana=Mana contenue: %d
 am2.tooltip.journalUse=Clic-Droit pour récupérer l'XP, Sneak+Clic-Droit pour ranger l'XP.
+am2.tooltip.stoneUse=Clic droit pour récupérer du mana, Sneak+Clic droit pour stocker du mana. Les sorts consomment automatiquement du mana si vous n'en avez pas.
 am2.tooltip.journalOwner=L'inscription sur la première page dit:
 am2.tooltip.journalOwner2=Appartient à %s
 am2.tooltip.unowned=Les pages du journal sont vierges.

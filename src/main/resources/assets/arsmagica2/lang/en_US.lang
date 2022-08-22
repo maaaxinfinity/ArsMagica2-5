@@ -155,6 +155,7 @@ item.arsmagica2:wizardChalk.name=Wizard's Chalk
 item.arsmagica2:woodenLeg.name=Wooden Leg
 item.arsmagica2:workbenchUpgrade.name=Magician's Workbench Upgrade: Crafting
 item.arsmagica2:yellowRune.name=Yellow Rune
+item.arsmagica2:mana_stone.name=Mana Stone
 
 #blocks
 tile.arsmagica2:altarOfCreation.name=Crafting Altar
@@ -417,6 +418,7 @@ am2.tooltip.charge=Charge
 am2.tooltip.clearKey=Clear the Keystone Combination before breaking this block!
 am2.tooltip.compEntryNotFound=Compendium Entry (identified by: %s) Not Found
 am2.tooltip.containedXP=Contained XP: %d
+am2.tooltip.containedMana=Contained Mana: %d
 am2.tooltip.det_eth=Detected %s%s§f etherium: %s
 am2.tooltip.diffDimMark=Your mark is in a different dimension
 am2.tooltip.disconnectPower=All power sources to this block were disconnected.
@@ -456,6 +458,7 @@ am2.tooltip.infOrbRed=You have gained a §4red§f skill point!
 am2.tooltip.journalOwner2=Owned by %s
 am2.tooltip.journalOwner=The inscription on the first page says:
 am2.tooltip.journalUse=Right Click to retrieve XP, Sneak+Right Click to store XP.
+am2.tooltip.stoneUse=Right Click to retrieve mana, Sneak+Right Click to store mana. Spells automatically consume mana if you have none.
 am2.tooltip.life_ward2=§3You have no power here!§f
 am2.tooltip.life_ward=§3Gray Walker, be gone from this place.§f
 am2.tooltip.lifesave=Life-Saving

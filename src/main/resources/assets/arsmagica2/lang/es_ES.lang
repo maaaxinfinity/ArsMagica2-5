@@ -149,6 +149,7 @@ item.arsmagica2:wizardChalk.name=Tiza de Mago
 item.arsmagica2:woodenLeg.name=Pata de Palo
 item.arsmagica2:workbenchUpgrade.name=Mejora del Banco de Trabajo Arcano: Fabricación
 item.arsmagica2:yellowRune.name=Runa Amarilla
+item.arsmagica2:mana_stone.name=Piedra de Maná
 
 #blocks
 tile.arsmagica2:altarOfCreation.name=Altar de Fabricación
@@ -399,6 +400,7 @@ am2.tooltip.charge=Cargar
 am2.tooltip.clearKey=Elimina la combinación de la Piedra Clave antes de romper este bloque!
 am2.tooltip.compEntryNotFound=Entrada del Compendio (identificada por: %s) No Encontrada
 am2.tooltip.containedXP=XP Contenida: %d
+am2.tooltip.containedMana=Maná Contenida: %d
 am2.tooltip.dispel=Disipación
 am2.tooltip.dr_drn=Resistencia al Daño por Ahogamiento
 am2.tooltip.dr_exp=Resistencia al Daño por Explosiones
@@ -435,6 +437,7 @@ am2.tooltip.infOrbRed=Has ganado un punto de habilidad §4rojo§f !
 am2.tooltip.journalOwner2=Propiedad de %s
 am2.tooltip.journalOwner=La inscripción en la primera página dice:
 am2.tooltip.journalUse=Click Derecho para recuperar XP, Agacharse+Click Derecho para guardar XP.
+am2.tooltip.stoneUse=Haz clic derecho para recuperar maná, Sneak + clic derecho para almacenar maná. Los hechizos consumen maná automáticamente si no tienes ninguno.
 am2.tooltip.life_ward2=§3No tienes poder aquí!§f
 am2.tooltip.life_ward=§3Caminante Gris, yo te expulso de este lugar.§f
 am2.tooltip.lifesave=Robo de Vida
@@ -656,7 +659,6 @@ am2.affinity.photosynthesis=Fotosíntesis
 am2.affinity.rooted=Enraizado
 am2.affinity.thorns=Aura de Espinas
 
- 
 ##lightning
 am2.affinity.fulmination=Fulminante
 am2.affinity.reflexes=Reflejos Relámpago

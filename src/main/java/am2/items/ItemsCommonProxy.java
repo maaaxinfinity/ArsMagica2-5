@@ -142,6 +142,9 @@ public class ItemsCommonProxy{
 	public static Item BoundAxe;
 	public static Item BoundPickaxe;
 	public static Item BoundSword;
+
+	public static ItemManaStone manaStone;
+
 	//public static Item boundBow;
 
 	public static ItemCrystalPhylactery crystalPhylactery;
@@ -262,6 +265,7 @@ public class ItemsCommonProxy{
 		playerjournal = (ItemJournal)new ItemJournal().setUnlocalizedName("arsmagica2:playerjournal").setCreativeTab(itemTab);
 		manaMartini = (ItemManaMartini)new ItemManaMartini().setUnlocalizedAndTextureName("arsmagica2:mana_martini").setCreativeTab(itemTab);
 		inscriptionUpgrade = (InscriptionTableUpgrade)new InscriptionTableUpgrade().setUnlocalizedName("arsmagica2:inscription_upgrade").setCreativeTab(itemTab);
+		manaStone = (ItemManaStone)new ItemManaStone().setUnlocalizedAndTextureName("arsmagica2:mana_stone").setCreativeTab(itemTab);
 
 		addItemStackToChestGen(new ItemStack(rune, 1, rune.META_INF_ORB_BLUE), 1, 1, 3, ChestGenHooks.DUNGEON_CHEST, ChestGenHooks.MINESHAFT_CORRIDOR, ChestGenHooks.PYRAMID_DESERT_CHEST, ChestGenHooks.PYRAMID_JUNGLE_CHEST, ChestGenHooks.STRONGHOLD_CORRIDOR, ChestGenHooks.STRONGHOLD_CROSSING);
 		addItemStackToChestGen(new ItemStack(rune, 1, rune.META_INF_ORB_BLUE), 1, 1, 5, ChestGenHooks.STRONGHOLD_LIBRARY);
@@ -341,6 +345,8 @@ public class ItemsCommonProxy{
 		registerItem(manaCake, "manaCake");
 
 		registerItem(keystone, "keystone");
+
+		registerItem(manaStone, "manaStone");
 
 		//affinity books
 		registerItem(bookAffinity, "bookAffinity");
@@ -593,6 +599,17 @@ public class ItemsCommonProxy{
 						Character.valueOf('A'), BlocksCommonProxy.cerublossom,
 						Character.valueOf('D'), BlocksCommonProxy.desertNova,
 						Character.valueOf('V'), "dustVinteum",
+				}));
+
+		//mana stone
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(manaStone),
+				new Object[]{
+						"PGP",
+						"GDG",
+						"PGP",
+						Character.valueOf('G'), "ingotGold",
+						Character.valueOf('D'), "gemDiamond",
+						Character.valueOf('P'), "dustVinteum",
 				}));
 
 		//spell book colors

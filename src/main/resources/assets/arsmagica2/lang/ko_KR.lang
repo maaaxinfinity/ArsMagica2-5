@@ -154,6 +154,7 @@ item.arsmagica2:mana_martini.name=Mana Martini
 item.arsmagica2:inscup_1.name=Inscription Table Tier 1 Upgrade
 item.arsmagica2:inscup_2.name=Inscription Table Tier 2 Upgrade
 item.arsmagica2:inscup_3.name=Inscription Table Tier 3 Upgrade
+item.arsmagica2:mana_stone.name=Mana Stone
 
 #blocks
 tile.arsmagica2:essence_refiner.name=Essence Refiner
@@ -482,7 +483,9 @@ am2.tooltip.step_up=Step Assist
 am2.tooltip.shiftForDetails=Hold LSHIFT for details
 am2.tooltip.notYourJournal=This is not your journal!  No peeking!
 am2.tooltip.containedXP=Contained XP: %d
+am2.tooltip.containedMana=Contained Mana: %d
 am2.tooltip.journalUse=Right Click to retrieve XP, Sneak+Right Click to store XP.
+am2.tooltip.stoneUse=Right Click to retrieve mana, Sneak+Right Click to store mana. Spells automatically consume mana if you have none.
 am2.tooltip.journalOwner=The inscription on the first page says:
 am2.tooltip.journalOwner2=Owned by %s
 am2.tooltip.unowned=The journal's pages are blank.

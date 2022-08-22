@@ -13,6 +13,7 @@ import am2.armor.ArmorHelper;
 import am2.armor.ArsMagicaArmorMaterial;
 import am2.armor.infusions.GenericImbuement;
 import am2.enchantments.AMEnchantmentHelper;
+import am2.items.ItemManaStone;
 import am2.items.ItemsCommonProxy;
 import am2.playerextensions.AffinityData;
 import am2.playerextensions.ExtendedProperties;
@@ -697,7 +698,22 @@ public class SpellUtils implements ISpellUtils{
 	public boolean casterHasMana(EntityLivingBase caster, float mana){
 		if (caster instanceof EntityPlayer && ((EntityPlayer)caster).capabilities.isCreativeMode)
 			return true;
-		return ExtendedProperties.For(caster).getCurrentMana() + ExtendedProperties.For(caster).getBonusCurrentMana() >= mana;
+		return ExtendedProperties.For(caster).getCurrentMana() + ExtendedProperties.For(caster).getBonusCurrentMana() + getStoneMana(caster) >= mana;
+	}
+
+	public float getStoneMana(EntityLivingBase caster){
+		float mana = 0;
+		if (caster instanceof EntityPlayer){
+			EntityPlayer casterPlayer = (EntityPlayer) caster;
+			for (int i = 0; i < casterPlayer.inventory.mainInventory.length; i++) {
+				if (casterPlayer.inventory.mainInventory[i] != null){
+					if (casterPlayer.inventory.mainInventory[i].getItem() instanceof ItemManaStone){
+						mana += ItemManaStone.getManaInStone(casterPlayer.inventory.mainInventory[i]);
+					}
+				}
+			}
+		}
+		return mana;
 	}
 
 	public void addSpellStageToScroll(ItemStack scrollStack, int shape, int[] components, ListMultimap<Integer, byte[]> modifiers){
