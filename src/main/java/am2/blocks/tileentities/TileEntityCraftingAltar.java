@@ -11,7 +11,14 @@ import am2.api.power.PowerTypes;
 import am2.api.spell.component.interfaces.ISkillTreeEntry;
 import am2.api.spell.component.interfaces.ISpellModifier;
 import am2.api.spell.component.interfaces.ISpellPart;
+import am2.blocks.BlockWizardsChalk;
 import am2.blocks.BlocksCommonProxy;
+import am2.blocks.liquid.BlockLiquidEssence;
+import am2.damage.DamageSources;
+import am2.entities.EntityEarthElemental;
+import am2.entities.EntityFireElemental;
+import am2.entities.EntityManaElemental;
+import am2.entities.EntityWaterElemental;
 import am2.items.ItemEssence;
 import am2.items.ItemsCommonProxy;
 import am2.multiblock.IMultiblockStructureController;
@@ -22,7 +29,9 @@ import am2.network.AMPacketIDs;
 import am2.particles.AMParticle;
 import am2.particles.ParticleFadeOut;
 import am2.particles.ParticleMoveOnHeading;
+import am2.playerextensions.ExtendedProperties;
 import am2.power.PowerNodeRegistry;
+import am2.proxy.CommonProxy;
 import am2.spell.SkillManager;
 import am2.spell.SpellRecipeManager;
 import am2.spell.SpellUtils;
@@ -30,8 +39,11 @@ import am2.spell.components.Summon;
 import am2.spell.shapes.Binding;
 import am2.utility.KeyValuePair;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFire;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -42,11 +54,10 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class TileEntityCraftingAltar extends TileEntityAMPower implements IMultiblockStructureController{
 
@@ -67,6 +78,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 	private BlockCoord podiumLocation;
 	private BlockCoord switchLocation;
 	private int maxEffects;
+	private float stability;
 
 	private ItemStack addedPhylactery = null;
 	private ItemStack addedBindingCatalyst = null;
@@ -120,6 +132,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		checkCounter = 0;
 		setNoPowerRequests();
 		maxEffects = 2;
+		stability = 1;
 
 		spellDef = new ArrayList<KeyValuePair<ISpellPart, byte[]>>();
 		shapeGroups = new ArrayList<ArrayList<KeyValuePair<ISpellPart, byte[]>>>();
@@ -457,6 +470,10 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		return count <= this.maxEffects;
 	}
 
+	public float getStability(){
+		return this.stability;
+	}
+
 	public boolean structureValid(){
 		return this.structureValid;
 	}
@@ -477,7 +494,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 			checkForEndCondition();
 			updatePowerRequestData();
 			if (!worldObj.isRemote && !currentDefinitionIsWithinStructurePower() && this.ticksExisted > 100){
-				worldObj.newExplosion(null, xCoord + 0.5, yCoord - 1.5, zCoord + 0.5, 5, false, true);
+				worldObj.newExplosion(null, xCoord + 0.5, yCoord - 1.5, zCoord + 0.5, this.maxEffects, false, true); // the better the altar, the mode devastating the explosion in case of overload
 				setCrafting(false);
 				return;
 			}
@@ -635,6 +652,13 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 	}
 
 	private void addItemToRecipe(ItemStack stack){
+		if (stabilityCheckFail() > 0) {
+			if (!worldObj.isRemote){
+				randomInstabilityEffect(stabilityCheckFail());
+			}
+			return;
+		}
+
 		allAddedItems.add(stack);
 		currentAddedItems.add(stack);
 
@@ -651,6 +675,174 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		if (matchCurrentRecipe()){
 			currentAddedItems.clear();
 			return;
+		}
+	}
+
+	private int getInstability() {
+		float instability = 1;
+
+		// ADD INSTABILITY
+
+		if (worldObj.isThundering()) instability += 1F;
+
+		instability += (this.getNumPartsInSpell() / 2); // half of number of spell components
+		if (outputCombo != null){
+			Set<Integer> unique = new HashSet<>();
+			Set<Integer> duplicate = new HashSet<>(); // Stacking 3 solar? bad boy
+			for (int i = 0; i < outputCombo.length; ++i){
+				if (duplicate.contains(outputCombo[i])) { // second time being duplicated
+					instability += 1.5F;
+				} else if (unique.contains(outputCombo[i])) { // first time being duplicated
+					instability += 0.5F;
+					duplicate.add(outputCombo[i]);
+				} else {
+					unique.add(outputCombo[i]);
+				}
+			}
+		}
+
+		if (shapeGroupGuide != null){
+			for (int[] shapeGroup : shapeGroupGuide){
+				for (int i = 0; i < shapeGroup.length; ++i){
+					Set<Integer> unique = new HashSet<>();
+					Set<Integer> duplicate = new HashSet<>();
+					if (duplicate.contains(shapeGroup[i])){
+						instability += 0.75F;
+					}else if (unique.contains(shapeGroup[i])){
+						instability += 0.25F;
+						duplicate.add(shapeGroup[i]);
+					}else{
+						unique.add(shapeGroup[i]);
+					}
+				}
+			}
+		}
+
+		int countPlayers = -1;
+		for (int i = 0; i < worldObj.playerEntities.size(); ++i)
+		{
+			EntityPlayer entityplayer1 = (EntityPlayer)worldObj.playerEntities.get(i);
+			double d5 = entityplayer1.getDistanceSq(this.xCoord, this.yCoord, this.zCoord);
+
+			if ((d5 < 20 * 20))
+			{
+				countPlayers++;
+			}
+		}
+		instability += countPlayers * 2;
+
+		// SUBTRACT INSTABILITY (mostly, except for black aurem)
+
+		if (worldObj.canBlockSeeTheSky(this.xCoord, this.yCoord, this.zCoord)) instability -= 0.5F;
+		if (!worldObj.isDaytime()) instability -= 0.5;
+
+		ArrayList blockList = new ArrayList();
+		for (int x = -5; x <= 5; x++) {
+			for (int z = -5; z < -5; z++) {
+				for (int y = -6; y < -2; y++) {
+					blockList.add(worldObj.getBlock(this.xCoord + x, this.yCoord + y, this.zCoord + z));
+				}
+			}
+		}
+
+		boolean celestialPrismCounted = false, darkAuremCounted = false;
+		for (int i = 0; i < blockList.size(); i++) {
+			Block block = (Block)blockList.get(i);
+			if (block instanceof BlockWizardsChalk) instability -= 0.2F;
+			if (block instanceof BlockLiquidEssence) instability -= 0.25F;
+			if (block == BlocksCommonProxy.celestialPrism && !celestialPrismCounted){
+				instability -= 2.6F;
+				celestialPrismCounted = true;
+			}
+			if (block == BlocksCommonProxy.blackAurem && !darkAuremCounted) {
+				instability += 2.6F;
+				darkAuremCounted = true;
+			}
+		}
+
+		return (int)instability;
+	}
+
+	private int stabilityCheckFail(){
+		return (int)(new Random().nextInt(getInstability()) - this.stability);
+	}
+
+	private void randomInstabilityEffect(int fail) {
+		Random random = new Random();
+		int effect = random.nextInt(6);
+		EntityPlayer player = this.worldObj.getClosestPlayer(this.xCoord, this.yCoord, this.zCoord, 50);
+		if (player == null) {
+			return; // No player? What on earth could be going on?
+		}
+		if (fail > 2) { // attact elementals if >2 instability
+			for (int i = 0; i <= fail; i++){
+				int elementalType = random.nextInt(4);
+				Entity elemental;
+				switch (elementalType) {
+					case 0:
+						elemental = new EntityEarthElemental(this.worldObj);
+						break;
+					case 1:
+						elemental = new EntityWaterElemental(this.worldObj);
+						break;
+					case 2:
+						elemental = new EntityFireElemental(this.worldObj);
+						break;
+					default:
+						elemental = new EntityManaElemental(this.worldObj);
+						break;
+				}
+				elemental.setPositionAndRotation(
+						player.posX + ((random.nextDouble() - random.nextDouble()) * 7),
+						player.posY + (random.nextDouble() * 5),
+						player.posZ + ((random.nextDouble() - random.nextDouble()) * 7),
+						random.nextFloat() * 360,
+						random.nextFloat() * 360);
+				this.worldObj.spawnEntityInWorld(elemental);
+			}
+		}
+		if (effect == 5 && fail > 5) { // teleport to an arbitrary point in spacetime, also resetting crafting
+			player.setWorld(DimensionManager.getWorlds()[random.nextInt(DimensionManager.getWorlds().length)]);
+			player.setPosition(
+					random.nextInt(20000000) - 10000000,
+					random.nextInt(1000) - 500,
+					random.nextInt(20000000) - 10000000
+			);
+		}
+		if (random.nextBoolean()) { // drain half of mana
+			ExtendedProperties.For(player).deductMana(ExtendedProperties.For(player).getMaxMana() / 2);
+		}
+
+		if (random.nextInt(10) >= 7){
+			// explosion
+			worldObj.newExplosion(null, xCoord + 0.5, yCoord - 1.5, zCoord + 0.5, fail * 2, false, true);
+		}
+		if (random.nextBoolean()){
+			// set on fire
+			player.setFire(fail * 4);
+			for (int x = -7; x <= 7; x++){
+				for (int z = -7; z <= 7; z++){
+					for (int y = -3; y <= 3; y++){
+						Block blockBelow = worldObj.getBlock((int)player.posX + x, (int)player.posY + y - 1, (int)player.posZ + z);
+						if (blockBelow.isNormalCube() && worldObj.isAirBlock((int)player.posX + x, (int)player.posY + y, (int)player.posZ + z)){
+							if (random.nextBoolean())
+								worldObj.setBlock((int)player.posX + x, (int)player.posY + y, (int)player.posZ + z, Blocks.fire);
+						}
+					}
+				}
+			}
+		}
+		if (random.nextBoolean()){
+			// lightning strike
+			worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, player.posX, player.posY, player.posZ));
+		}
+		if (random.nextBoolean()){
+			// damage
+			player.attackEntityFrom(DamageSources.darkNexus, fail * 5);
+		}
+		if (random.nextBoolean()){
+			// simply reset crafting
+			this.deactivate();
 		}
 	}
 
@@ -727,6 +919,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		//locate lectern and lever & material groups
 		if (primaryvalid || secondaryvalid){
 			maxEffects = 0;
+			stability = 1;
 			ArrayList<StructureGroup> lecternGroups = null;
 			ArrayList<StructureGroup> augmatlGroups = null;
 			ArrayList<StructureGroup> mainmatlGroups = null;
@@ -757,6 +950,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 				int index = -1;
 				for (StructureGroup augmatlGroup : primaryvalid ? augMatl_primary : augMatl_secondary){
 					index++;
+					stability += 0.2F; // 2F max
 					if (augmatlGroup == group){
 						break;
 					}
@@ -765,16 +959,18 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 			}
 			if (mainmatlGroups != null && mainmatlGroups.size() == 1){
 				StructureGroup group = mainmatlGroups.get(0);
-				if (group == wood_primary || group == wood_secondary)
+				if (group == wood_primary || group == wood_secondary){
 					maxEffects += 1;
-				else if (group == cobble_primary || group == cobble_secondary || group == sandstone_primary || group == sandstone_secondary)
+				} else if (group == cobble_primary || group == cobble_secondary || group == sandstone_primary || group == sandstone_secondary){
 					maxEffects += 1;
-				else if (group == brick_primary || group == brick_secondary || group == witchwood_primary || group == witchwood_secondary)
+				} else if (group == brick_primary || group == brick_secondary || group == witchwood_primary || group == witchwood_secondary){
 					maxEffects += 2;
-				else if (group == netherbrick_primary || group == netherbrick_secondary || group == quartz_primary || group == quartz_secondary)
+				} else if (group == netherbrick_primary || group == netherbrick_secondary || group == quartz_primary || group == quartz_secondary){
 					maxEffects += 3;
-				else //default of stone brick
+					stability += 1F;
+				} else{ //default of stone brick
 					maxEffects += 2;
+				}
 			}
 		}else{
 			podiumLocation = null;
