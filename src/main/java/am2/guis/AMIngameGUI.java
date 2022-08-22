@@ -46,6 +46,7 @@ public class AMIngameGUI{
 	private static final ResourceLocation spellbook_ui = new ResourceLocation("arsmagica2", ResourceManager.GetGuiTexturePath("spellbook_ui.png"));
 	private static final ResourceLocation inventory = new ResourceLocation("textures/gui/container/inventory.png");
 	private static final ResourceLocation items = new ResourceLocation("textures/atlas/items.png");
+	private static final ResourceLocation redTexture = new ResourceLocation("arsmagica2:textures/guis/red.png");
 
 	public AMIngameGUI(){
 		mc = Minecraft.getMinecraft();
@@ -244,6 +245,20 @@ public class AMIngameGUI{
 			fontRenderer.drawString(manaStr, manaNumericPos.iX, manaNumericPos.iY, bonusMana > 0 ? 0xeae31c : 0x2080FF);
 			fontRenderer.drawString(burnoutStr, burnoutNumericPos.iX + 25 - fontRenderer.getStringWidth(burnoutStr), burnoutNumericPos.iY, 0xFF2020);
 		}
+
+		if (props.redGlint > 0) {
+			props.redGlint--;
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glDepthMask(false);
+			GL11.glColor4d(1.0, 1.0, 1.0, props.redGlint / 300);
+			Minecraft.getMinecraft().renderEngine.bindTexture(redTexture);
+			this.drawTexturedModalRect(0, 0, 0, 0, 1920, 1080);
+			GL11.glDepthMask(true);
+			GL11.glDisable(GL11.GL_BLEND);
+//			this.drawTexturedModalRect(event.resolution.getScaledWidth() - 55, 0, 155, 0, 100, 1200);
+		}
+
+		GL11.glColor4d(1.0, 1.0, 1.0, 1.0);
 	}
 
 	private ItemStack getSpellFromStack(ItemStack stack){

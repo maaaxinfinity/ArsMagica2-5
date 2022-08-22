@@ -801,7 +801,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 				this.worldObj.spawnEntityInWorld(elemental);
 			}
 		}
-		if (effect == 5 && fail > 5) { // teleport to an arbitrary point in spacetime, also resetting crafting
+		if (effect == 5 && fail > 7) { // teleport to an arbitrary point in spacetime, also resetting crafting
 			player.setWorld(DimensionManager.getWorlds()[random.nextInt(DimensionManager.getWorlds().length)]);
 			player.setPosition(
 					random.nextInt(20000000) - 10000000,
