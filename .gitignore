@@ -45,3 +45,16 @@ CREDITS-fml.txt
 LICENSE-fml.txt
 MinecraftForge-Credits.txt
 MinecraftForge-License.txt
+/asm/
+banned-ips.json
+banned-players.json
+compendiumunlocks/
+crash-reports/
+eula.txt
+ops.json
+server.properties
+servers.dat
+usercache.json
+usernamecache.json
+whitelist.json
+/world/
