@@ -37,6 +37,7 @@ version.properties
 /logs/
 options.txt
 /saves/
+/libs/
 /out
 #git stuff
 *.orig

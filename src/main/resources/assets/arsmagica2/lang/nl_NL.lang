@@ -729,4 +729,5 @@ am2.affinity.thunderpunch=Thunderpunch
 am2.affinity.enderTPFailed=Nope nope nope nope nope!!!!
 Epic Mana Restoration.postfix=Epic Mana Potion
 Greater Mana Restoration.postfix=Greater Mana Potion
-Legendary Mana Restoration.postfix=Legendary Mana Potion
+Legendary Mana Restoration.postfix=Legendary Mana Potionitem.arsmagica2:FlickerFocusPrefix=Flicker Focus: %s
+am2.gui.EssenceRefiner=Essence Refiner

@@ -65,13 +65,12 @@ public class TileEntityArcaneDeconstructor extends TileEntityAMPower implements 
 	@Override
 	public void updateEntity(){
 		super.updateEntity();
-		System.out.println("errrere");
 		if (worldObj.isRemote){
-			if (particleCounter == 0 || particleCounter++ > 1000){
+			if (particleCounter == 0 || particleCounter++ > 20){ // fixed particle lingering
 				particleCounter = 1;
 				radiant = (AMParticle)AMCore.proxy.particleManager.spawn(worldObj, "radiant", xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f);
 				if (radiant != null){
-					radiant.setMaxAge(1000);
+					radiant.setMaxAge(20);
 					radiant.setRGBColorF(0.1f, 0.1f, 0.1f);
 					radiant.setParticleScale(0.1f);
 					radiant.AddParticleController(new ParticleHoldPosition(radiant, 1000, 1, false));
