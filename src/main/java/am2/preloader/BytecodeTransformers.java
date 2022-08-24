@@ -3,6 +3,7 @@ package am2.preloader;
 import am2.LogHelper;
 import net.minecraft.launchwrapper.IClassTransformer;
 
+import net.tclproject.mysteriumlib.asm.common.CustomLoadingPlugin;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -19,9 +20,9 @@ public class BytecodeTransformers implements IClassTransformer{
 	
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes){
-		boolean is_obfuscated = !AM2PreloaderContainer.isDevEnvironment;
+		boolean is_obfuscated = !CustomLoadingPlugin.isDevEnvironment;
 		
-		if (transformedName.equals("am2.armor.ItemMageHood") && AM2PreloaderContainer.foundThaumcraft){
+		if (transformedName.equals("am2.armor.ItemMageHood") && CustomLoadingPlugin.foundThaumcraft){
 			LogHelper.info("Core: Altering definition of " + transformedName + " to be thaumcraft compatible.");
 			ClassReader cr = new ClassReader(bytes);
 			ClassNode cn = new ClassNode();
@@ -66,20 +67,20 @@ public class BytecodeTransformers implements IClassTransformer{
 		}else if (transformedName.equals("net.minecraft.world.World")){
 			LogHelper.info("Core: Altering definition of " + transformedName + ", " + (is_obfuscated ? " (obfuscated)" : "(not obfuscated)"));
 			bytes = alterWorld(bytes, is_obfuscated);
-		}else if (transformedName.equals("net.minecraft.potion.PotionEffect") && !AM2PreloaderContainer.foundDragonAPI){
+		}else if (transformedName.equals("net.minecraft.potion.PotionEffect") && !CustomLoadingPlugin.foundDragonAPI){
 			// DragonAPI already has its own way to handle potion list ID extension
 			// you get horrible crashes when the two extensions are applied at the same time
 			// also, there's no sense in duplicating effort, so we'll do nothing in that situation
 			LogHelper.info("Core: Altering definition of " + transformedName + ", " + (is_obfuscated ? " (obfuscated)" : "(not obfuscated)"));
 			bytes = alterPotionEffect(bytes, is_obfuscated);
-		}else if (transformedName.equals("net.minecraft.network.play.server.S1DPacketEntityEffect") && !AM2PreloaderContainer.foundDragonAPI){
+		}else if (transformedName.equals("net.minecraft.network.play.server.S1DPacketEntityEffect") && !CustomLoadingPlugin.foundDragonAPI){
 			LogHelper.info("Core: Altering definition of " + transformedName + ", " + (is_obfuscated ? " (obfuscated)" : "(not obfuscated)"));
 			String passedname = name.replace(".", "/");
 			bytes = alterS1DPacketEntityEffect(bytes, is_obfuscated, passedname);
-		}else if (transformedName.equals("net.minecraft.client.network.NetHandlerPlayClient") && !AM2PreloaderContainer.foundDragonAPI){
+		}else if (transformedName.equals("net.minecraft.client.network.NetHandlerPlayClient") && !CustomLoadingPlugin.foundDragonAPI){
 		  LogHelper.info("Core: Altering definition of " + transformedName + ", " + (is_obfuscated ? " (obfuscated)" : "(not obfuscated)"));
 		  bytes = alterNetHandlerPlayClient(bytes, is_obfuscated);
-		}else if (transformedName.equals("net.minecraft.network.play.server.S1EPacketRemoveEntityEffect") && !AM2PreloaderContainer.foundDragonAPI){
+		}else if (transformedName.equals("net.minecraft.network.play.server.S1EPacketRemoveEntityEffect") && !CustomLoadingPlugin.foundDragonAPI){
 			LogHelper.info("Core: Altering definition of " + transformedName + ", " + (is_obfuscated ? " (obfuscated)" : "(not obfuscated)"));
 			bytes = alterS1EPacketRemoveEntityEffect(bytes, is_obfuscated);
 		}
@@ -279,7 +280,7 @@ public class BytecodeTransformers implements IClassTransformer{
 				}
 
 				if (target != null){
-					int iRegister = AM2PreloaderContainer.isOptiFinePresent() ? 3 : 2;
+					int iRegister = CustomLoadingPlugin.isOptiFinePresent() ? 3 : 2;
 
 					VarInsnNode aLoad = new VarInsnNode(Opcodes.ALOAD, 0);
 					VarInsnNode fLoad = new VarInsnNode(Opcodes.FLOAD, 1);

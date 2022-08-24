@@ -1,7 +1,6 @@
 package am2;
 
-import am2.preloader.AM2PreloaderContainer;
-
+import net.tclproject.mysteriumlib.asm.common.CustomLoadingPlugin;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +35,7 @@ public class LogHelper{
 	      // or call some kind of horrible arcane function chain (which is not documented)
 	      // this is a rather hacky way of turning on debug output if we're in a dev environment, but with the redeeming feature that it actually works
 	      // (the default logging level seems to be INFO and I can't change it easily through code)
-		if(AM2PreloaderContainer.isDevEnvironment){
+		if(CustomLoadingPlugin.isDevEnvironment){
 			log(Level.INFO, "AM2 Debug: " + format, data);
 		}
 		else{

@@ -103,44 +103,10 @@ public class ItemSpellStaff extends ArsMagicaItem{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack stack, int pass){
-		if (this.isMagiTechStaff())
+		if (this.isMagiTechStaff()) {
 			return 0xFFFFFF;
-		switch(stack.getItemDamage()){
-		case 1: //purple
-			return 0xa718bc;
-		case 2: //cyan
-			return 0x16d9c9;
-		case 3: //gray
-			return 0x9b9b9b;
-		case 4: //light blue
-			return 0x5798cb;
-		case 5: //white
-			return 0xffffff;
-		case 6: //black
-			return 0x000000;
-		case 7: //orange
-			return 0xde8317;
-		case 8: //brown
-			return 0x744c14;
-		case 9: //blue
-			return 0x0b11ff;
-		case 10: //green
-			return 0x1bbf1b;
-		case 11: //yellow
-			return 0xe8dd29;
-		case 12: //red
-			return 0xde1717;
-		case 13: //lime
-			return 0x00ff0c;
-		case 14: //pink
-			return 0xffc0cb;
-		case 15: //magenta
-			return 0xFF00FF;
-		case 16: //light gray
-			return 0xd4d4d4;
-		default:
-			return 0xa718bc;
 		}
+		return 16777215;
 	}
 
 	@Override
@@ -162,8 +128,7 @@ public class ItemSpellStaff extends ArsMagicaItem{
 		return true;
 	}
 
-	public void setSpellScroll(ItemStack stack, ItemStack spell){
-		if (isMagiTechStaff()) return;
+	public static ItemStack setSpellScroll(ItemStack stack, ItemStack spell){
 		if (stack.stackTagCompound == null){
 			stack.stackTagCompound = new NBTTagCompound();
 		}
@@ -172,17 +137,18 @@ public class ItemSpellStaff extends ArsMagicaItem{
 		compound.setTag(NBT_SPELL, spellCompound);
 		compound.setString(NBT_SPELL_NAME, spell.getDisplayName());
 		if (!compound.hasKey(NBT_CHARGE))
-			compound.setFloat(NBT_CHARGE, maxCharge);
+			compound.setFloat(NBT_CHARGE, ((ItemSpellStaff)stack.getItem()).maxCharge);
+		return stack;
 	}
 
-	public void copyChargeFrom(ItemStack my_stack, ItemStack stack){
-		if (isMagiTechStaff()) return;
+	public static ItemStack copyChargeFrom(ItemStack my_stack, ItemStack stack){
 		if (stack.getItem() instanceof ItemSpellStaff && stack.stackTagCompound != null && stack.stackTagCompound.hasKey("current_charge")){
 			if (my_stack.stackTagCompound == null){
 				my_stack.stackTagCompound = new NBTTagCompound();
 			}
 			my_stack.stackTagCompound.setFloat("current_charge", stack.stackTagCompound.getFloat("current_charge"));
 		}
+		return my_stack;
 	}
 
 	@Override

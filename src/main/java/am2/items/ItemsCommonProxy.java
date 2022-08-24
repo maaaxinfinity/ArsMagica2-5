@@ -80,6 +80,9 @@ public class ItemsCommonProxy{
 
 	//spell staves
 	public static ItemSpellStaff spellStaffMagitech;
+	public static ItemSpellStaff spellStaffNovice;
+	public static ItemSpellStaff spellStaffJourneyman;
+	public static ItemSpellStaff spellStaffMaster;
 
 	public static ItemCrystalWrench crystalWrench;
 
@@ -237,6 +240,9 @@ public class ItemsCommonProxy{
 		crystalPhylactery = (ItemCrystalPhylactery)new ItemCrystalPhylactery().setUnlocalizedAndTextureName("arsmagica2:crystal_phylactery").setCreativeTab(itemTab);
 		itemAMBucket = (ItemAMBucket)new ItemAMBucket().setUnlocalizedAndTextureName("arsmagica2:liquidEssenceBucket").setCreativeTab(itemTab);
 		scythe = (ItemNatureGuardianSickle)new ItemNatureGuardianSickle().setUnlocalizedName("arsmagica2:nature_scythe").setCreativeTab(itemTab);
+		spellStaffNovice = (ItemSpellStaff)(new ItemSpellStaff(300, 0)).setStaffHeadIndex(0).setUnlocalizedAndTextureName("arsmagica2:spell_staff_novice").setCreativeTab(itemTab);
+		spellStaffJourneyman = (ItemSpellStaff)(new ItemSpellStaff(900, 1)).setStaffHeadIndex(1).setUnlocalizedAndTextureName("arsmagica2:spell_staff_journeyman").setCreativeTab(itemTab);
+		spellStaffMaster = (ItemSpellStaff)(new ItemSpellStaff(5000, 2)).setStaffHeadIndex(2).setUnlocalizedAndTextureName("arsmagica2:spell_staff_master").setCreativeTab(itemTab);
 		spellStaffMagitech = (ItemSpellStaff)new ItemSpellStaff(0, -1).setStaffHeadIndex(3).setUnlocalizedAndTextureName("arsmagica2:spell_staff_magitech").setCreativeTab(itemTab);
 		liquidEssenceBottle = (ItemLiquidEssenceBottle)new ItemLiquidEssenceBottle().setUnlocalizedAndTextureName("arsmagica2:mana_boost_potion").setCreativeTab(itemTab);
 		evilBook = new Item().setUnlocalizedName("arsmagica2:evilBook").setTextureName("arsmagica2:evilBook").setCreativeTab(itemTab);
@@ -396,6 +402,9 @@ public class ItemsCommonProxy{
 
 		registerItem(scythe, "natureScythe");
 
+		registerItem(spellStaffNovice, "spellStaffNovice");
+		registerItem(spellStaffJourneyman, "spellStaffJourneyman");
+		registerItem(spellStaffMaster, "spellStaffMaster");
 		registerItem(spellStaffMagitech, "magitechStaff");
 
 		registerItem(liquidEssenceBottle, "liquidEssenceBottle");
@@ -868,6 +877,20 @@ public class ItemsCommonProxy{
 				Character.valueOf('L'), Items.leather,
 				Character.valueOf('G'), "nuggetGold",
 		}));
+
+		// staves
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(spellStaffNovice), new Object[]{
+				"  F",
+				" S ",
+				"S  ", 'F', lesserFocus, 'S', Items.blaze_rod}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(spellStaffJourneyman), new Object[]{
+				"  F",
+				" S ",
+				"S  ", 'F', standardFocus, 'S', Items.blaze_rod}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(spellStaffMaster), new Object[]{
+				"  F",
+				" S ",
+				"S  ", 'F', greaterFocus, 'S', Items.blaze_rod}));
 
 		//magitech staff
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(spellStaffMagitech), new Object[]{
