@@ -5,7 +5,6 @@ import am2.entities.EntityDryad;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
-import net.minecraft.world.gen.feature.WorldGenerator;
 
 import java.util.Random;
 
@@ -13,7 +12,7 @@ public class BiomeWitchwoodForest extends BiomeGenBase{
 
 	public static final BiomeGenBase instance = new BiomeWitchwoodForest(AMCore.config.getWitchwoodForestID()).setBiomeName("WitchwoodForest");
 	private static final WitchwoodTreeHuge hugeTree = new WitchwoodTreeHuge(true);
-	private static final WitchwoodTreeSmall smallTree = new WitchwoodTreeSmall(true);
+	private static final WitchwoodTreeEvenMoreHuge evenMoreHugeTree = new WitchwoodTreeEvenMoreHuge(true);
 
 	public BiomeWitchwoodForest(int par1){
 		super(par1);
@@ -47,6 +46,6 @@ public class BiomeWitchwoodForest extends BiomeGenBase{
 	@Override
 	public WorldGenAbstractTree func_150567_a(Random p_150567_1_)
 	{
-	  return (WorldGenAbstractTree)(p_150567_1_.nextInt(10) == 0 ? hugeTree : smallTree);
+	  return (WorldGenAbstractTree)(p_150567_1_.nextInt(3) == 0 ? hugeTree : evenMoreHugeTree);
 	}
 }

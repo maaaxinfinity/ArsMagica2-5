@@ -139,4 +139,23 @@ public class BlockWitchwoodLeaves extends BlockLeaves{
 		return new String[]{"Witchwood"};
 	}
 
+	public void updateTick(World world, int xx, int yy, int zz, Random p_149674_5_){ // rework inefficient and needlessly complex minecraft algorithm for detecting leaves to drop
+		if (!world.isRemote){
+			boolean toRemove = true;
+			for (int x = -7; x <= 7; x++) {
+				for (int y = -7; y <= 7; y++) {
+					for (int z = -7; z <= 7; z++) {
+						if (world.getBlock(x + xx, y + yy, z + zz).canSustainLeaves(world, xx, yy, zz)) {
+							toRemove = false;
+						}
+					}
+				}
+			}
+			if (toRemove) {
+				this.dropBlockAsItemWithChance(world, xx, yy, zz, 0, 0 ,0);
+				world.setBlock(xx, yy, zz, Blocks.air);
+			}
+		}
+	}
+
 }
