@@ -23,6 +23,7 @@ public class AMPacketIDs{
 	public static final byte SYNC_AFFINITY_DATA = 34;
 	public static final byte DECO_BLOCK_UPDATE = 35;
 	public static final byte INSCRIPTION_TABLE_UPDATE = 36;
+	public static final byte CASTER_BLOCK_UPDATE = 60;
 	//No longer needed
 	//public static final byte SHOW_UI_CUSTOMIZATION = 37;
 	public static final byte ENTITY_ACTION_UPDATE = 38;

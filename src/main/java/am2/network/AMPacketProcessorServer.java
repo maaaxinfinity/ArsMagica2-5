@@ -4,10 +4,8 @@ import am2.AMCore;
 import am2.LogHelper;
 import am2.api.math.AMVector3;
 import am2.api.power.IPowerNode;
-import am2.blocks.tileentities.TileEntityArmorImbuer;
-import am2.blocks.tileentities.TileEntityInscriptionTable;
-import am2.blocks.tileentities.TileEntityMagiciansWorkbench;
-import am2.blocks.tileentities.TileEntityParticleEmitter;
+import am2.api.power.PowerTypes;
+import am2.blocks.tileentities.*;
 import am2.containers.ContainerMagiciansWorkbench;
 import am2.containers.ContainerSpellCustomization;
 import am2.guis.ArsMagicaGuiIdList;
@@ -82,6 +80,9 @@ public class AMPacketProcessorServer{
 			case AMPacketIDs.INSCRIPTION_TABLE_UPDATE:
 				handleInscriptionTableUpdate(remaining, (EntityPlayerMP)player);
 				break;
+			case AMPacketIDs.CASTER_BLOCK_UPDATE:
+				handleCasterUpdate(remaining, (EntityPlayerMP)player);
+				break;
 			case AMPacketIDs.TK_DISTANCE_SYNC:
 				ExtendedProperties.For((EntityPlayerMP)player).TK_Distance = new AMDataReader(remaining).getFloat();
 				break;
@@ -125,6 +126,22 @@ public class AMPacketProcessorServer{
 				t.printStackTrace();
 			}
 		}
+	}
+
+	private void handleCasterUpdate(byte[] data, EntityPlayerMP player){
+		World world = player.worldObj;
+		AMDataReader rdr = new AMDataReader(data, false);
+		TileEntity te = world.getTileEntity(rdr.getInt(), rdr.getInt(), rdr.getInt());
+		if (te == null || !(te instanceof TileEntityBlockCaster)) return;
+		AMDataWriter writer = new AMDataWriter();
+		writer.add(te.xCoord);
+		writer.add(te.yCoord);
+		writer.add(te.zCoord);
+		writer.add(PowerNodeRegistry.For(world).getPower(((TileEntityBlockCaster)te), PowerTypes.LIGHT));
+		writer.add(PowerNodeRegistry.For(world).getPower(((TileEntityBlockCaster)te), PowerTypes.NEUTRAL));
+		writer.add(PowerNodeRegistry.For(world).getPower(((TileEntityBlockCaster)te), PowerTypes.DARK));
+		AMNetHandler.INSTANCE.sendPacketToClientPlayer(player, AMPacketIDs.CASTER_BLOCK_UPDATE, writer.generate());
+
 	}
 
 	private void handleAffinityActivate(byte[] data, EntityPlayerMP entity){

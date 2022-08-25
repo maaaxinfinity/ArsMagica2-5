@@ -25,6 +25,7 @@ public class ModelLibrary{
 		earthArmor = new ModelEarthGuardianChest();
 		airSled = new ModelAirGuardianHoverball();
 		wardingCandle = new ModelCandle();
+		caster = new modelBlockCaster();
 	}
 
 	public final ModelPlantGuardianSickle sickle = new ModelPlantGuardianSickle();
@@ -41,4 +42,5 @@ public class ModelLibrary{
 	public final ModelAirGuardianHoverball airSled;
 
 	public final ModelCandle wardingCandle;
+	public final modelBlockCaster caster;
 }

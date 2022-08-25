@@ -1,11 +1,13 @@
 package am2.items.renderers;
 
 import am2.api.spell.enums.Affinity;
+import am2.blocks.BlocksCommonProxy;
 import am2.bosses.models.ModelPlantGuardianSickle;
 import am2.items.ItemsCommonProxy;
 import am2.proxy.gui.ModelLibrary;
 import am2.texture.ResourceManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -24,10 +26,12 @@ public class CustomItemRenderer implements IItemRenderer{
 	private static final ResourceLocation earthLocation = new ResourceLocation("arsmagica2", ResourceManager.getMobTexturePath("bosses/earth_guardian.png"));
 	private static final ResourceLocation broomLocation = new ResourceLocation("arsmagica2", ResourceManager.getMobTexturePath("broom.png"));
 	private static final ResourceLocation candleLocation = new ResourceLocation("arsmagica2", ResourceManager.getCustomBlockTexturePath("candle.png"));
+	private static final ResourceLocation casterLocation = new ResourceLocation("arsmagica2", ResourceManager.getCustomBlockTexturePath("blockCaster.png"));
 
 	protected ModelPlantGuardianSickle modelSickle;
 
 	public static final CustomItemRenderer instance = new CustomItemRenderer();
+
 
 	private CustomItemRenderer(){
 		mc = Minecraft.getMinecraft();
@@ -105,6 +109,10 @@ public class CustomItemRenderer implements IItemRenderer{
 			}else if (stack.getItem() == ItemsCommonProxy.wardingCandle){
 				GL11.glRotatef(90, 1, 0, 0);
 				GL11.glTranslatef(0, 0, -3f);
+			}else if (stack.getItem() == Item.getItemFromBlock(BlocksCommonProxy.caster)){
+				GL11.glRotatef(90F, 1, 0, 0);
+				GL11.glTranslatef(0, 0f, -1.5f);
+				GL11.glScaled(0.5, 0.5, 0.5);
 			}
 			scale = 1.6f;
 			break;
@@ -136,6 +144,10 @@ public class CustomItemRenderer implements IItemRenderer{
 			}else if (stack.getItem() == ItemsCommonProxy.wardingCandle){
 				GL11.glRotatef(90F, 1, 0, 0);
 				GL11.glTranslatef(-1f, 0.75f, -3.5f);
+			}else if (stack.getItem() == Item.getItemFromBlock(BlocksCommonProxy.caster)){
+				GL11.glRotatef(90F, 1, 0, 0);
+				GL11.glTranslatef(0.8f, 0.9f, -2.65f);
+				GL11.glScaled(1, 1, 1);
 			}else{
 				GL11.glRotatef(135F, 0, 1, 0);
 				GL11.glTranslatef(-0.55f, -0.35f, -1f);
@@ -167,6 +179,10 @@ public class CustomItemRenderer implements IItemRenderer{
 			}else if (stack.getItem() == ItemsCommonProxy.wardingCandle){
 				GL11.glRotatef(90F, 1, 0, 0);
 				GL11.glTranslatef(-0.3f, -0.75f, -3.5f);
+			}else if (stack.getItem() == Item.getItemFromBlock(BlocksCommonProxy.caster)){
+				GL11.glRotatef(90F, 1, 0, 0);
+				GL11.glTranslatef(0f, -0.9f, -1.6f);
+				GL11.glScaled(0.5, 0.5, 0.5);
 			}else{
 				GL11.glRotatef(60F, 1, 0, 0);
 				GL11.glTranslatef(-0.55f, -0.75f, -1f);
@@ -205,6 +221,10 @@ public class CustomItemRenderer implements IItemRenderer{
 				scale = 2.4f;
 				GL11.glRotatef(90, 1, 0, 0);
 				GL11.glTranslatef(-0.5f, 0, -4);
+			}else if (stack.getItem() == Item.getItemFromBlock(BlocksCommonProxy.caster)){
+				GL11.glRotatef(90F, 1, 0, 0);
+				GL11.glTranslatef(0f, 0.8f, -3.2f);
+				GL11.glScaled(2, 2, 2);
 			}
 		default:
 			break;
@@ -261,6 +281,8 @@ public class CustomItemRenderer implements IItemRenderer{
 			ModelLibrary.instance.fireEars.render(null, 0, 0, 0, 0, 0, 0.0625F);
 		else if (stack.getItem() == ItemsCommonProxy.earthGuardianArmor)
 			ModelLibrary.instance.earthArmor.render(null, 0, 0, 0, 0, 0, 0.0625F);
+		else if (stack.getItem() == Item.getItemFromBlock(BlocksCommonProxy.caster))
+			ModelLibrary.instance.caster.render(null, 0, 0, 0, 0, 0, 0.0625F);
 		else if (stack.getItem() == ItemsCommonProxy.wardingCandle){
 			ModelLibrary.instance.wardingCandle.render(0.0625f);
 		}
@@ -288,6 +310,8 @@ public class CustomItemRenderer implements IItemRenderer{
 			Minecraft.getMinecraft().renderEngine.bindTexture(earthLocation);
 		else if (stack.getItem() == ItemsCommonProxy.wardingCandle)
 			Minecraft.getMinecraft().renderEngine.bindTexture(candleLocation);
+		else if (stack.getItem() == Item.getItemFromBlock(BlocksCommonProxy.caster))
+			Minecraft.getMinecraft().renderEngine.bindTexture(casterLocation);
 	}
 
 }

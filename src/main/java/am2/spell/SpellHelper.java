@@ -264,6 +264,7 @@ public class SpellHelper{
 	}
 
 	public SpellCastResult applyStackStageOnUsing(ItemStack stack, EntityLivingBase caster, EntityLivingBase target, double x, double y, double z, World world, boolean consumeMBR, boolean giveXP, int ticks){
+
 		if (SpellUtils.instance.numStages(stack) == 0){
 			return SpellCastResult.SUCCESS;
 		}
@@ -271,7 +272,6 @@ public class SpellHelper{
 		if (!SpellUtils.instance.spellIsChanneled(stack)){
 			return SpellCastResult.EFFECT_FAILED;
 		}
-
 		return applyStackStage(stack, caster, target, x, y, z, 0, world, consumeMBR, giveXP, ticks);
 	}
 

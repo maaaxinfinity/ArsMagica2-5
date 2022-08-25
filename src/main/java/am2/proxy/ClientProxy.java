@@ -13,6 +13,7 @@ import am2.api.spell.component.interfaces.ISpellComponent;
 import am2.armor.ArmorHelper;
 import am2.armor.infusions.GenericImbuement;
 import am2.blocks.BlocksClientProxy;
+import am2.blocks.BlocksCommonProxy;
 import am2.blocks.renderers.SimpleBlockRenderHandler;
 import am2.blocks.renderers.TechneBlockRenderHandler;
 import am2.blocks.tileentities.TileEntityParticleEmitter;
@@ -54,6 +55,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.client.C03PacketPlayer;
@@ -141,6 +144,8 @@ public class ClientProxy extends CommonProxy{
 
 		MinecraftForgeClient.registerItemRenderer(ItemsCommonProxy.spell, SpellScrollRenderer.instance);
 		MinecraftForgeClient.registerItemRenderer(ItemsCommonProxy.spellBook, SpellScrollRenderer.instance);
+
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlocksCommonProxy.caster), CustomItemRenderer.instance);
 
 		ClientCommandHandler.instance.registerCommand(new ConfigureAMUICommand());
 	}

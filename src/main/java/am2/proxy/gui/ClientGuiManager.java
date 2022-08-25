@@ -25,6 +25,11 @@ public class ClientGuiManager extends ServerGuiManager{
 				return null;
 			}
 			return new GuiEssenceRefiner(player.inventory, (TileEntityEssenceRefiner)te);
+		case ArsMagicaGuiIdList.GUI_CASTER:
+			if (!(te instanceof TileEntityBlockCaster)) {
+				return null;
+			}
+			return new GuiCaster(player.inventory, (TileEntityBlockCaster)te);
 		case ArsMagicaGuiIdList.GUI_SPELL_BOOK:
 			ItemStack bookStack = player.getCurrentEquippedItem();
 			if (bookStack == null || bookStack.getItem() == null || !(bookStack.getItem() instanceof ItemSpellBook)){

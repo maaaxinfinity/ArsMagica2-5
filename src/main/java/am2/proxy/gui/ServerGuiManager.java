@@ -30,6 +30,12 @@ public class ServerGuiManager implements IGuiHandler{
 				return null;
 			}
 			return new ContainerEssenceRefiner(player.inventory, (TileEntityEssenceRefiner)te);
+		case ArsMagicaGuiIdList.GUI_CASTER:
+			if (!(te instanceof TileEntityBlockCaster)) {
+				return null;
+			}
+
+			return new ContainerCaster(player.inventory, (TileEntityBlockCaster)te);
 		case ArsMagicaGuiIdList.GUI_SPELL_BOOK:
 			ItemStack bookStack = player.getCurrentEquippedItem();
 			if (bookStack.getItem() == null || !(bookStack.getItem() instanceof ItemSpellBook)){

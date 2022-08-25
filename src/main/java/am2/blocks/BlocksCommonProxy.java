@@ -1,5 +1,6 @@
 package am2.blocks;
 
+import am2.AMCore;
 import am2.AMCreativeTab;
 import am2.api.blocks.IKeystoneLockable;
 import am2.api.math.AMVector3;
@@ -15,6 +16,7 @@ import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
@@ -41,7 +43,7 @@ public class BlocksCommonProxy{
 	public static Block obelisk;
 	public static Block blackAurem;
 	public static Block celestialPrism;
-	//public static Block caster;
+	public static Block caster;
 	public static Block calefactor;
 	public static BlockKeystoneReceptacle keystoneRecepticle;
 	public static Block astralBarrier;
@@ -59,7 +61,7 @@ public class BlocksCommonProxy{
 	public static BlockGroundRuneSpell spellRune;
 	public static BlockParticleEmitter particleEmitter;
 	public static VinteumTorch vinteumTorch;
-	//public static BlockCasterRune casterRune;
+	public static BlockCasterRune casterRune;
 	public static BlockInscriptionTable inscriptionTable;
 	public static BlockInvisibleUtility invisibleUtility;
 	public static AMFlower aum;
@@ -188,6 +190,9 @@ public class BlocksCommonProxy{
 		blockMageTorch = new BlockMageLight().setUnlocalizedNameAndID("arsmagica2:magetorch").setCreativeTab(blockTab);
 		illusionBlock = (IllusionBlock)new IllusionBlock().setUnlocalizedNameAndID("arsmagica2:illusionBlock").setCreativeTab(blockTab);
 		essenceConduit = new BlockEssenceConduit().setUnlocalizedNameAndID("arsmagica2:essenceconduit").setCreativeTab(blockTab);
+		caster = (new BlockCaster()).setUnlocalizedNameAndID("arsmagica2:blockcaster").setCreativeTab(blockTab);
+		casterRune = (BlockCasterRune)(new BlockCasterRune()).setUnlocalizedNameAndID("arsmagica2:casterRune").setCreativeTab(blockTab);
+
 		obelisk = new BlockEssenceGenerator(BlockEssenceGenerator.NEXUS_STANDARD).setUnlocalizedNameAndID("arsmagica2:obelisk").setCreativeTab(blockTab);
 		calefactor = new BlockCalefactor().setUnlocalizedNameAndID("arsmagica2:calefactor").setCreativeTab(blockTab);
 		keystoneRecepticle = (BlockKeystoneReceptacle)new BlockKeystoneReceptacle().setUnlocalizedNameAndID("arsmagica2:blockkeystonerecepticle").setCreativeTab(blockTab);
@@ -270,6 +275,22 @@ public class BlocksCommonProxy{
 				" C ", " S ", "SSS",
 				Character.valueOf('S'), "stone",
 				Character.valueOf('C'), "gemChimerite"
+		}));
+
+		//caster
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(caster, 1), new Object[]{
+				"SSS", "AVA", "SSS",
+				Character.valueOf('A'), "arcaneAsh",
+				Character.valueOf('S'), "stone",
+				Character.valueOf('V'), "dustVinteum"}));
+
+		//caster rune
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(casterRune, 1), new Object[]{
+				"RRR", "AVA", "SSS",
+				Character.valueOf('A'), "arcaneAsh",
+				Character.valueOf('S'), "stone",
+				Character.valueOf('V'), "dustVinteum",
+				Character.valueOf('R'), ItemsCommonProxy.rune
 		}));
 
 		//summoner
@@ -702,6 +723,8 @@ public class BlocksCommonProxy{
 		registerBlock(essenceConduit, "essenceConduit");
 		registerBlock(obelisk, "obelisk");
 		registerBlock(calefactor, "calefactor");
+		registerBlock(caster, "blockCaster");
+		registerBlock(casterRune, "CasterRune");
 		registerBlock(keystoneRecepticle, "keystoneReceptacle");
 		registerBlock(astralBarrier, "astralBarrier");
 		registerBlock(blackAurem, "blackAurem");
@@ -807,6 +830,8 @@ public class BlocksCommonProxy{
 		GameRegistry.registerTileEntity(TileEntityEssenceRefiner.class, "TileEntityEssenceRefiner");
 		GameRegistry.registerTileEntity(TileEntityEssenceConduit.class, "TileEntityEssenceConduit");
 		GameRegistry.registerTileEntity(TileEntityObelisk.class, "TileEntityObelisk");
+		GameRegistry.registerTileEntity(TileEntityBlockCaster.class, "TileEntityBlockCaster");
+		GameRegistry.registerTileEntity(TileEntityCasterRune.class, "TileEntityCasterRune");
 		GameRegistry.registerTileEntity(TileEntityCalefactor.class, "TileEntityCalefactor");
 		GameRegistry.registerTileEntity(TileEntityKeystoneRecepticle.class, "TileEntityKeystoneRecepticle");
 		GameRegistry.registerTileEntity(TileEntityAstralBarrier.class, "TileEntityAstralBarrier");

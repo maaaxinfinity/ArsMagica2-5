@@ -3,12 +3,10 @@ package am2.network;
 import am2.AMCore;
 import am2.LogHelper;
 import am2.api.power.IPowerNode;
+import am2.api.power.PowerTypes;
 import am2.api.spell.component.interfaces.ISpellModifier;
 import am2.api.spell.enums.SpellModifiers;
-import am2.blocks.tileentities.TileEntityCalefactor;
-import am2.blocks.tileentities.TileEntityCraftingAltar;
-import am2.blocks.tileentities.TileEntityLectern;
-import am2.blocks.tileentities.TileEntityObelisk;
+import am2.blocks.tileentities.*;
 import am2.bosses.BossActions;
 import am2.bosses.IArsMagicaBoss;
 import am2.buffs.BuffList;
@@ -97,6 +95,9 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 			case AMPacketIDs.REQUEST_BETA_PARTICLES:
 				handleRequestBetaParticles(remaining);
 				break;
+			case AMPacketIDs.CASTER_BLOCK_UPDATE:
+				handleCasterUpdate(remaining);
+				break;
 			case AMPacketIDs.SYNC_AIR_CHANGE:
 				handleSyncAir(remaining);
 				break;
@@ -167,6 +168,15 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 				t.printStackTrace();
 			}
 		}
+	}
+
+	private void handleCasterUpdate(byte[] remaining){
+		AMDataReader rdr = new AMDataReader(remaining, false);
+		TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(rdr.getInt(), rdr.getInt(), rdr.getInt());
+		if (te == null || !(te instanceof TileEntityBlockCaster)) return;
+		PowerNodeRegistry.For(Minecraft.getMinecraft().theWorld).setPower(((TileEntityBlockCaster)te), PowerTypes.LIGHT, rdr.getFloat());
+		PowerNodeRegistry.For(Minecraft.getMinecraft().theWorld).setPower(((TileEntityBlockCaster)te), PowerTypes.NEUTRAL, rdr.getFloat());
+		PowerNodeRegistry.For(Minecraft.getMinecraft().theWorld).setPower(((TileEntityBlockCaster)te), PowerTypes.DARK, rdr.getFloat());
 	}
 
 	private void handleObeliskData(byte[] remaining){
