@@ -6,6 +6,7 @@ import am2.api.items.KeystoneAccessType;
 import am2.blocks.tileentities.TileEntityKeystoneRecepticle;
 import am2.guis.ArsMagicaGuiIdList;
 import am2.items.ItemKeystone;
+import am2.items.ItemsCommonProxy;
 import am2.texture.ResourceManager;
 import am2.utility.KeystoneUtilities;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
@@ -63,7 +64,13 @@ public class BlockKeystoneReceptacle extends AMSpecialRenderPoweredBlock{
 				if (rightClickItem != null && rightClickItem.getItem() instanceof ItemKeystone){
 					key = ((ItemKeystone)rightClickItem.getItem()).getKey(rightClickItem);
 				}
-				receptacle.setActive(key);
+
+				if (par5EntityPlayer.inventory.getCurrentItem() != null && par5EntityPlayer.inventory.getCurrentItem().getItem() == ItemsCommonProxy.evilBook) {
+					receptacle.setActive(key, true);
+				} else {
+					receptacle.setActive(key, false);
+				}
+
 			}else if (receptacle.isActive()){
 				receptacle.deactivate();
 			}

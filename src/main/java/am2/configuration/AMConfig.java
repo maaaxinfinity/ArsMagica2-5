@@ -192,6 +192,9 @@ public class AMConfig extends Configuration{
 	private int everstoneRepairRate;
 
 	private int witchwoodForestID;
+	private int mmfBiomeID;
+
+	private int mmfDimensionID;
 
 	private float FrictionCoefficient;
 
@@ -342,6 +345,8 @@ public class AMConfig extends Configuration{
 		showHudBars = get(CATEGORY_UI, KEY_ShowHUDBars, true).getBoolean(true);
 
 		witchwoodForestID = get(CATEGORY_GENERAL, KEY_WitchwoodForestBiomeID, 100, "The biome ID for Witchwood Forests. Change this if you run into issues with other mods that add biomes.").getInt();
+		mmfBiomeID = get(CATEGORY_GENERAL, KEY_MMFBiomeID, 110, "The biome ID for Moo Moo Farm. Change this if you run into issues with other mods that add biomes.").getInt();
+		mmfDimensionID = get(CATEGORY_GENERAL, KEY_MMFDimensionID, -31, "The dimension ID for Moo Moo Farm. Change this if you run into issues with other mods that add dimensions.").getInt();
 		witchwoodLeafParticles = get(CATEGORY_GENERAL, KEY_witchwoodLeavesFall, true, "Disable this if you experience low FPS in witchwood forests").getBoolean(true);
 		enableWitchwoodForest = get(CATEGORY_GENERAL, KEY_EnableWitchwoodForest, true, "Disable this if you prefer the witchwood forest to not generate").getBoolean(true);
 		witchwoodForestRarity = get(CATEGORY_GENERAL, KEY_WitchwoodForestRarity, 6, "Sets how rare witchwood forests are.  Lower is more rare.").getInt();
@@ -477,6 +482,11 @@ public class AMConfig extends Configuration{
 	public boolean FullGFX(){
 		return GFXLevel == 2;
 	}
+
+
+	public int getMMFBiomeID(){ return mmfBiomeID; }
+
+	public int getMMFDimensionID(){ return mmfDimensionID; }
 
 	public boolean LowGFX(){
 		return GFXLevel == 1;
@@ -1156,4 +1166,5 @@ public class AMConfig extends Configuration{
 	public void setManaCap(double cap){
 		this.manaCap = cap;
 	}
+
 }

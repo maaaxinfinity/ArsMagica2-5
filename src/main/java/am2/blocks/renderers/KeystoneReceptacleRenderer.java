@@ -1,5 +1,6 @@
 package am2.blocks.renderers;
 
+import am2.AMCore;
 import am2.blocks.tileentities.TileEntityKeystoneRecepticle;
 import am2.guis.AMGuiIcons;
 import am2.models.ModelKeystoneRecepticle;
@@ -71,9 +72,19 @@ public class KeystoneReceptacleRenderer extends TileEntitySpecialRenderer{
 			Tessellator tessellator = Tessellator.instance;
 
 			GL11.glRotatef(j, 0.0F, 1.0F, 0.0F); //rotate based on metadata
+			boolean redPortal = tile.isRedPortal();
+
+			if (tile.getWorldObj().provider.dimensionId == AMCore.config.getMMFDimensionID()) {
+				redPortal = !redPortal;
+			}
+
+			if (redPortal) {
+				GL11.glColor4f(1.0F, 0.0F, 0.0F, 1.0F);
+			} else {
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			}
 
 			//apply portal colors here
-			GL11.glColor4f(1, 1, 1, 1);
 
 			renderArsMagicaEffect(tessellator);
 

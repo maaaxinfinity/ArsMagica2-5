@@ -10,6 +10,7 @@ import am2.blocks.BlocksCommonProxy;
 import am2.buffs.BuffList;
 import am2.multiblock.IMultiblockStructureController;
 import am2.power.PowerNodeRegistry;
+import am2.utility.AMTeleporter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -37,6 +38,7 @@ public class TileEntityKeystoneRecepticle extends TileEntityAMPower implements I
 	private boolean isActive;
 	private long key;
 	private final int boltType = 2;
+	private boolean redPortal = false;
 	private int surroundingCheckTicks = 20;
 
 	private final MultiblockStructureDefinition primary = new MultiblockStructureDefinition("gateways_alt");
@@ -132,9 +134,10 @@ public class TileEntityKeystoneRecepticle extends TileEntityAMPower implements I
 		super.invalidate();
 	}
 
-	public void setActive(long key){
+	public void setActive(long key, boolean redPortal){
 		this.isActive = true;
 		this.key = key;
+		this.redPortal = redPortal;
 		int myMeta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
 		if (PowerNodeRegistry.For(worldObj).getHighestPowerType(this) == PowerTypes.DARK){
@@ -238,64 +241,74 @@ public class TileEntityKeystoneRecepticle extends TileEntityAMPower implements I
 
 	private void doTeleport(Entity entity){
 		deactivate();
-
-		AMVector3 newLocation = AMCore.instance.proxy.blocks.getNextKeystonePortalLocation(this.worldObj, xCoord, yCoord, zCoord, false, this.key);
-		AMVector3 myLocation = new AMVector3(xCoord, yCoord, zCoord);
-
-		double distance = myLocation.distanceTo(newLocation);
-		float essenceCost = (float)(Math.pow(distance, 2) * 0.00175f);
-
-		int meta = worldObj.getBlockMetadata((int)newLocation.x, (int)newLocation.y, (int)newLocation.z);
-
-		if (AMCore.config.getHazardousGateways()){
-			//uh-oh!  Not enough power!  The teleporter will still send you though, but I wonder where...
-			float charge = PowerNodeRegistry.For(this.worldObj).getHighestPower(this);
-			if (charge < essenceCost){
-				essenceCost = charge;
-				//get the distance that our charge *will* take us towards the next point
-				double distanceWeCanGo = MathHelper.sqrt_double(charge / 0.00175);
-				//get the angle between the 2 vectors
-				double deltaZ = newLocation.z - myLocation.z;
-				double deltaX = newLocation.x - myLocation.x;
-				double angleH = Math.atan2(deltaZ, deltaX);
-				//interpolate the distance at that angle - this is the new position
-				double newX = myLocation.x + (Math.cos(angleH) * distanceWeCanGo);
-				double newZ = myLocation.z + (Math.sin(angleH) * distanceWeCanGo);
-				double newY = myLocation.y;
-
-				while (worldObj.isAirBlock((int)newX, (int)newY, (int)newZ)){
-					newY++;
+		if (this.isRedPortal()) {
+			if (!this.worldObj.isRemote && entity instanceof EntityPlayerMP) {
+				EntityPlayerMP player = (EntityPlayerMP)entity;
+				if (player.dimension != AMCore.config.getMMFDimensionID()) {
+					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, AMCore.config.getMMFDimensionID(), new AMTeleporter(player.mcServer.worldServerForDimension(AMCore.config.getMMFDimensionID())));
+				} else {
+					player.mcServer.getConfigurationManager().transferPlayerToDimension(player, 0, new AMTeleporter(player.mcServer.worldServerForDimension(0)));
 				}
-
-				newLocation = new AMVector3(newX, newY, newZ);
 			}
-		}else{
+		} else{
+			AMVector3 newLocation = AMCore.instance.proxy.blocks.getNextKeystonePortalLocation(this.worldObj, xCoord, yCoord, zCoord, false, this.key);
+			AMVector3 myLocation = new AMVector3(xCoord, yCoord, zCoord);
+
+			double distance = myLocation.distanceTo(newLocation);
+			float essenceCost = (float)(Math.pow(distance, 2) * 0.00175f);
+
+			int meta = worldObj.getBlockMetadata((int)newLocation.x, (int)newLocation.y, (int)newLocation.z);
+
+			if (AMCore.config.getHazardousGateways()){
+				//uh-oh!  Not enough power!  The teleporter will still send you though, but I wonder where...
+				float charge = PowerNodeRegistry.For(this.worldObj).getHighestPower(this);
+				if (charge < essenceCost){
+					essenceCost = charge;
+					//get the distance that our charge *will* take us towards the next point
+					double distanceWeCanGo = MathHelper.sqrt_double(charge / 0.00175);
+					//get the angle between the 2 vectors
+					double deltaZ = newLocation.z - myLocation.z;
+					double deltaX = newLocation.x - myLocation.x;
+					double angleH = Math.atan2(deltaZ, deltaX);
+					//interpolate the distance at that angle - this is the new position
+					double newX = myLocation.x + (Math.cos(angleH) * distanceWeCanGo);
+					double newZ = myLocation.z + (Math.sin(angleH) * distanceWeCanGo);
+					double newY = myLocation.y;
+
+					while (worldObj.isAirBlock((int)newX, (int)newY, (int)newZ)){
+						newY++;
+					}
+
+					newLocation = new AMVector3(newX, newY, newZ);
+				}
+			}else{
+				this.worldObj.playSoundEffect(newLocation.x, newLocation.y, newLocation.z, "mob.endermen.portal", 1.0F, 1.0F);
+				return;
+			}
+
+
+			float newRotation = 0;
+			switch (meta){
+			case 0:
+				newRotation = 270;
+				break;
+			case 1:
+				newRotation = 180;
+				break;
+			case 2:
+				newRotation = 90;
+				break;
+			case 3:
+				newRotation = 0;
+				break;
+			}
+			entity.setPositionAndRotation(newLocation.x + 0.5, newLocation.y - entity.height, newLocation.z + 0.5, newRotation, entity.rotationPitch);
+
+			PowerNodeRegistry.For(this.worldObj).consumePower(this, PowerNodeRegistry.For(this.worldObj).getHighestPowerType(this), essenceCost);
+
+			this.worldObj.playSoundEffect(myLocation.x, myLocation.y, myLocation.z, "mob.endermen.portal", 1.0F, 1.0F);
 			this.worldObj.playSoundEffect(newLocation.x, newLocation.y, newLocation.z, "mob.endermen.portal", 1.0F, 1.0F);
-			return;
 		}
-
-
-		float newRotation = 0;
-		switch (meta){
-		case 0:
-			newRotation = 270;
-			break;
-		case 1:
-			newRotation = 180;
-			break;
-		case 2:
-			newRotation = 90;
-			break;
-		case 3:
-			newRotation = 0;
-			break;
-		}
-		entity.setPositionAndRotation(newLocation.x + 0.5, newLocation.y - entity.height, newLocation.z + 0.5, newRotation, entity.rotationPitch);
-
-		PowerNodeRegistry.For(this.worldObj).consumePower(this, PowerNodeRegistry.For(this.worldObj).getHighestPowerType(this), essenceCost);
-
-		this.worldObj.playSoundEffect(myLocation.x, myLocation.y, myLocation.z, "mob.endermen.portal", 1.0F, 1.0F);
-		this.worldObj.playSoundEffect(newLocation.x, newLocation.y, newLocation.z, "mob.endermen.portal", 1.0F, 1.0F);
 	}
 
 	@Override
@@ -408,6 +421,7 @@ public class TileEntityKeystoneRecepticle extends TileEntityAMPower implements I
 		AMCore.instance.proxy.blocks.registerKeystonePortal(xCoord, yCoord, zCoord, nbttagcompound.getInteger("keystone_receptacle_dimension_id"));
 
 		this.isActive = nbttagcompound.getBoolean("isActive");
+		this.redPortal = nbttagcompound.getBoolean("redPortal");
 	}
 
 	@Override
@@ -427,6 +441,7 @@ public class TileEntityKeystoneRecepticle extends TileEntityAMPower implements I
 		nbttagcompound.setInteger("keystone_receptacle_dimension_id", worldObj.provider.dimensionId);
 		nbttagcompound.setTag("KeystoneRecepticleInventory", nbttaglist);
 		nbttagcompound.setBoolean("isActive", this.isActive);
+		nbttagcompound.setBoolean("redPortal", this.redPortal);
 	}
 
 	@Override
@@ -450,6 +465,10 @@ public class TileEntityKeystoneRecepticle extends TileEntityAMPower implements I
 	@Override
 	public boolean hasCustomInventoryName(){
 		return false;
+	}
+
+	public boolean isRedPortal() {
+		return this.redPortal;
 	}
 
 	@Override

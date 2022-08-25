@@ -28,6 +28,7 @@ import am2.spell.SkillTreeManager;
 import am2.spell.SpellUtils;
 import am2.utility.KeystoneUtilities;
 import am2.worldgen.BiomeWitchwoodForest;
+import am2.worldgen.SCLWorldProvider;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -45,6 +46,7 @@ import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
 import net.minecraftforge.common.BiomeManager.BiomeType;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -105,6 +107,9 @@ public class AMCore{
 		proxy.init();
 
 		initAPI();
+
+		DimensionManager.registerProviderType(config.getMMFDimensionID(), SCLWorldProvider.class, false);
+		DimensionManager.registerDimension(config.getMMFDimensionID(), config.getMMFDimensionID());
 
 		if (AMCore.config.getEnableWitchwoodForest()){
 			BiomeDictionary.registerBiomeType(BiomeWitchwoodForest.instance, Type.FOREST, Type.MAGICAL);
