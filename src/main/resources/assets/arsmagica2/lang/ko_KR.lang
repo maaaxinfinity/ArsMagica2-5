@@ -685,7 +685,9 @@ achievement.componentUnlock=Discovered Spell Part
 
 Legendary Mana Restoration.postfix=Legendary Mana Potion
 Epic Mana Restoration.postfix=Epic Mana Potion
-Greater Mana Restoration.postfix=Greater Mana Potionitem.arsmagica2:spellSealedDoor.name=Spell-Sealed Door
+Greater Mana Restoration.postfix=Greater Mana Potion
+item.arsmagica2:spellSealedDoor.name=Spell-Sealed Door
+tile.arsmagica2:entropic_enervator.name=Entropic Enervator
 tile.arsmagica2:liquidEssence.name=Liquid Etherium
 tile.arsmagica2:spell_sealed_door.name=Spell-Sealed Door
 fluid.liquidEssence=Liquid Etherium

@@ -95,6 +95,7 @@ public class BlocksCommonProxy{
 	public static BlockArcaneDeconstructor arcaneDeconstructor;
 	public static BlockOtherworldAura otherworldAura;
 	public static BlockSpellSealedDoor spellSealedDoor;
+	public static BlockEntropicEvervator entropicEvervator;
 
 	//--------------------------------------------------------------
 	// End Blocks
@@ -246,6 +247,7 @@ public class BlocksCommonProxy{
 		arcaneDeconstructor = (BlockArcaneDeconstructor)new BlockArcaneDeconstructor().setBlockName("arsmagica2:arcane_deconstructor").setCreativeTab(blockTab);
 		otherworldAura = (BlockOtherworldAura)new BlockOtherworldAura().setBlockName("arsmagica2:otherworld_aura").setCreativeTab(blockTab);
 		spellSealedDoor = (BlockSpellSealedDoor)new BlockSpellSealedDoor().setBlockName("arsmagica2:spell_sealed_door");
+		entropicEvervator = (BlockEntropicEvervator)new BlockEntropicEvervator().setBlockName("arsmagica2:entropic_enervator").setCreativeTab(blockTab);
 
 		blockTab.setIconItemIndex(new ItemBlock(manaBattery));
 	}
@@ -641,6 +643,17 @@ public class BlocksCommonProxy{
 				Character.valueOf('P'), Blocks.enchanting_table
 		});
 
+		//Entropic Enervator
+		GameRegistry.addRecipe(new ItemStack(entropicEvervator), new Object[]{
+				"GCG",
+				"ORO",
+				"OOO",
+				Character.valueOf('G'), BlocksCommonProxy.goldInlay,
+				Character.valueOf('C'), ItemsCommonProxy.deficitCrystal,
+				Character.valueOf('O'), Blocks.obsidian,
+				Character.valueOf('R'), Items.redstone
+		});
+
 		//storage blocks
 		createStorageBlockRecipe(new ItemStack(AMOres, 1, AMOres.META_MOONSTONE_BLOCK), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONE));
 		createStorageBlockRecipe(new ItemStack(AMOres, 1, AMOres.META_VINTEUM_BLOCK), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_VINTEUMDUST));
@@ -773,6 +786,7 @@ public class BlocksCommonProxy{
 		registerBlock(wakebloom, "wakebloom");
 		registerBlock(otherworldAura, "otherworldAura");
 		registerBlock(spellSealedDoor, "spellSealedDoor");
+		registerBlock(entropicEvervator, "entropicEvervator");
 
 		//if you need a special item placer for the block, set it here instead of registering the block normally above
 		/*Item.itemsList[BlocksCommonProxy.witchwoodSingleSlab.blockID] = new ItemSlab(BlocksCommonProxy.witchwoodSingleSlab.blockID - 256, BlocksCommonProxy.witchwoodSingleSlab, BlocksCommonProxy.witchwoodDoubleSlab, false);
@@ -863,6 +877,7 @@ public class BlocksCommonProxy{
 		GameRegistry.registerTileEntity(TileEntityCrystalMarkerSpellExport.class, "TileEntityCrystalMarkerSpellExport");
 		GameRegistry.registerTileEntity(TileEntityInertSpawner.class, "TileEntityInertSpawner");
 		GameRegistry.registerTileEntity(TileEntitySpellSealedDoor.class, "TileEntitySpellSealedDoor");
+		GameRegistry.registerTileEntity(TileEntityEntropicEnervator.class, "TileEntityEntropicEnervator");
 	}
 
 	public void registerRenderInformation(){

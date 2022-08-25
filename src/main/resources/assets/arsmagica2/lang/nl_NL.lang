@@ -534,6 +534,7 @@ item.arsmagica2:playerjournal.name=Journal
 item.arsmagica2:rawEssence.name=Etherium
 item.arsmagica2:runebag.name=Rune Bag
 item.arsmagica2:spellSealedDoor.name=Spell-Sealed Door
+tile.arsmagica2:entropic_enervator.name=Entropic Enervator
 item.arsmagica2:warding_candle.name=Warding Candle
 item.arsmagica2:wizardChalk.name=Wizard's Chalk
 tile.arsmagica2:arcane_deconstructor.name=Arcane Deconstructor

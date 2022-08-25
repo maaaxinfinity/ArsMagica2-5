@@ -156,6 +156,11 @@ public class ServerGuiManager implements IGuiHandler{
 				return null;
 			}
 			return new ContainerSpellSealedDoor(player.inventory, (TileEntitySpellSealedDoor)te);
+		case ArsMagicaGuiIdList.GUI_ENERVATOR:
+			if (!(te instanceof TileEntityEntropicEnervator)){
+				return null;
+			}
+			return new ContainerEntropicEnervator((TileEntityEntropicEnervator)te, player);
 		}
 		return null;
 	}

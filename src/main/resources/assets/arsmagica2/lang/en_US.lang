@@ -136,6 +136,7 @@ item.arsmagica2:sigil_packedearth=Packed Earth
 item.arsmagica2:sigil_progeny=Progeny
 item.arsmagica2:spellBook.name=Spell Book
 item.arsmagica2:spellSealedDoor.name=Spell-Sealed Door
+tile.arsmagica2:entropic_enervator.name=Entropic Enervator
 item.arsmagica2:spell_parchment.name=Spell Parchment
 item.arsmagica2:spell_staff_journeyman.name=Journeyman Spell Staff
 item.arsmagica2:spell_staff_magitech.name=Magitech's Staff

@@ -136,6 +136,7 @@ item.arsmagica2:sigil_packedearth=der verpackten Erde
 item.arsmagica2:sigil_progeny=der Nachkommen
 item.arsmagica2:spellBook.name=Zauberbuch
 item.arsmagica2:spellSealedDoor.name=Durch Zauberspruch verschlossene Tür
+tile.arsmagica2:entropic_enervator.name=Entropischer Enervator
 item.arsmagica2:spell_parchment.name=Schriftrolle
 item.arsmagica2:spell_staff_journeyman.name=Zauberstab des Gesellen
 item.arsmagica2:spell_staff_magitech.name=Zauberstab des Magitechnikers

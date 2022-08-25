@@ -77,6 +77,7 @@ import java.util.LinkedList;
 public class ClientProxy extends CommonProxy{
 	public static SimpleBlockRenderHandler simpleBlockRenderHandler;
 	public static TechneBlockRenderHandler techneBlockRenderHandler;
+	public static int rendTimeRemaining;
 	private ClientTickHandler clientTickHandler;
 
 	public static HashMap<PowerTypes, ArrayList<LinkedList<AMVector3>>> powerPathVisuals;

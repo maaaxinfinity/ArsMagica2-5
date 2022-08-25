@@ -677,6 +677,7 @@ item.arsmagica2:inscup_2.name=Inscription Table Tier 2 Upgrade
 item.arsmagica2:inscup_3.name=Inscription Table Tier 3 Upgrade
 item.arsmagica2:mana_martini.name=Mana Martini
 item.arsmagica2:spellSealedDoor.name=Spell-Sealed Door
+tile.arsmagica2:entropic_enervator.name=Entropic Enervator
 tile.arsmagica2:crystalMarker.cm_final.name=Final Export Crystal
 tile.arsmagica2:crystalMarker.cm_spellExport.name=Spell Export Crystal
 tile.arsmagica2:liquidEssence.name=Liquid Etherium

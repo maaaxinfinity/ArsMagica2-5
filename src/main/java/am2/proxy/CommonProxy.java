@@ -38,6 +38,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -124,6 +126,26 @@ public class CommonProxy{
 
 		ObeliskFuelHelper.instance.registerFuelType(new ItemStack(ItemsCommonProxy.itemOre, 0, ItemsCommonProxy.itemOre.META_VINTEUMDUST), 200);
 		ObeliskFuelHelper.instance.registerFuelType(new ItemStack(ItemsCommonProxy.itemAMBucket, 0, Short.MAX_VALUE), 2000);
+
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Blocks.stonebrick), new ItemStack(Blocks.stonebrick, 1, 2));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.bone), new ItemStack(Items.dye, 1, 15));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Blocks.stone), new ItemStack(Blocks.cobblestone));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Blocks.cobblestone), new ItemStack(Blocks.gravel));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Blocks.sandstone), new ItemStack(Blocks.sand));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Blocks.web), new ItemStack(Items.string));
+
+		// broken records
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_13), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_blocks), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_cat), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_chirp), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_far), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_mall), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_mellohi), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_stal), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_strad), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_wait), new ItemStack(Items.record_11));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_ward), new ItemStack(Items.record_11));
 
 		registerInfusions();
 	}

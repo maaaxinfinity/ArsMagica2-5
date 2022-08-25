@@ -150,6 +150,11 @@ public class ClientGuiManager extends ServerGuiManager{
 				return null;
 			}
 			return new GuiSpellSealedDoor(player.inventory, (TileEntitySpellSealedDoor)te);
+		case ArsMagicaGuiIdList.GUI_ENERVATOR:
+			if (!(te instanceof TileEntityEntropicEnervator)){
+				return null;
+			}
+			return new GuiEntropicEnervator((TileEntityEntropicEnervator)te, player);
 		}
 		return null;
 	}

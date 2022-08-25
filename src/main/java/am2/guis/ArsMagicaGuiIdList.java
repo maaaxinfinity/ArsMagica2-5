@@ -26,4 +26,5 @@ public class ArsMagicaGuiIdList{
 	public static final int GUI_ARCANE_DECONSTRUCTOR = 24;
 	public static final int GUI_INERT_SPAWNER = 25;
 	public static final int GUI_SPELL_SEALED_DOOR = 26;
+	public static final int GUI_ENERVATOR = 27;
 }

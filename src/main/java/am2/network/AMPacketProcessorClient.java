@@ -98,6 +98,9 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 			case AMPacketIDs.CASTER_BLOCK_UPDATE:
 				handleCasterUpdate(remaining);
 				break;
+			case AMPacketIDs.ENERVATOR_BLOCK_UPDATE:
+				handleEnervatorUpdate(remaining);
+				break;
 			case AMPacketIDs.SYNC_AIR_CHANGE:
 				handleSyncAir(remaining);
 				break;
@@ -168,6 +171,13 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 				t.printStackTrace();
 			}
 		}
+	}
+
+	private void handleEnervatorUpdate(byte[] remaining){
+		AMDataReader rdr = new AMDataReader(remaining, false);
+		TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(rdr.getInt(), rdr.getInt(), rdr.getInt());
+		if (te == null || !(te instanceof TileEntityEntropicEnervator)) return;
+		te.readFromNBT(rdr.getNBTTagCompound());
 	}
 
 	private void handleCasterUpdate(byte[] remaining){

@@ -136,6 +136,7 @@ item.arsmagica2:sigil_packedearth=壅塞大地
 item.arsmagica2:sigil_progeny=后裔
 item.arsmagica2:spellBook.name=法术书
 item.arsmagica2:spellSealedDoor.name=咒封之门
+tile.arsmagica2:entropic_enervator.name=熵能器
 item.arsmagica2:spell_parchment.name=法术卷轴
 item.arsmagica2:spell_staff_journeyman.name=学徒魔杖
 item.arsmagica2:spell_staff_magitech.name=奥术魔杖
