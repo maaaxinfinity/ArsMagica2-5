@@ -138,6 +138,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("LightningDamage"), 255, 135, SkillTrees.Offense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("FireDamage"));
 		RegisterPart(SkillManager.instance.getSkill("Ignition"), 165, 135, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("FireDamage"));
 		RegisterPart(SkillManager.instance.getSkill("Forge"), 120, 135, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Ignition"));
+		RegisterPart(SkillManager.instance.getSkill("MeltArmor"), 120, 180, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Forge"));
 
 		RegisterPart(SkillManager.instance.getSkill("Contingency_Fire"), 165, 180, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Ignition"));
 
@@ -151,7 +152,9 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Freeze"), 345, 180, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("FrostDamage"));
 		RegisterPart(SkillManager.instance.getSkill("Knockback"), 390, 180, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("MagicDamage"));
 
-		RegisterPart(SkillManager.instance.getSkill("Solar"), 210, 225, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Blind"));
+		RegisterPart(SkillManager.instance.getSkill("Nauseate"), 210, 225, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Blind"));
+		RegisterPart(SkillManager.instance.getSkill("ScrambleSynapses"), 210, 270, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Nauseate"));
+		RegisterPart(SkillManager.instance.getSkill("Solar"), 210, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("ScrambleSynapses"));
 
 		RegisterPart(SkillManager.instance.getSkill("Storm"), 255, 225, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("LightningDamage"));
 		RegisterPart(SkillManager.instance.getSkill("AstralDistortion"), 367, 215, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("MagicDamage"), SkillManager.instance.getSkill("FrostDamage"));

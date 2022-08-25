@@ -605,8 +605,10 @@ public class AMEventHandler{
 			return;
 		}
 
-		if (event.entityLiving.isPotionActive(BuffList.magicShield))
-			event.ammount *= 0.25f;
+		if (event.entityLiving.isPotionActive(BuffList.magicShield)){
+			event.ammount *= 0.5f;
+			event.ammount *= (1 / (event.entityLiving.getActivePotionEffect(BuffList.magicShield).getAmplifier() + 1));
+		}
 
 		if (event.entityLiving.isPotionActive(BuffList.manaShield)){
 			float manaToTake = Math.min(ExtendedProperties.For(event.entityLiving).getCurrentMana(), event.ammount * 250f);
