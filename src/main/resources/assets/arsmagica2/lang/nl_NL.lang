@@ -733,3 +733,4 @@ Epic Mana Restoration.postfix=Epic Mana Potion
 Greater Mana Restoration.postfix=Greater Mana Potion
 Legendary Mana Restoration.postfix=Legendary Mana Potionitem.arsmagica2:FlickerFocusPrefix=Flicker Focus: %s
 am2.gui.EssenceRefiner=Essence Refiner
+am2.gui.EntropicEnervator=Entropic Enervator

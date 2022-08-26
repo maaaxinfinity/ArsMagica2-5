@@ -534,6 +534,7 @@ key.ToggleManaDisplay=Toggle mana display
 
 #guis
 am2.gui.EssenceRefiner=Essence Refiner
+am2.gui.EntropicEnervator=Entropic Enervator
 am2.gui.Affinity=Affinity
 am2.gui.Defense=Defense
 am2.gui.Offense=Offense

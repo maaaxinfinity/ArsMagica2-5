@@ -17,6 +17,10 @@ public class EnervatorRecipeHelper{
 		recipes.put(from.copy(), to);
 	}
 
+	public HashMap getRecipes() {
+		return recipes;
+	}
+
 	public ItemStack getRecipe(ItemStack stack){
 		if (stack == null)
 			return null;

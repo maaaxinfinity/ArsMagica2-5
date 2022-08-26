@@ -24,6 +24,8 @@ public class NEIAM2Config implements IConfigureNEI {
 	public void loadConfig() {
 		API.registerRecipeHandler(new RecipeHandlerEssence());
 		API.registerUsageHandler(new RecipeHandlerEssence());
+		API.registerRecipeHandler(new RecipeHandlerEnervator());
+		API.registerUsageHandler(new RecipeHandlerEnervator());
 	}
 
 }

@@ -32,6 +32,7 @@ public class RecipeHandlerEssence extends TemplateRecipeHandler {
 		public CachedRefinerRecipe(RecipeArsMagica recipe) {
 			setIngredients(recipe.getRecipeItems());
 			output = new PositionedStack(recipe.getOutput(), 138, 98);
+			inputs.add(new PositionedStack(new ItemStack(BlocksCommonProxy.essenceRefiner), 18, 3));
 		}
 
 		public void setIngredients(ItemStack[] inputs) {
@@ -93,7 +94,7 @@ public class RecipeHandlerEssence extends TemplateRecipeHandler {
 
 	@Override
 	public void loadTransferRects() {
-		transferRects.add(new RecipeTransferRect(new Rectangle(72, 54, 18, 18), getRecipeID()));
+		transferRects.add(new RecipeTransferRect(new Rectangle(18, 3, 18, 18), getRecipeID()));
 	}
 
 	@Override

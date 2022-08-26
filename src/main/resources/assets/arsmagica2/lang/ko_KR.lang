@@ -679,7 +679,7 @@ am2.affinity.reflexes=Lightning Reflexes
 am2.affinity.fulmination=Fulmination
 am2.affinity.thunderpunch=Thunderpunch
 am2.affinity.shortcircuit=Short Circuit
- 
+
 achievement.compendiumData=New Entry Unlocked
 achievement.componentUnlock=Discovered Spell Part
 
@@ -706,6 +706,7 @@ key.SpellBookNext=Spell book, Next
 key.SpellBookPrev=Spell book, Previous
 key.ToggleManaDisplay=Toggle mana display
 am2.gui.EssenceRefiner=Essence Refiner
+am2.gui.EntropicEnervator=Entropic Enervator
 death.attack.am2.backfire.player=%1$s's spell backfired whilst fighting %2$s
 death.attack.am2.backfire=%s's spell backfired
 death.attack.am2.darkNexus.player=%1$s's life force was consumed whilst fighting %2$s
