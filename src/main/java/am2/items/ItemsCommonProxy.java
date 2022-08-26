@@ -10,6 +10,12 @@ import am2.blocks.BlocksCommonProxy;
 import am2.blocks.tileentities.flickers.FlickerOperatorRegistry;
 import am2.enchantments.AMEnchantmentHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -17,12 +23,15 @@ import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class ItemsCommonProxy{
@@ -134,10 +143,10 @@ public class ItemsCommonProxy{
 	public static Item battlemageLeggings;
 	public static Item battlemageBoots;
 
-	/*public static Item archmageHood;
+	public static Item archmageHood;
 	public static Item archmageArmor;
 	public static Item archmageLeggings;
-	public static Item archmageBoots;*/
+	public static Item archmageBoots;
 
 	//bound items
 	public static Item BoundHoe;
@@ -202,10 +211,20 @@ public class ItemsCommonProxy{
 		battlemageArmor = (new AMArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BATTLEMAGE, ArmorHelper.getArmorRenderIndex("battlemage"), 1)).setUnlocalizedAndTextureName("arsmagica2:chest_battlemage").setCreativeTab(itemTab);
 		battlemageLeggings = (new AMArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BATTLEMAGE, ArmorHelper.getArmorRenderIndex("battlemage"), 2)).setUnlocalizedAndTextureName("arsmagica2:legs_battlemage").setCreativeTab(itemTab);
 		battlemageBoots = (new AMArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BATTLEMAGE, ArmorHelper.getArmorRenderIndex("battlemage"), 3)).setUnlocalizedAndTextureName("arsmagica2:boots_battlemage").setCreativeTab(itemTab);
-		//archmageHood = (new ArsMagicaItemArmor(AMCore.config.getConfigurableItemID("archmage_hood", 20037), ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 0)).setUnlocalizedAndTextureName("arsmagica2:helmet_archmage").setCreativeTab(itemTab);
-		//archmageArmor = (new ArsMagicaItemArmor(AMCore.config.getConfigurableItemID("archmage_chest", 20038), ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 1)).setUnlocalizedAndTextureName("arsmagica2:chest_archmage").setCreativeTab(itemTab);
-		//archmageLeggings = (new ArsMagicaItemArmor(AMCore.config.getConfigurableItemID("archmage_leggings", 20039), ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 2)).setUnlocalizedAndTextureName("arsmagica2:legs_archmage").setCreativeTab(itemTab);
-		//archmageBoots = (new ArsMagicaItemArmor(AMCore.config.getConfigurableItemID("archmage_boots", 20040), ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 3)).setUnlocalizedAndTextureName("arsmagica2:boots_archmage").setCreativeTab(itemTab);
+		archmageHood = (new AMArmor(ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 0)).setUnlocalizedAndTextureName("arsmagica2:helmet_archmage").setCreativeTab(itemTab).setMaxDamage(0);
+		archmageArmor = new AMArmor(ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 1) {
+			public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack){
+				if (player.ticksExisted % 20 == 0 && player instanceof EntityLivingBase){
+					float abs = ((EntityLivingBase)player).getAbsorptionAmount();
+					if (abs < 38){ // 2 rows of hearts
+						abs++;
+						if (!world.isRemote) ((EntityLivingBase)player).setAbsorptionAmount(abs);
+					}
+				}
+			}
+		}.setUnlocalizedAndTextureName("arsmagica2:chest_archmage").setCreativeTab(itemTab).setMaxDamage(0);
+		archmageLeggings = (new AMArmor( ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 2)).setUnlocalizedAndTextureName("arsmagica2:legs_archmage").setCreativeTab(itemTab).setMaxDamage(0);
+		archmageBoots = (new AMArmor(ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 3)).setUnlocalizedAndTextureName("arsmagica2:boots_archmage").setCreativeTab(itemTab).setMaxDamage(0);
 		wizardChalk = new ItemChalk().setUnlocalizedAndTextureName("arsmagica2:wizardChalk").setCreativeTab(itemTab);
 		lesserFocus = (ItemFocusLesser)new ItemFocusLesser().setUnlocalizedAndTextureName("arsmagica2:lesserfocus").setCreativeTab(itemTab);
 		standardFocus = (ItemFocusStandard)new ItemFocusStandard().setUnlocalizedAndTextureName("arsmagica2:standardfocus").setCreativeTab(itemTab);
@@ -284,7 +303,7 @@ public class ItemsCommonProxy{
 		protectiveArmors = new Item[]{
 				mageHood, mageArmor, mageLeggings, mageBoots,
 				battlemageHood, battlemageArmor, battlemageLeggings, battlemageBoots,
-				//archmageHood, archmageArmor, archmageLeggings, archmageBoots
+				archmageHood, archmageArmor, archmageLeggings, archmageBoots
 		};
 
 		RegisterItems();
@@ -376,10 +395,10 @@ public class ItemsCommonProxy{
 		registerItem(battlemageLeggings, "battlemageLeggings");
 		registerItem(battlemageBoots, "battlemageBoots");
 
-		/*registerItem(archmageHood, "ArchmageHood");
+		registerItem(archmageHood, "ArchmageHood");
 		registerItem(archmageArmor, "ArchmageArmor");
 		registerItem(archmageLeggings, "ArchmageLeggings");
-		registerItem(archmageBoots, "ArchmageBoots");*/
+		registerItem(archmageBoots, "ArchmageBoots");
 
 		//bound items
 		registerItem(BoundHoe, "BoundHoeNor");
@@ -968,36 +987,50 @@ public class ItemsCommonProxy{
 						Character.valueOf('R'), new ItemStack(rune, 1, 1),
 						Character.valueOf('E'), new ItemStack(essence, 1, 2)
 				}));
+
+
 		//ARCHMAGE
-		/*GameRegistry.addRecipe(new ItemStack(archmageHood, 1),
+		GameRegistry.addRecipe(new ItemStack(archmageHood, 1),
 				new Object[]{
-			"WPW", "WRW",
-			Character.valueOf('W'), new ItemStack(Blocks.cloth, 1, 0),
-			Character.valueOf('P'), new ItemStack(essence, 1, 10),
-			Character.valueOf('R'), new ItemStack(rune, 1, 6)
+			"EAE", "WBW", "RPR",
+			Character.valueOf('B'), new ItemStack(battlemageHood),
+			Character.valueOf('A'), fireEarsEnchanted,
+			Character.valueOf('R'), new ItemStack(rune, 1, rune.META_ORANGE),
+			Character.valueOf('E'), new ItemStack(essence, 1, essence.META_FIRE),
+			Character.valueOf('P'), new ItemStack(essence, 1, essence.META_PURE),
+			Character.valueOf('W'), new ItemStack(itemOre, 1, itemOre.META_SUNSTONE),
 		});
 		GameRegistry.addRecipe(new ItemStack(archmageArmor, 1),
 				new Object[]{
-			"RGR", "WPW", "WWW",
-			Character.valueOf('W'), new ItemStack(Blocks.cloth, 1, 0),
-			Character.valueOf('P'), new ItemStack(essence, 1, 10),
-			Character.valueOf('R'), new ItemStack(rune, 1, 6),
-			Character.valueOf('G'), Item.ingotGold
+			"EAE", "WBW", "RPR",
+			Character.valueOf('B'), new ItemStack(battlemageArmor),
+			Character.valueOf('A'), earthArmorEnchanted,
+			Character.valueOf('R'), new ItemStack(rune, 1, rune.META_BROWN),
+			Character.valueOf('E'), new ItemStack(essence, 1, essence.META_EARTH),
+			Character.valueOf('P'), lifeWardEnchanted,
+			Character.valueOf('W'), new ItemStack(Items.nether_star),
 		});
 		GameRegistry.addRecipe(new ItemStack(archmageLeggings, 1),
 				new Object[]{
-			"WPW", "R R", "W W",
-			Character.valueOf('W'), new ItemStack(Blocks.cloth, 1, 0),
-			Character.valueOf('P'), new ItemStack(essence, 1, 10),
-			Character.valueOf('R'), new ItemStack(rune, 1, 6)
+			"EAE", "WBW", "RPR",
+			Character.valueOf('B'), new ItemStack(battlemageLeggings),
+			Character.valueOf('A'), waterOrbsEnchanted,
+			Character.valueOf('R'), new ItemStack(rune, 1, rune.META_CYAN),
+			Character.valueOf('E'), new ItemStack(essence, 1, essence.META_WATER),
+			Character.valueOf('P'), new ItemStack(essence, 1, essence.META_PURE),
+			Character.valueOf('W'), new ItemStack(Blocks.diamond_block),
 		});
 		GameRegistry.addRecipe(new ItemStack(archmageBoots, 1),
 				new Object[]{
-			"P R", "W W", "W W",
-			Character.valueOf('W'), new ItemStack(Blocks.cloth, 1, 0),
-			Character.valueOf('P'), new ItemStack(essence, 1, 10),
-			Character.valueOf('R'), new ItemStack(rune, 1, 6)
-		});*/
+				"EAE", "WBW", "RPR",
+				Character.valueOf('B'), new ItemStack(battlemageBoots),
+				Character.valueOf('A'), enderBootsEnchanted,
+				Character.valueOf('R'), new ItemStack(rune, 1, rune.META_WHITE),
+				Character.valueOf('E'), new ItemStack(essence, 1, essence.META_AIR),
+				Character.valueOf('P'), airSledEnchanted,
+				Character.valueOf('W'), new ItemStack(itemOre, 1, itemOre.META_MOONSTONE),
+		});
+
 
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(essenceBag), new Object[]{
 				"LLL", "WNW", "LLL",

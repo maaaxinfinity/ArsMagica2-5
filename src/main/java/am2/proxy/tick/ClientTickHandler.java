@@ -24,6 +24,8 @@ import am2.network.AMDataWriter;
 import am2.network.AMNetHandler;
 import am2.network.AMPacketIDs;
 import am2.particles.AMLineArc;
+import am2.particles.AMParticle;
+import am2.particles.ParticleFadeOut;
 import am2.playerextensions.ExtendedProperties;
 import am2.power.PowerNodeEntry;
 import am2.spell.SpellUtils;
@@ -38,8 +40,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 
@@ -314,7 +318,39 @@ public class ClientTickHandler{
 			if (Minecraft.getMinecraft().theWorld != null)
 				spawnPowerPathVisuals();
 		}
+
+		if (Minecraft.getMinecraft().thePlayer != null){
+			if (Minecraft.getMinecraft().thePlayer.inventory.armorInventory[3] != null && Minecraft.getMinecraft().thePlayer.inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood){
+				if (!Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.nightVision)){
+					Minecraft.getMinecraft().thePlayer.addPotionEffect(new PotionEffect(Potion.nightVision.id, Integer.MAX_VALUE));
+					Minecraft.getMinecraft().thePlayer.getActivePotionEffect(Potion.nightVision).setPotionDurationMax(true);
+					appliedEffect = true;
+				}else if (Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.nightVision) && Minecraft.getMinecraft().thePlayer.getActivePotionEffect(Potion.nightVision).getDuration() < (Integer.MAX_VALUE / 10)){
+					Minecraft.getMinecraft().thePlayer.addPotionEffect(new PotionEffect(Potion.nightVision.id, Integer.MAX_VALUE));
+					Minecraft.getMinecraft().thePlayer.getActivePotionEffect(Potion.nightVision).setPotionDurationMax(true);
+					appliedEffect = true;
+				}
+			}else if (appliedEffect){
+				Minecraft.getMinecraft().thePlayer.removePotionEffectClient(Potion.nightVision.id);
+				appliedEffect = false;
+			}
+			if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(0) != null){
+				if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(0).getItem() == ItemsCommonProxy.archmageBoots){
+					if (Minecraft.getMinecraft().thePlayer.worldObj.isAirBlock((int)Minecraft.getMinecraft().thePlayer.posX, (int)Minecraft.getMinecraft().thePlayer.posY - 2, (int)Minecraft.getMinecraft().thePlayer.posZ)){
+						for (int i = 0; i < AMCore.config.getGFXLevel(); ++i){
+							AMParticle cloud = (AMParticle)AMCore.proxy.particleManager.spawn(Minecraft.getMinecraft().thePlayer.worldObj, "sparkle2", Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY - 1.7, Minecraft.getMinecraft().thePlayer.posZ);
+							if (cloud != null){
+								cloud.addRandomOffset(0.5, 0.65, 0.75);
+								cloud.AddParticleController(new ParticleFadeOut(cloud, 1, false).setFadeSpeed(0.01f));
+							}
+						}
+					}
+				}
+			}
+		}
 	}
+
+	private boolean appliedEffect = false;
 
 	@SubscribeEvent
 	public void onRenderTick(TickEvent.RenderTickEvent event){

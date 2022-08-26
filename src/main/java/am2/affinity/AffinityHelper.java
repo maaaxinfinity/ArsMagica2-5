@@ -21,6 +21,9 @@ import net.minecraft.block.BlockTNT;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -39,8 +42,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class AffinityHelper{
 
@@ -124,6 +126,8 @@ public class AffinityHelper{
 
 		//End Ender Affinity
 
+		boolean waterMovementFlag = false;
+
 		if (ent.isInWater()){
 			float earthDepth = affinityData.getAffinityDepth(Affinity.EARTH);
 			if (earthDepth > 0.25f && ent.motionY > -0.3f){
@@ -145,11 +149,12 @@ public class AffinityHelper{
 				AMNetHandler.INSTANCE.sendPacketToClientPlayer((EntityPlayerMP)ent, AMPacketIDs.SYNC_AIR_CHANGE, data);
 			}
 
-			boolean waterMovementFlag = false;
-
 			if ((ent instanceof EntityPlayer && ((EntityPlayer)ent).inventory.armorInventory[1] != null && ((EntityPlayer)ent).inventory.armorInventory[1].getItem() == ItemsCommonProxy.waterGuardianOrbs)){
 				waterMovementFlag = true;
-
+				if (!ent.worldObj.isRemote && (!ent.isPotionActive(BuffList.waterBreathing) || ent.getActivePotionEffect(BuffList.waterBreathing).getDuration() <= 200))
+					ent.addPotionEffect(new BuffEffectWaterBreathing(400, 2));
+			} else if (ent instanceof EntityPlayer && ((EntityPlayer)ent).inventory.armorInventory[1] != null && ((EntityPlayer)ent).inventory.armorInventory[1].getItem() == ItemsCommonProxy.archmageLeggings) {
+				isNotInWaterActually.add((EntityPlayer)ent);
 				if (!ent.worldObj.isRemote && (!ent.isPotionActive(BuffList.waterBreathing) || ent.getActivePotionEffect(BuffList.waterBreathing).getDuration() <= 200))
 					ent.addPotionEffect(new BuffEffectWaterBreathing(400, 2));
 			}
@@ -158,6 +163,10 @@ public class AffinityHelper{
 				applyReverseWaterMovement(ent);
 			}
 
+		}
+
+		if (!(ent instanceof EntityPlayer && ((EntityPlayer)ent).inventory.armorInventory[1] != null && ((EntityPlayer)ent).inventory.armorInventory[1].getItem() == ItemsCommonProxy.archmageLeggings)) {
+			isNotInWaterActually.remove((EntityPlayer)ent);
 		}
 
 		if (ent.worldObj.isRaining() && !ent.worldObj.isRemote && ent.worldObj.getBiomeGenForCoords((int)Math.floor(ent.posX), (int)Math.floor(ent.posZ)).canSpawnLightningBolt()){
@@ -179,6 +188,8 @@ public class AffinityHelper{
 			}
 		}
 	}
+
+	public static List<EntityPlayer> isNotInWaterActually = new ArrayList<EntityPlayer>();
 
 	private Block getBlockInFrontOf(EntityLivingBase ent){
 		double dx = Math.cos(ent.rotationYaw);

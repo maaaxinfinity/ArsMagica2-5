@@ -1,5 +1,6 @@
 package am2;
 
+import am2.affinity.AffinityHelper;
 import am2.api.ArsMagicaApi;
 import am2.api.events.ManaCostEvent;
 import am2.api.spell.enums.Affinity;
@@ -13,10 +14,13 @@ import am2.bosses.BossSpawnHelper;
 import am2.buffs.BuffEffectTemporalAnchor;
 import am2.buffs.BuffList;
 import am2.buffs.BuffStatModifiers;
+import am2.damage.DamageSourceFire;
 import am2.damage.DamageSources;
 import am2.entities.EntityFlicker;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMNetHandler;
+import am2.particles.AMParticle;
+import am2.particles.ParticleFadeOut;
 import am2.playerextensions.AffinityData;
 import am2.playerextensions.ExtendedProperties;
 import am2.playerextensions.RiftStorage;
@@ -50,6 +54,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.event.brewing.PotionBrewedEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -65,7 +70,9 @@ import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AMEventHandler{
 
@@ -282,10 +289,10 @@ public class AMEventHandler{
 			if (boots != null && boots.getItem() == ItemsCommonProxy.enderBoots && event.entityLiving.isSneaking()){
 				ExtendedProperties.For(event.entityLiving).toggleFlipped();
 			}
-
-			if (ExtendedProperties.For(event.entityLiving).getFlipRotation() > 0)
-				((EntityPlayer)event.entityLiving).addVelocity(0, -2 * event.entityLiving.motionY, 0);
 		}
+		if (ExtendedProperties.For(event.entityLiving).getFlipRotation() > 0)
+			((EntityPlayer)event.entityLiving).addVelocity(0, -2 * event.entityLiving.motionY, 0);
+
 	}
 
 	@SubscribeEvent
@@ -300,6 +307,13 @@ public class AMEventHandler{
 			event.setCanceled(true);
 			ent.fallDistance = 0;
 			return;
+		}
+
+		if (ent instanceof EntityPlayer && ((EntityPlayer)ent).inventory.armorInventory[0] != null){
+			if (((EntityPlayer)ent).inventory.armorInventory[0].getItem() == ItemsCommonProxy.archmageBoots){
+				event.setCanceled(true);
+				return;
+			}
 		}
 
 		//gravity well
@@ -331,7 +345,52 @@ public class AMEventHandler{
 		extendedProperties.handleSpecialSyncData();
 		extendedProperties.manaBurnoutTick();
 
-		//archmage armor effects & infusion
+		// unflip flipped players
+		if (tempFlipped.containsKey(extendedProperties)) {
+			tempFlipped.put(extendedProperties, tempFlipped.get(extendedProperties)-1);
+			if (tempFlipped.get(extendedProperties) <= 0) {
+				tempFlipped.remove(extendedProperties);
+				extendedProperties.toggleFlipped();
+			}
+		}
+
+		extendedProperties.flipTick();
+
+		if (extendedProperties.getIsFlipped()){
+			if ((ent).motionY < 2)
+				(ent).motionY += 0.15f;
+
+			double posY = ent.posY + ent.height;
+			if (!world.isRemote)
+				posY += ent.getEyeHeight();
+			if (world.rayTraceBlocks(Vec3.createVectorHelper(ent.posX, posY, ent.posZ), Vec3.createVectorHelper(ent.posX, posY + 1, ent.posZ), true) != null){
+				if (!ent.onGround){
+					if (ent.fallDistance > 0){
+						try{
+							Method m = ReflectionHelper.findMethod(Entity.class, ent, new String[]{"func_70069_a", "fall"}, float.class);
+							m.setAccessible(true);
+							m.invoke(ent, ent.fallDistance);
+						}catch (Throwable e){
+							e.printStackTrace();
+						}
+						ent.fallDistance = 0;
+					}
+				}
+				ent.onGround = true;
+			}else{
+				if (event.entityLiving instanceof EntityPlayer){
+					if (ent.motionY > 0){
+						if (world.isRemote)
+							ent.fallDistance += ent.posY - ent.prevPosY;
+						else
+							ent.fallDistance += (((EntityPlayer)ent).field_71095_bQ - ((EntityPlayer)ent).field_71096_bN) * 2;
+					}
+				}
+				ent.onGround = false;
+			}
+		}
+
+		//armor effects & infusion
 		if (ent instanceof EntityPlayer){
 
 			if (ent.worldObj.isRemote){
@@ -343,40 +402,6 @@ public class AMEventHandler{
 
 			ArmorHelper.HandleArmorInfusion((EntityPlayer)ent);
 			ArmorHelper.HandleArmorEffects((EntityPlayer)ent, world);
-
-			extendedProperties.flipTick();
-
-			if (extendedProperties.getIsFlipped()){
-				if (((EntityPlayer)ent).motionY < 2)
-					((EntityPlayer)ent).motionY += 0.15f;
-
-				double posY = ent.posY + ent.height;
-				if (!world.isRemote)
-					posY += ent.getEyeHeight();
-				if (world.rayTraceBlocks(Vec3.createVectorHelper(ent.posX, posY, ent.posZ), Vec3.createVectorHelper(ent.posX, posY + 1, ent.posZ), true) != null){
-					if (!ent.onGround){
-						if (ent.fallDistance > 0){
-							try{
-								Method m = ReflectionHelper.findMethod(Entity.class, ent, new String[]{"func_70069_a", "fall"}, float.class);
-								m.setAccessible(true);
-								m.invoke(ent, ent.fallDistance);
-							}catch (Throwable e){
-								e.printStackTrace();
-							}
-							ent.fallDistance = 0;
-						}
-					}
-					ent.onGround = true;
-				}else{
-					if (ent.motionY > 0){
-						if (world.isRemote)
-							ent.fallDistance += ent.posY - ent.prevPosY;
-						else
-							ent.fallDistance += (((EntityPlayer)ent).field_71095_bQ - ((EntityPlayer)ent).field_71096_bN) * 2;
-					}
-					ent.onGround = false;
-				}
-			}
 
 			if (ArmorHelper.isInfusionPreset(((EntityPlayer)ent).getCurrentArmor(1), GenericImbuement.stepAssist)){
 				ent.stepHeight = 1.0111f;
@@ -573,9 +598,17 @@ public class AMEventHandler{
 
 	@SubscribeEvent
 	public void onEntityAttacked(LivingAttackEvent event){
-		if (event.source.isFireDamage() && event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3] != null && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3].getItem() == ItemsCommonProxy.fireEars){
-			event.setCanceled(true);
-			return;
+		if (event.source.isFireDamage() && event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3] != null){
+			if (((EntityPlayer)event.entityLiving).inventory.armorInventory[3].getItem() == ItemsCommonProxy.fireEars || ((EntityPlayer)event.entityLiving).inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood){
+				((EntityPlayer)event.entityLiving).setFire(0);
+				event.setCanceled(true);
+				return;
+			}
+		} else if (event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3] != null && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood) {
+			if (event.source.getEntity() != null) {
+				event.source.getEntity().attackEntityFrom(new DamageSourceFire(event.entityLiving), event.entityLiving.worldObj.rand.nextInt(3));
+				event.source.getEntity().setFire(8);
+			}
 		}
 
 		if (event.entityLiving.isPotionActive(BuffList.manaShield)){
@@ -597,12 +630,36 @@ public class AMEventHandler{
 		}
 	}
 
+	private double oldKnockbackValue = -1;
+
 	@SubscribeEvent
 	public void onEntityHurt(LivingHurtEvent event){
 
-		if (event.source.isFireDamage() && event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3] != null && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3].getItem() == ItemsCommonProxy.fireEars){
-			event.setCanceled(true);
-			return;
+		if (event.source.isFireDamage() && event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3] != null){
+			if (((EntityPlayer)event.entityLiving).inventory.armorInventory[3].getItem() == ItemsCommonProxy.fireEars || ((EntityPlayer)event.entityLiving).inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood){
+				event.setCanceled(true);
+				return;
+			}
+		} else if (event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3] != null && ((EntityPlayer)event.entityLiving).inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood) {
+			if (event.source.getEntity() != null) {
+				event.source.getEntity().attackEntityFrom(new DamageSourceFire(event.entityLiving), event.entityLiving.worldObj.rand.nextInt(3));
+				event.source.getEntity().setFire(8);
+			}
+		}
+
+		if (event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).inventory.armorInventory[2] != null){
+			if (((EntityPlayer)event.entityLiving).inventory.armorInventory[2].getItem() == ItemsCommonProxy.archmageArmor){
+				if (oldKnockbackValue == -1) {
+					oldKnockbackValue = event.entityLiving.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getAttributeValue();
+				}
+				event.entityLiving.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1);
+			} else {
+				event.entityLiving.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(oldKnockbackValue);
+				oldKnockbackValue = -1;
+			}
+		} else {
+			event.entityLiving.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(oldKnockbackValue);
+			oldKnockbackValue = -1;
 		}
 
 		if (event.entityLiving.isPotionActive(BuffList.magicShield)){
@@ -652,6 +709,26 @@ public class AMEventHandler{
 			}
 			event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "arsmagica2:spell.cast.earth", 0.4f, event.entityLiving.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 		}
+		if (entitySource instanceof EntityPlayer
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[2] != null
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[2].getItem() == ItemsCommonProxy.archmageArmor){
+			event.ammount += 5;
+
+			double deltaZ = event.entityLiving.posZ - entitySource.posZ;
+			double deltaX = event.entityLiving.posX - entitySource.posX;
+			double angle = Math.atan2(deltaZ, deltaX);
+			double speed = ((EntityPlayer)entitySource).isSprinting() ? 5 : 3;
+			double vertSpeed = ((EntityPlayer)entitySource).isSprinting() ? 1 : 0.65;
+
+			if (event.entityLiving instanceof EntityPlayer){
+				AMNetHandler.INSTANCE.sendVelocityAddPacket(event.entityLiving.worldObj, event.entityLiving, speed * Math.cos(angle), vertSpeed, speed * Math.sin(angle));
+			}else{
+				event.entityLiving.motionX += (speed * Math.cos(angle));
+				event.entityLiving.motionZ += (speed * Math.sin(angle));
+				event.entityLiving.motionY += vertSpeed;
+			}
+			event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "arsmagica2:spell.cast.earth", 0.4f, event.entityLiving.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+		}
 
 		ExtendedProperties extendedProperties = ExtendedProperties.For(event.entityLiving);
 		EntityLivingBase ent = event.entityLiving;
@@ -662,12 +739,39 @@ public class AMEventHandler{
 			extendedProperties.procContingency();
 		}
 
+		if (entitySource instanceof EntityPlayer
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[2] != null
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[2].getItem() == ItemsCommonProxy.archmageArmor
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[1].getItem() == ItemsCommonProxy.archmageLeggings
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[0].getItem() == ItemsCommonProxy.archmageBoots){
+			if (entitySource.isSneaking()) {
+				extendedProperties.toggleFlipped();
+				tempFlipped.put(extendedProperties, 50);
+			}
+		}
+
 		if (ent.isPotionActive(BuffList.fury.id))
 			event.ammount /= 2;
 
 		if (entitySource instanceof EntityLivingBase
 				&& ((EntityLivingBase)entitySource).isPotionActive(BuffList.shrink))
 			event.ammount /= 2;
+	}
+
+	private static Map<ExtendedProperties, Integer> tempFlipped = new HashMap<ExtendedProperties, Integer>();
+
+	@SubscribeEvent
+	public void onBlockOverlay(RenderBlockOverlayEvent event) {
+		if (event.overlayType == RenderBlockOverlayEvent.OverlayType.WATER) {
+			if (AffinityHelper.isNotInWaterActually.contains(event.player)) {
+				event.setCanceled(true);
+			}
+		} else if (event.overlayType == RenderBlockOverlayEvent.OverlayType.FIRE) {
+			if (event.player instanceof EntityPlayer && ((EntityPlayer)event.player).inventory.armorInventory[3] != null && ((EntityPlayer)event.player).inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood) {
+				event.setCanceled(true);
+			}
+		}
 	}
 
 	@SubscribeEvent

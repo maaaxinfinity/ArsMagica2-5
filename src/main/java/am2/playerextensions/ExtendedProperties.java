@@ -1310,9 +1310,11 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	public void flipTick(){
 		boolean flipped = getIsFlipped();
 
-		ItemStack boots = ((EntityPlayer)entity).inventory.armorInventory[0];
-		if (boots == null || boots.getItem() != ItemsCommonProxy.enderBoots)
-			setIsFlipped(false);
+		if (entity instanceof EntityPlayer){
+			ItemStack boots = ((EntityPlayer)entity).inventory.armorInventory[0];
+			if (boots == null || boots.getItem() != ItemsCommonProxy.enderBoots)
+				setIsFlipped(false);
+		}
 
 		prevFlipRotation = flipRotation;
 		if (flipped && flipRotation < 180)

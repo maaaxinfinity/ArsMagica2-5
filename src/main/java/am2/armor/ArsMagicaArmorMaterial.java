@@ -44,16 +44,16 @@ public enum ArsMagicaArmorMaterial{
 
 	ARCHMAGE(
 			"ARCHMAGE",
-			78,
+			250,
 			new int[]{3, 8, 6, 3},
-			0,
-			0.44065625f, //infusion cost
-			0.3751875f, //infusion repair
+			20,
+			0.31034125f, //infusion cost
+			0.2464095f, //infusion repair
 			//the following arrays match up to:
 			//[boots, leggings, chest, helmet]
-			new float[]{0.18f, 0.22f, 0.2f, 0.18f},
+			new float[]{0.2f, 0.3f, 0.22f, 0.18f},
 			new float[]{0.2f, 0.2f, 0.2f, 0.2f} //cooldown ticks of protection ( n / 20 -> time in seconds)
-	); //stable at L17, 78% DR w/ full set
+	); //stable at L17, 90% DR w/ full set
 
 	private int maxDamageFactor;
 	private int damageReductionAmountArray[];

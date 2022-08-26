@@ -1,11 +1,21 @@
 package net.tclproject.mysteriumlib.asm.fixes;
 
+import am2.affinity.AffinityHelper;
 import am2.api.spell.ItemSpellBase;
 import am2.items.ItemSpellStaff;
 import am2.items.SpellBase;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDynamicLiquid;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockStaticLiquid;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.tclproject.mysteriumlib.asm.annotations.EnumReturnSetting;
 import net.tclproject.mysteriumlib.asm.annotations.Fix;
@@ -15,6 +25,45 @@ public class MysteriumPatchesFixesMagicka {
 	static int staffSlotTo = -1, staffSlotColumnTo = -1, staffSlotFrom = -1, staffSlotColumnFrom = -1;
 	static int spellSlotFrom = -1, spellSlotColumnFrom = -1;
 	static boolean craftingStaffsPossible = false, craftingSpellsPossible = false;
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "isInsideWater")
+	public static boolean isInsideOfMaterial(Entity e, Material p_70055_1_)
+	{
+		if (e instanceof EntityPlayer && p_70055_1_.isLiquid()) {
+			if (AffinityHelper.isNotInWaterActually.contains((EntityPlayer)e)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "isInsideWater")
+	public static boolean isInWater(Entity e) {
+		if (e instanceof EntityPlayer) {
+			if (AffinityHelper.isNotInWaterActually.contains((EntityPlayer)e)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean velocityToAddToEntity(BlockLiquid block, World p_149640_1_, int p_149640_2_, int p_149640_3_, int p_149640_4_, Entity e, Vec3 p_149640_6_) {
+		if (e instanceof EntityPlayer) {
+			if (AffinityHelper.isNotInWaterActually.contains((EntityPlayer)e)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isInsideWater(Entity e, Material p_70055_1_) {
+		return false;
+	}
+
+	public static boolean isInsideWater(Entity e) {
+		return false;
+	}
 
 	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "findMatchingRecipeResult")
 	public static boolean findMatchingRecipe(CraftingManager cm, InventoryCrafting p_82787_1_, World p_82787_2_) {
