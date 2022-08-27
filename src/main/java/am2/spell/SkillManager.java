@@ -239,6 +239,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new Plow(), "Plow");
 		registerSkillTreeEntry(new RandomTeleport(), "RandomTeleport");
 		registerSkillTreeEntry(new Recall(), "Recall");
+		registerSkillTreeEntry(new RedstoneFluxDrain(), "RedstoneFluxDrain");
 		registerSkillTreeEntry(new Reflect(), "Reflect");
 		registerSkillTreeEntry(new Regeneration(), "Regeneration");
 		registerSkillTreeEntry(new Repel(), "Repel");
