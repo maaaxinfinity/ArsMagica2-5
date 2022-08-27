@@ -2,18 +2,13 @@ package am2.interop;
 
 import am2.EnervatorRecipeHelper;
 import am2.blocks.BlocksCommonProxy;
-import am2.blocks.RecipesEssenceRefiner;
-import am2.items.RecipeArsMagica;
-import am2.utility.KeyValuePair;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipeTab;
 import codechicken.nei.recipe.HandlerInfo;
-import codechicken.nei.recipe.ICraftingHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
@@ -22,7 +17,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RecipeHandlerEnervator  extends TemplateRecipeHandler{
 
@@ -99,7 +93,7 @@ public class RecipeHandlerEnervator  extends TemplateRecipeHandler{
 					.setHeight(HandlerInfo.DEFAULT_HEIGHT)
 					.setWidth(HandlerInfo.DEFAULT_WIDTH)
 					.setMaxRecipesPerPage(this.recipiesPerPage())
-					.setDisplayStack(new ItemStack(BlocksCommonProxy.entropicEvervator))
+					.setDisplayStack(new ItemStack(BlocksCommonProxy.entropicEnervator))
 					.build();
 			GuiRecipeTab.handlerMap.put(getHandlerId(), info);
 		}

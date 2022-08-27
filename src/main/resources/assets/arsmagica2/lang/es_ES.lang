@@ -219,6 +219,7 @@ tile.arsmagica2:slipstreamGenerator.name=Generador de Corrientes
 tile.arsmagica2:spellRune.name=Runa de Hechizo
 tile.arsmagica2:stairsWitchwood.name=Escaleras de Witchwood
 tile.arsmagica2:summoner.name=Invocador Arcano
+tile.arsmagica2:spellReplicator.name=Replicador de Hechizos
 tile.arsmagica2:tarmaroot.name=Raíz de Tarma
 tile.arsmagica2:vinteumTorch.name=Antorcha de Vinteum
 tile.arsmagica2:wakebloom.name=Flor del Despertar

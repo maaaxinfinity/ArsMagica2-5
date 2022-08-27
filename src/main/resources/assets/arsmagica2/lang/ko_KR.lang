@@ -197,6 +197,7 @@ tile.arsmagica2:ores.8.name=Sunstone Block
 tile.arsmagica2:ores.5.name=Moonstone Block
 tile.arsmagica2:ores.9.name=Chimerite Block
 tile.arsmagica2:summoner.name=Summoner
+tile.arsmagica2:spellReplicator.name=Spell Replicator
 tile.arsmagica2:redstone_inlay.name=Redstone Inlay
 tile.arsmagica2:iron_inlay.name=Iron Inlay
 tile.arsmagica2:gold_inlay.name=Gold Inlay

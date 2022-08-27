@@ -230,6 +230,7 @@ tile.arsmagica2:spellRune.name=Zauberrune
 tile.arsmagica2:spell_sealed_door.name=Durch Zauberspruch verschlossene Tür
 tile.arsmagica2:stairsWitchwood.name=Hexholztreppe
 tile.arsmagica2:summoner.name=Beschwörer
+tile.arsmagica2:spellReplicator.name=Zauberreplikator
 tile.arsmagica2:tarmaroot.name=Tarmawurzel
 tile.arsmagica2:vinteumTorch.name=Vinteumfackel
 tile.arsmagica2:wakebloom.name=Wachblüte

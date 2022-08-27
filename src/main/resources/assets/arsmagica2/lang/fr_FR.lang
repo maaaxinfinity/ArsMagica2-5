@@ -195,6 +195,7 @@ tile.arsmagica2:ores.8.name=Bloc de Pierre Solaire
 tile.arsmagica2:ores.5.name=Bloc de Pierre Lunaire
 tile.arsmagica2:ores.9.name=Bloc de Chimérite
 tile.arsmagica2:summoner.name=Invocateur
+tile.arsmagica2:spellReplicator.name=Réplicateur de Sorts
 tile.arsmagica2:redstone_inlay.name=Marquage en Redstone
 tile.arsmagica2:iron_inlay.name=Marquage en Fer
 tile.arsmagica2:gold_inlay.name=Marquage en Or

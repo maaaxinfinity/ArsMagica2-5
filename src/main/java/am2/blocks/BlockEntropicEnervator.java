@@ -23,13 +23,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockEntropicEvervator extends PoweredBlock{
+public class BlockEntropicEnervator extends PoweredBlock{
 
 	@SideOnly(Side.CLIENT)
 	private IIcon[] icons;
 	private String[] textureNames = {"entropic_enervator_top", "entropic_enervator_front_idle", "entropic_enervator_front_active"};
 
-	public BlockEntropicEvervator(){
+	public BlockEntropicEnervator(){
 		super(Material.iron);
 		setHardness(3.0f);
 	}

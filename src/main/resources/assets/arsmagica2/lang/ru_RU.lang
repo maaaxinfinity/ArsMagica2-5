@@ -216,6 +216,7 @@ tile.arsmagica2:slipstreamGenerator.name=Генератор воздушного
 tile.arsmagica2:spellRune.name=Руна заклинаний
 tile.arsmagica2:stairsWitchwood.name=Ступеньки из ведьминого дерева
 tile.arsmagica2:summoner.name=Призыватель
+Stile.arsmagica2:spellReplicator.name=Репликатор заклинаний
 tile.arsmagica2:tarmaroot.name=Корень тарма
 tile.arsmagica2:vinteumTorch.name=Винтеумный факел
 tile.arsmagica2:wakebloom.name=Цветок пробуждения

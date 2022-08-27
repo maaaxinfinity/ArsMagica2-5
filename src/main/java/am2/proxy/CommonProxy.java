@@ -148,12 +148,12 @@ public class CommonProxy{
 		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_ward), new ItemStack(Items.record_11));
 
 		registerInfusions();
+
+		blocks.RegisterBlocks();
+		blocks.RegisterTileEntities();
 	}
 
 	public void init(){
-		blocks.RegisterBlocks();
-		blocks.RegisterTileEntities();
-
 		blocks.InitRecipes();
 		items.InitRecipes();
 

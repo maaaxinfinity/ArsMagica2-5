@@ -1,9 +1,9 @@
 package am2.blocks;
 
-import am2.AMCore;
 import am2.AMCreativeTab;
 import am2.api.blocks.IKeystoneLockable;
 import am2.api.math.AMVector3;
+import am2.api.spell.enums.Affinity;
 import am2.blocks.liquid.BlockLiquidEssence;
 import am2.blocks.tileentities.*;
 import am2.items.ItemsCommonProxy;
@@ -16,7 +16,6 @@ import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
@@ -95,7 +94,8 @@ public class BlocksCommonProxy{
 	public static BlockArcaneDeconstructor arcaneDeconstructor;
 	public static BlockOtherworldAura otherworldAura;
 	public static BlockSpellSealedDoor spellSealedDoor;
-	public static BlockEntropicEvervator entropicEvervator;
+	public static BlockEntropicEnervator entropicEnervator;
+	public static BlockSpellReplicator spellReplicator;
 
 	//--------------------------------------------------------------
 	// End Blocks
@@ -247,7 +247,8 @@ public class BlocksCommonProxy{
 		arcaneDeconstructor = (BlockArcaneDeconstructor)new BlockArcaneDeconstructor().setBlockName("arsmagica2:arcane_deconstructor").setCreativeTab(blockTab);
 		otherworldAura = (BlockOtherworldAura)new BlockOtherworldAura().setBlockName("arsmagica2:otherworld_aura").setCreativeTab(blockTab);
 		spellSealedDoor = (BlockSpellSealedDoor)new BlockSpellSealedDoor().setBlockName("arsmagica2:spell_sealed_door");
-		entropicEvervator = (BlockEntropicEvervator)new BlockEntropicEvervator().setBlockName("arsmagica2:entropic_enervator").setCreativeTab(blockTab);
+		entropicEnervator = (BlockEntropicEnervator)new BlockEntropicEnervator().setBlockName("arsmagica2:entropic_enervator").setCreativeTab(blockTab);
+		spellReplicator = (BlockSpellReplicator)new BlockSpellReplicator().setBlockName("arsmagica2:spellReplicator").setCreativeTab(blockTab);
 
 		blockTab.setIconItemIndex(new ItemBlock(manaBattery));
 	}
@@ -643,8 +644,19 @@ public class BlocksCommonProxy{
 				Character.valueOf('P'), Blocks.enchanting_table
 		});
 
+		//Spell Replicator
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(spellReplicator), new Object[]{
+				"VDV",
+				"WFW",
+				"VDV",
+				'W', new ItemStack(BlocksCommonProxy.magicWall),
+				'V', "dustVinteum",
+				'D', "gemDiamond",
+				'F', new ItemStack(ItemsCommonProxy.flickerJar, 1, Affinity.ARCANE.ordinal())
+		}));
+
 		//Entropic Enervator
-		GameRegistry.addRecipe(new ItemStack(entropicEvervator), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(entropicEnervator), new Object[]{
 				"GCG",
 				"ORO",
 				"OOO",
@@ -786,7 +798,8 @@ public class BlocksCommonProxy{
 		registerBlock(wakebloom, "wakebloom");
 		registerBlock(otherworldAura, "otherworldAura");
 		registerBlock(spellSealedDoor, "spellSealedDoor");
-		registerBlock(entropicEvervator, "entropicEvervator");
+		registerBlock(entropicEnervator, "entropicEvervator");
+		registerBlock(spellReplicator, "spellReplicator");
 
 		//if you need a special item placer for the block, set it here instead of registering the block normally above
 		/*Item.itemsList[BlocksCommonProxy.witchwoodSingleSlab.blockID] = new ItemSlab(BlocksCommonProxy.witchwoodSingleSlab.blockID - 256, BlocksCommonProxy.witchwoodSingleSlab, BlocksCommonProxy.witchwoodDoubleSlab, false);
@@ -878,6 +891,7 @@ public class BlocksCommonProxy{
 		GameRegistry.registerTileEntity(TileEntityInertSpawner.class, "TileEntityInertSpawner");
 		GameRegistry.registerTileEntity(TileEntitySpellSealedDoor.class, "TileEntitySpellSealedDoor");
 		GameRegistry.registerTileEntity(TileEntityEntropicEnervator.class, "TileEntityEntropicEnervator");
+		GameRegistry.registerTileEntity(TileEntitySpellReplicator.class, "TileEntitySpellReplicator");
 	}
 
 	public void registerRenderInformation(){
