@@ -220,6 +220,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new HarvestPlants(), "HarvestPlants");
 		registerSkillTreeEntry(new Haste(), "Haste");
 		registerSkillTreeEntry(new Heal(), "Heal");
+		registerSkillTreeEntry(new RedstoneSignal(), "RedstoneSignal");
 		registerSkillTreeEntry(new Ignition(), "Ignition");
 		registerSkillTreeEntry(new Invisiblity(), "Invisibility");
 		registerSkillTreeEntry(new Knockback(), "Knockback");

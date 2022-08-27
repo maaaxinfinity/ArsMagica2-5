@@ -246,6 +246,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("MiningPower"), 185, 137, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("FeatherTouch"));
 
 		RegisterPart(SkillManager.instance.getSkill("Light"), 275, 165, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Dig"));
+		RegisterPart(SkillManager.instance.getSkill("RedstoneSignal"), 315, 165, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Light"));
 		RegisterPart(SkillManager.instance.getSkill("NightVision"), 185, 165, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Light"));
 
 		RegisterPart(SkillManager.instance.getSkill("Binding"), 275, 210, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Light"));

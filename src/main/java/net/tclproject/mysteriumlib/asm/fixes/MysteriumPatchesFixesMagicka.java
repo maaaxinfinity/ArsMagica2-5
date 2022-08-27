@@ -4,14 +4,13 @@ import am2.affinity.AffinityHelper;
 import am2.api.spell.ItemSpellBase;
 import am2.items.ItemSpellStaff;
 import am2.items.SpellBase;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDynamicLiquid;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockStaticLiquid;
+import am2.spell.SkillManager;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -20,11 +19,46 @@ import net.minecraft.world.World;
 import net.tclproject.mysteriumlib.asm.annotations.EnumReturnSetting;
 import net.tclproject.mysteriumlib.asm.annotations.Fix;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class MysteriumPatchesFixesMagicka {
 
+	public static List<int[]> providingRedstone = new ArrayList<int[]>();
 	static int staffSlotTo = -1, staffSlotColumnTo = -1, staffSlotFrom = -1, staffSlotColumnFrom = -1;
 	static int spellSlotFrom = -1, spellSlotColumnFrom = -1;
 	static boolean craftingStaffsPossible = false, craftingSpellsPossible = false;
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, booleanAlwaysReturned = true)
+	public static boolean isBlockIndirectlyGettingPowered(World world, int x, int y, int z)
+	{
+		int theID = world.provider.dimensionId;
+		boolean toReturn = false;
+		int counter = 0;
+		for (int[] redstoneProvider : providingRedstone) {
+			if (redstoneProvider[0] == theID && redstoneProvider[1] == x && redstoneProvider[2] == y && redstoneProvider[3] == z) {
+				toReturn = true;
+				break;
+			}
+			counter++;
+		}
+
+		if (toReturn) {
+			int newValue = providingRedstone.get(counter)[4] - 1;
+			if (newValue <= 0) {
+				providingRedstone.remove(counter);
+			} else{
+				providingRedstone.add(new int[]{theID, x, y, z, newValue});
+				providingRedstone.remove(counter);
+			}
+
+			world.getBlock(x, y, z).onNeighborBlockChange(world, x, y, z, Blocks.stonebrick);
+			return true;
+		}
+		return false;
+	}
 
 	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "isInsideWater")
 	public static boolean isInsideOfMaterial(Entity e, Material p_70055_1_)
