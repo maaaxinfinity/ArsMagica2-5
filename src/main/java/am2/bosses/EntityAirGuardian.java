@@ -12,6 +12,7 @@ import am2.network.AMNetHandler;
 import am2.particles.AMParticle;
 import am2.particles.ParticleApproachEntity;
 import am2.particles.ParticleFloatUpward;
+import net.minecraft.block.Block;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;

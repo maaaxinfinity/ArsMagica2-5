@@ -143,7 +143,7 @@ public class EntityWaterGuardian extends AM2Boss{
 
 	@Override
 	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2){
-		if (par1DamageSource.getSourceOfDamage() instanceof EntityWaterGuardian)
+		if (par1DamageSource.getSourceOfDamage() instanceof EntityWaterGuardian || par1DamageSource == DamageSource.drown)
 			return false;
 		if (isClone() && master != null){
 			master.enableUberAttack();

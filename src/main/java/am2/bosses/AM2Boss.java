@@ -5,6 +5,8 @@ import am2.buffs.BuffList;
 import am2.entities.EntityLightMage;
 import am2.items.ItemsCommonProxy;
 import am2.playerextensions.ExtendedProperties;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -15,6 +17,7 @@ import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -128,6 +131,10 @@ public abstract class AM2Boss extends EntityMob implements IArsMagicaBoss, IEnti
 	@Override
 	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2){
 
+		if (par1DamageSource.isUnblockable() && !par1DamageSource.isMagicDamage() && !par1DamageSource.isDamageAbsolute() && !par1DamageSource.canHarmInCreative()) {
+			ReflectionHelper.setPrivateValue(DamageSource.class, par1DamageSource, false, "isUnblockable", "field_76374_o");
+		} // anti-TiC-rapier
+
 		if (par1DamageSource == DamageSource.inWall){
 			if (!worldObj.isRemote){// dead code? (calling canSnowAt() without using the result) could it be a buggy upgrade to 1.7.10?
 				for (int i = -1; i <= 1; ++i){
@@ -210,6 +217,30 @@ public abstract class AM2Boss extends EntityMob implements IArsMagicaBoss, IEnti
 			this.ignoreFrustumCheck =  AMCore.proxy.getLocalPlayer().getDistanceToEntity(this) < 32;
 		}
 
+		// break all non-unbreakable blocks to prevent guardian from being locked up and farmed
+		for (int x = -1; x <= 1; x++){
+			for (int y = 0; y <= 2; y++){
+				for (int z = -1; z <= 1; z++){
+					if (!this.worldObj.isAirBlock((int)this.posX + x, (int)this.posY + y, (int)this.posZ + z)){
+						if (this.worldObj.rand.nextDouble() > 0.993D &&
+								this.worldObj.getBlock(
+										(int)this.posX + x,
+										(int)this.posY + y,
+										(int)this.posZ + z).getBlockHardness(this.worldObj, (int)this.posX + x, (int)this.posY + y, (int)this.posZ + z) > 0.1f){
+							Block block = this.worldObj.getBlock((int)this.posX + x, (int)this.posY + y, (int)this.posZ + z);
+							block.breakBlock(this.worldObj, (int)this.posX + x, (int)this.posY + y, (int)this.posZ + z,
+									block,
+									this.worldObj.getBlockMetadata((int)this.posX + x, (int)this.posY + y, (int)this.posZ + z));
+							block.dropBlockAsItem(this.worldObj, (int)this.posX + x, (int)this.posY + y, (int)this.posZ + z,
+									this.worldObj.getBlockMetadata((int)this.posX + x, (int)this.posY + y, (int)this.posZ + z),
+									Block.getIdFromBlock(block));
+							worldObj.setBlockToAir((int)this.posX + x, (int)this.posY + y, (int)this.posZ + z);
+						}
+					}
+				}
+			}
+		}
+
 		super.onUpdate();
 	}
 
@@ -220,7 +251,9 @@ public abstract class AM2Boss extends EntityMob implements IArsMagicaBoss, IEnti
 
 	@Override
 	public void addPotionEffect(PotionEffect effect){
-		if (effect.getPotionID() == BuffList.silence.id)
+		if (effect.getPotionID() == BuffList.silence.id || effect.getPotionID() == Potion.blindness.id
+			|| effect.getEffectName().contains("blindness") || effect.getEffectName().contains("ink")
+		|| effect.getPotionID() == BuffList.entangled.id)
 			return;
 		super.addPotionEffect(effect);
 	}

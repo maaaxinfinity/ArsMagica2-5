@@ -9,6 +9,7 @@ import am2.api.spell.component.interfaces.ISpellComponent;
 import am2.api.spell.enums.Affinity;
 import am2.blocks.BlocksCommonProxy;
 import am2.blocks.tileentities.TileEntityOtherworldAura;
+import am2.bosses.AM2Boss;
 import am2.items.ItemsCommonProxy;
 import am2.particles.AMParticle;
 import am2.particles.ParticleArcToPoint;
@@ -48,7 +49,7 @@ public class Transplace implements ISpellComponent, IRitualInteraction{
 
 	@Override
 	public boolean applyEffectEntity(ItemStack stack, World world, EntityLivingBase caster, Entity target){
-		if (!world.isRemote && target != null && !target.isDead){
+		if (!world.isRemote && target != null && !target.isDead && !(target instanceof AM2Boss)){
 			double tPosX = target.posX;
 			double tPosY = target.posY;
 			double tPosZ = target.posZ;
