@@ -306,10 +306,14 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("AugmentedCasting"), 230, 165, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("SpellMotion"));
 		RegisterPart(SkillManager.instance.getSkill("ManaRegenIII"), 275, 165, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("ManaRegenII"));
 
-		RegisterPart(SkillManager.instance.getSkill("ExtraSummon"), 230, 210, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("AugmentedCasting"));
+		RegisterPart(SkillManager.instance.getSkill("ExtraSummon"), 365, 165, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("AffinityGains"));
 
 		RegisterPart(SkillManager.instance.getSkill("MageBandI"), 320, 120, SkillTrees.Talents, SkillPointTypes.GREEN, SkillManager.instance.getSkill("ManaRegenI"));
 		RegisterPart(SkillManager.instance.getSkill("MageBandII"), 320, 165, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("MageBandI"));
+
+		RegisterPart(SkillManager.instance.getSkill("ManaCapacityI"), 230, 210, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("AugmentedCasting"));
+		RegisterPart(SkillManager.instance.getSkill("ManaCapacityII"), 275, 210, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("ManaCapacityI"));
+		RegisterPart(SkillManager.instance.getSkill("ManaCapacityIII"), 320, 210, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("ManaCapacityII"));
 
 		calculateHighestOverallTier();
 

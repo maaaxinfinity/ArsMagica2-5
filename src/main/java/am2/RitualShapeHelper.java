@@ -17,6 +17,7 @@ public class RitualShapeHelper{
 	public MultiblockStructureDefinition hourglass;
 	public MultiblockStructureDefinition corruption;
 	public MultiblockStructureDefinition purification;
+	public MultiblockStructureDefinition worldFusion;
 
 	public static final RitualShapeHelper instance = new RitualShapeHelper();
 
@@ -106,6 +107,42 @@ public class RitualShapeHelper{
 		initHourglass();
 		initCorruption();
 		initPurification();
+		initWorldFusion();
+	}
+
+	private void initWorldFusion(){
+		worldFusion = new MultiblockStructureDefinition("worldFusion");
+
+		worldFusion.addAllowedBlock(-1, 0, 1, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(-1, 0, -1, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(1, 0, 1, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(1, 0, -1, BlocksCommonProxy.wizardChalk);
+
+		worldFusion.addAllowedBlock(-2, 0, 2, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(-2, 0, -2, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(2, 0, 2, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(2, 0, -2, BlocksCommonProxy.wizardChalk);
+
+		worldFusion.addAllowedBlock(-3, 0, 1, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(-3, 0, 0, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(-3, 0, -1, BlocksCommonProxy.wizardChalk);
+
+		worldFusion.addAllowedBlock(3, 0, 1, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(3, 0, 0, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(3, 0, -1, BlocksCommonProxy.wizardChalk);
+
+		worldFusion.addAllowedBlock(1, 0, -3, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(0, 0, -3, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(-1, 0, -3, BlocksCommonProxy.wizardChalk);
+
+		worldFusion.addAllowedBlock(1, 0, 3, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(0, 0, 3, BlocksCommonProxy.wizardChalk);
+		worldFusion.addAllowedBlock(-1, 0, 3, BlocksCommonProxy.wizardChalk);
+
+		worldFusion.addAllowedBlock(2, 0, 0, BlocksCommonProxy.candle);
+		worldFusion.addAllowedBlock(-2, 0, 0, BlocksCommonProxy.candle);
+		worldFusion.addAllowedBlock(0, 0, 2, BlocksCommonProxy.candle);
+		worldFusion.addAllowedBlock(0, 0, -2, BlocksCommonProxy.candle);
 	}
 
 	private void initRingedCross(){

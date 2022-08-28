@@ -8,10 +8,13 @@ import am2.particles.ParticleHoldPosition;
 import am2.playerextensions.ExtendedProperties;
 import am2.utility.NPCSpells;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
+
+import static am2.playerextensions.ExtendedProperties.UPD_CURRENT_MANA_FATIGUE;
 
 //
 
@@ -45,10 +48,17 @@ public class EntityLightningGuardian extends AM2Boss implements IAnimatedEntity{
 	}
 
 	@Override
-	public void onDeath(DamageSource par1DamageSource){
+	public void onDeath(DamageSource src){
 		if (this.getAttackTarget() != null)
 			ExtendedProperties.For(this.getAttackTarget()).setDisableGravity(false);
-		super.onDeath(par1DamageSource);
+		super.onDeath(src);
+		if (src.getEntity() != null && src.getEntity() instanceof EntityPlayer) {
+			EntityPlayer p = (EntityPlayer)src.getEntity();
+			if (!worldObj.isRemote){
+				ExtendedProperties.For(p).guardian7 = true;
+				ExtendedProperties.For(p).setUpdateFlag(UPD_CURRENT_MANA_FATIGUE);
+			}
+		}
 	}
 
 	@Override

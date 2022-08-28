@@ -136,20 +136,33 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	public boolean hadFlight = false;
 	private boolean disableGravity = false;
 
-	private static final int UPD_CURRENT_MANA_FATIGUE = 0x1;
-	private static final int UPD_MAX_MANA_FATIGUE = 0x2;
-	private static final int UPD_MAGIC_LEVEL = 0x4;
-	private static final int UPD_DISABLE_GRAVITY = 0x8;
-	private static final int UPD_NUM_SUMMONS = 0x10;
-	private static final int UPD_MARK = 0x20;
-	private static final int UPD_CONTINGENCY = 0x40;
-	private static final int UPD_BITFLAG = 0x80;
-	private static final int UPD_BETA_PARTICLES = 0x100;
-	private static final int UPD_TK_DISTANCE = 0x200;
-	private static final int UPD_MANALINK = 0x400;
-	private static final int BIT_MARK_SET = 0x2;
-	private static final int BIT_FLIPPED = 0x4;
-	private static final int BIT_SHRUNK = 0x8;
+	public boolean guardian1 = false;
+	public boolean guardian2 = false;
+	public boolean guardian3 = false;
+	public boolean guardian4 = false;
+	public boolean guardian5 = false;
+	public boolean guardian6 = false;
+	public boolean guardian7 = false;
+	public boolean guardian8 = false;
+	public boolean guardian9 = false;
+	public boolean guardian10 = false;
+
+	public boolean hasRitual = false;
+
+	public static final int UPD_CURRENT_MANA_FATIGUE = 0x1;
+	public static final int UPD_MAX_MANA_FATIGUE = 0x2;
+	public static final int UPD_MAGIC_LEVEL = 0x4;
+	public static final int UPD_DISABLE_GRAVITY = 0x8;
+	public static final int UPD_NUM_SUMMONS = 0x10;
+	public static final int UPD_MARK = 0x20;
+	public static final int UPD_CONTINGENCY = 0x40;
+	public static final int UPD_BITFLAG = 0x80;
+	public static final int UPD_BETA_PARTICLES = 0x100;
+	public static final int UPD_TK_DISTANCE = 0x200;
+	public static final int UPD_MANALINK = 0x400;
+	public static final int BIT_MARK_SET = 0x2;
+	public static final int BIT_FLIPPED = 0x4;
+	public static final int BIT_SHRUNK = 0x8;
 
 	private int updateFlags;
 	private static final int syncTickDelay = 200; //10 seconds
@@ -287,8 +300,50 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	@Override
 	public float getMaxMana(){
 		float max = this.maxMana;
+		if (this.entity instanceof EntityPlayer) {
+			if (SkillData.For((EntityPlayer)this.entity).isEntryKnown(SkillTreeManager.instance.getSkillTreeEntry(SkillManager.instance.getSkill("ManaCapacityIII")))) {
+				max += 15000;
+			} else if (SkillData.For((EntityPlayer)this.entity).isEntryKnown(SkillTreeManager.instance.getSkillTreeEntry(SkillManager.instance.getSkill("ManaCapacityII")))) {
+				max += 7000;
+			} else if (SkillData.For((EntityPlayer)this.entity).isEntryKnown(SkillTreeManager.instance.getSkillTreeEntry(SkillManager.instance.getSkill("ManaCapacityI")))) {
+				max += 2000;
+			}
+		}
+		if (guardian1) { // this looks like awful code and it is
+			max += 2000;
+		}
+		if (guardian2) {
+			max += 2000;
+		}
+		if (guardian3) {
+			max += 2000;
+		}
+		if (guardian4) {
+			max += 2000;
+		}
+		if (guardian5) {
+			max += 2000;
+		}
+		if (guardian6) {
+			max += 2000;
+		}
+		if (guardian7) {
+			max += 2000;
+		}
+		if (guardian8) {
+			max += 2000;
+		}
+		if (guardian9) {
+			max += 2000;
+		}
+		if (guardian10) {
+			max += 2000;
+		}
+		if (hasRitual) {
+			max += 23000; // changed from 25000
+		}
 		if (this.entity.isPotionActive(BuffList.manaBoost))
-			max *= 1 + (0.25 * (this.entity.getActivePotionEffect(BuffList.manaBoost).getAmplifier() + 1));
+		max *= 1 + (0.25 * (this.entity.getActivePotionEffect(BuffList.manaBoost).getAmplifier() + 1));
 		return (float)(max + this.entity.getAttributeMap().getAttributeInstance(ArsMagicaApi.maxManaBonus).getAttributeValue());
 	}
 
@@ -312,6 +367,17 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		if ((this.updateFlags & UPD_CURRENT_MANA_FATIGUE) == UPD_CURRENT_MANA_FATIGUE){
 			writer.add(this.currentMana);
 			writer.add(this.currentFatigue);
+			writer.add(guardian1);
+			writer.add(guardian2);
+			writer.add(guardian3);
+			writer.add(guardian4);
+			writer.add(guardian5);
+			writer.add(guardian6);
+			writer.add(guardian7);
+			writer.add(guardian8);
+			writer.add(guardian9);
+			writer.add(guardian10);
+			writer.add(hasRitual);
 		}
 		if ((this.updateFlags & UPD_MAGIC_LEVEL) == UPD_MAGIC_LEVEL){
 			writer.add(this.magicLevel);
@@ -471,7 +537,11 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		if (level > maxMagicLevel) level = maxMagicLevel;
 		if (level < 0) level = 0;
 		setMagicLevel(level);
-		setMaxMana((float)(Math.pow(level, 1.5f) * (85f * ((float)level / maxMagicLevel)) + 500f));
+		if (getMaxMana() > ((float)(Math.pow(level, 1.5f) * (85f * ((float)level / maxMagicLevel)) + 500f) / 2F) + 17000) {
+			setMaxMana(((float)(Math.pow(level, 1.5f) * (85f * ((float)level / maxMagicLevel)) + 500f) / 2F) + 23000); // keep world fusion ritual effect
+		} else {
+			setMaxMana((float)(Math.pow(level, 1.5f) * (85f * ((float)level / maxMagicLevel)) + 500f) / 2F); // max mana without bosses, talents or rituals is 42k
+		}
 		setCurrentMana(getMaxMana());
 		setCurrentFatigue(0);
 		setMaxFatigue(level * 10 + 1);
@@ -730,7 +800,7 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		this.numSummons = numSummons;
 	}
 
-	private void setUpdateFlag(int flag){
+	public void setUpdateFlag(int flag){
 		this.updateFlags |= flag;
 	}
 
@@ -847,6 +917,17 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		if ((flags & UPD_CURRENT_MANA_FATIGUE) == UPD_CURRENT_MANA_FATIGUE){
 			this.currentMana = rdr.getFloat();
 			this.currentFatigue = rdr.getFloat();
+			this.guardian1 = rdr.getBoolean();
+			this.guardian2 = rdr.getBoolean();
+			this.guardian3 = rdr.getBoolean();
+			this.guardian4 = rdr.getBoolean();
+			this.guardian5 = rdr.getBoolean();
+			this.guardian6 = rdr.getBoolean();
+			this.guardian7 = rdr.getBoolean();
+			this.guardian8 = rdr.getBoolean();
+			this.guardian9 = rdr.getBoolean();
+			this.guardian10 = rdr.getBoolean();
+			this.hasRitual = rdr.getBoolean();
 		}
 		if ((flags & UPD_MAGIC_LEVEL) == UPD_MAGIC_LEVEL){
 			this.magicLevel = rdr.getInt();
@@ -978,6 +1059,19 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		compound.setShort("magicLevel", (short)getMagicLevel());
 		compound.setBoolean("hasUnlockedAugmented", getHasUnlockedAugmented());
 
+		compound.setBoolean("guardian1", guardian1);
+		compound.setBoolean("guardian2", guardian2);
+		compound.setBoolean("guardian3", guardian3);
+		compound.setBoolean("guardian4", guardian4);
+		compound.setBoolean("guardian5", guardian5);
+		compound.setBoolean("guardian6", guardian6);
+		compound.setBoolean("guardian7", guardian7);
+		compound.setBoolean("guardian8", guardian8);
+		compound.setBoolean("guardian9", guardian9);
+		compound.setBoolean("guardian10", guardian10);
+
+		compound.setBoolean("hasRitual", hasRitual);
+
 		compound.setIntArray("armorCooldowns", armorProcCooldowns);
 		//compound.setBoolean("isFlipped", this.getIsFlipped());
 		compound.setBoolean("isShrunk", this.getIsShrunk());
@@ -1025,6 +1119,19 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		isCritical = compound.getBoolean("isCritical");
 
 		magicXP = compound.getFloat("magicXP");
+
+		guardian1 = compound.getBoolean("guardian1");
+		guardian2 = compound.getBoolean("guardian2");
+		guardian3 = compound.getBoolean("guardian3");
+		guardian4 = compound.getBoolean("guardian4");
+		guardian5 = compound.getBoolean("guardian5");
+		guardian6 = compound.getBoolean("guardian6");
+		guardian7 = compound.getBoolean("guardian7");
+		guardian8 = compound.getBoolean("guardian8");
+		guardian9 = compound.getBoolean("guardian9");
+		guardian10 = compound.getBoolean("guardian10");
+
+		hasRitual = compound.getBoolean("hasRitual");
 
 		for (int i = 0; i < 4; ++i){
 			if (armorProcCooldowns[i] > 0){

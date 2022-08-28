@@ -6,6 +6,7 @@ import am2.bosses.ai.*;
 import am2.buffs.BuffList;
 import am2.damage.DamageSources;
 import am2.items.ItemsCommonProxy;
+import am2.playerextensions.ExtendedProperties;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -15,6 +16,8 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
+
+import static am2.playerextensions.ExtendedProperties.UPD_CURRENT_MANA_FATIGUE;
 
 public class EntityEnderGuardian extends AM2Boss implements IAnimatedEntity{
 
@@ -41,6 +44,19 @@ public class EntityEnderGuardian extends AM2Boss implements IAnimatedEntity{
 		tasks.addTask(2, new EntityAIEnderRush(this));
 		tasks.addTask(2, new EntityAIEndertorrent(this));
 		tasks.addTask(2, new EntityAIEnderbolt(this));
+	}
+
+	@Override
+	public void onDeath(DamageSource src)
+	{
+		super.onDeath(src);
+		if (src.getEntity() != null && src.getEntity() instanceof EntityPlayer) {
+			EntityPlayer p = (EntityPlayer)src.getEntity();
+			if (!worldObj.isRemote){
+				ExtendedProperties.For(p).guardian10 = true;
+				ExtendedProperties.For(p).setUpdateFlag(UPD_CURRENT_MANA_FATIGUE);
+			}
+		}
 	}
 
 	@Override

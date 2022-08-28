@@ -5,6 +5,7 @@ import am2.bosses.ai.EntityAIDispel;
 import am2.bosses.ai.ISpellCastCallback;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMNetHandler;
+import am2.playerextensions.ExtendedProperties;
 import am2.utility.NPCSpells;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,6 +15,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import static am2.playerextensions.ExtendedProperties.UPD_CURRENT_MANA_FATIGUE;
 
 public class EntityArcaneGuardian extends AM2Boss{
 
@@ -31,6 +34,19 @@ public class EntityArcaneGuardian extends AM2Boss{
 	protected void entityInit(){
 		super.entityInit();
 		this.dataWatcher.addObject(DW_TARGET_ID, -1);
+	}
+
+	@Override
+	public void onDeath(DamageSource src)
+	{
+		super.onDeath(src);
+		if (src.getEntity() != null && src.getEntity() instanceof EntityPlayer) {
+			EntityPlayer p = (EntityPlayer)src.getEntity();
+			if (!worldObj.isRemote){
+				ExtendedProperties.For(p).guardian4 = true;
+				ExtendedProperties.For(p).setUpdateFlag(UPD_CURRENT_MANA_FATIGUE);
+			}
+		}
 	}
 
 	@Override

@@ -304,6 +304,9 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new ManaRegenBoostI(), "ManaRegenI");
 		registerSkillTreeEntry(new ManaRegenBoostII(), "ManaRegenII");
 		registerSkillTreeEntry(new ManaRegenBoostIII(), "ManaRegenIII");
+		registerSkillTreeEntry(new ManaCapacityBoostI(), "ManaCapacityI");
+		registerSkillTreeEntry(new ManaCapacityBoostII(), "ManaCapacityII");
+		registerSkillTreeEntry(new ManaCapacityBoostIII(), "ManaCapacityIII");
 		registerSkillTreeEntry(new SpellMovement(), "SpellMotion");
 	}
 

@@ -10,11 +10,15 @@ import am2.network.AMNetHandler;
 import am2.particles.AMParticle;
 import am2.particles.ParticleFloatUpward;
 import am2.particles.ParticleOrbitEntity;
+import am2.playerextensions.ExtendedProperties;
 import am2.utility.NPCSpells;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+
+import static am2.playerextensions.ExtendedProperties.UPD_CURRENT_MANA_FATIGUE;
 
 public class EntityNatureGuardian extends AM2Boss{
 
@@ -36,6 +40,19 @@ public class EntityNatureGuardian extends AM2Boss{
 		super(par1World);
 		this.setSize(1.65f, 4.75f);
 		hasSickle = true;
+	}
+
+	@Override
+	public void onDeath(DamageSource src)
+	{
+		super.onDeath(src);
+		if (src.getEntity() != null && src.getEntity() instanceof EntityPlayer) {
+			EntityPlayer p = (EntityPlayer)src.getEntity();
+			if (!worldObj.isRemote){
+				ExtendedProperties.For(p).guardian6 = true;
+				ExtendedProperties.For(p).setUpdateFlag(UPD_CURRENT_MANA_FATIGUE);
+			}
+		}
 	}
 
 	@Override

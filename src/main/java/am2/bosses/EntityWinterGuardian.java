@@ -9,9 +9,11 @@ import am2.damage.DamageSources;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMNetHandler;
 import am2.particles.*;
+import am2.playerextensions.ExtendedProperties;
 import am2.utility.NPCSpells;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -19,6 +21,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import java.util.List;
+
+import static am2.playerextensions.ExtendedProperties.UPD_CURRENT_MANA_FATIGUE;
 
 public class EntityWinterGuardian extends AM2Boss{
 
@@ -44,6 +48,19 @@ public class EntityWinterGuardian extends AM2Boss{
 		this.tasks.addTask(2, new EntityAISmash(this, 0.5f, DamageSources.DamageSourceTypes.FROST));
 		this.tasks.addTask(3, new EntityAIStrikeAttack(this, 0.5f, 6f, DamageSources.DamageSourceTypes.FROST));
 		this.tasks.addTask(4, new EntityWinterGuardianLaunchArm(this, 0.5f));
+	}
+
+	@Override
+	public void onDeath(DamageSource src)
+	{
+		super.onDeath(src);
+		if (src.getEntity() != null && src.getEntity() instanceof EntityPlayer) {
+			EntityPlayer p = (EntityPlayer)src.getEntity();
+			if (!worldObj.isRemote){
+				ExtendedProperties.For(p).guardian8 = true;
+				ExtendedProperties.For(p).setUpdateFlag(UPD_CURRENT_MANA_FATIGUE);
+			}
+		}
 	}
 
 	public void returnOneArm(){

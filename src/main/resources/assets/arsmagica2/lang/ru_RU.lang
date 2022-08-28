@@ -385,6 +385,9 @@ am2.spell.magebandii=Поиск маны II
 am2.spell.manaregeni=Регенерация маны I
 am2.spell.manaregenii=Регенерация маны II
 am2.spell.manaregeniii=Регенерация маны III
+am2.spell.manacapacityi=Емкость Маны I
+am2.spell.manacapacityii=Емкость Маны II
+am2.spell.manacapacityiii=Емкость Маны III
 am2.spell.spellmotion=Spell Motion
 
 #tooltips
