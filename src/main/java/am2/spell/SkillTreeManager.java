@@ -154,6 +154,8 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("Nauseate"), 210, 225, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Blind"));
 		RegisterPart(SkillManager.instance.getSkill("ScrambleSynapses"), 210, 270, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Nauseate"));
+		RegisterPart(SkillManager.instance.getSkill("Poison"), 165, 225, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Nauseate"));
+		RegisterPart(SkillManager.instance.getSkill("Wither"), 165, 270, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Poison"));
 		RegisterPart(SkillManager.instance.getSkill("Solar"), 210, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("ScrambleSynapses"));
 
 		RegisterPart(SkillManager.instance.getSkill("Storm"), 255, 225, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("LightningDamage"));
@@ -194,6 +196,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("Haste"), 177, 155, SkillTrees.Defense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Slowfall"));
 		RegisterPart(SkillManager.instance.getSkill("Slow"), 132, 155, SkillTrees.Defense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Slowfall"));
+		RegisterPart(SkillManager.instance.getSkill("Weakness"), 87, 155, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Slow"));
 
 		RegisterPart(SkillManager.instance.getSkill("GravityWell"), 222, 180, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Slowfall"));
 		RegisterPart(SkillManager.instance.getSkill("LifeDrain"), 312, 180, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("LifeTap"));
@@ -206,6 +209,9 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("Levitate"), 222, 225, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("GravityWell"));
 		RegisterPart(SkillManager.instance.getSkill("ManaDrain"), 312, 225, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("LifeDrain"));
+		RegisterPart(SkillManager.instance.getSkill("Hunger"), 267, 225, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("ManaDrain"));
+		RegisterPart(SkillManager.instance.getSkill("Saturation"), 267, 270, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Hunger"));
+
 		RegisterPart(SkillManager.instance.getSkill("Zone"), 357, 225, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Dispel"));
 
 		RegisterPart(SkillManager.instance.getSkill("Wall"), 87, 200, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Repel"));
@@ -241,6 +247,9 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Dig"), 275, 120, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Touch"));
 		RegisterPart(SkillManager.instance.getSkill("WizardsAutumn"), 315, 120, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Dig"));
 		RegisterPart(SkillManager.instance.getSkill("TargetNonSolid"), 230, 75, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Touch"));
+
+		RegisterPart(SkillManager.instance.getSkill("Fatigue"), 315, 75, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("WizardsAutumn"));
+		RegisterPart(SkillManager.instance.getSkill("DigSpeed"), 365, 75, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Fatigue"));
 
 		RegisterPart(SkillManager.instance.getSkill("PlaceBlock"), 185, 93, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Dig"));
 		RegisterPart(SkillManager.instance.getSkill("FeatherTouch"), 230, 137, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Dig"));

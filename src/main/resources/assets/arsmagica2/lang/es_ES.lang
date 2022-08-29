@@ -297,6 +297,13 @@ am2.spell.shrink=Encoger
 am2.spell.silence=Silencio
 am2.spell.wizardsautumn=Otoño Mágico
 am2.spell.redstonesignal=Señal de Piedra Roja
+am2.spell.fatigue=Fatiga
+am2.spell.digspeed=Velocidad de excavación
+am2.spell.saturation=Saturación
+am2.spell.hunger=Hambre
+am2.spell.weakness=Debilidad
+am2.spell.poison=Veneno
+am2.spell.wither=Marchitar
 
 am2.spell.accelerate=Acelerar
 am2.spell.astraldistortion=Distorsión Astral

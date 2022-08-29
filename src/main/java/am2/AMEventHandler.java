@@ -740,7 +740,10 @@ public class AMEventHandler{
 		}
 
 		if (entitySource instanceof EntityPlayer
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[3] != null
 				&& ((EntityPlayer)entitySource).inventory.armorInventory[2] != null
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[1] != null
+				&& ((EntityPlayer)entitySource).inventory.armorInventory[0] != null
 				&& ((EntityPlayer)entitySource).inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood
 				&& ((EntityPlayer)entitySource).inventory.armorInventory[2].getItem() == ItemsCommonProxy.archmageArmor
 				&& ((EntityPlayer)entitySource).inventory.armorInventory[1].getItem() == ItemsCommonProxy.archmageLeggings

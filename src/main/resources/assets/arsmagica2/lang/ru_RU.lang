@@ -293,6 +293,13 @@ am2.spell.shrink=Сжатие
 am2.spell.silence=Тишина
 am2.spell.wizardsautumn=Осень волшебника
 am2.spell.redstonesignal=Сигнал редстоуна
+am2.spell.fatigue=Усталость
+am2.spell.digspeed=Скорость копания
+am2.spell.saturation=Насыщенность
+am2.spell.hunger=Голод
+am2.spell.weakness=Слабость
+am2.spell.poison=Яд
+am2.spell.wither=Увядание
 
 am2.spell.accelerate=Ускорение
 am2.spell.astraldistortion=Астральное искажение

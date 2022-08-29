@@ -272,6 +272,13 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new PlaceBlock(), "PlaceBlock");
 		registerSkillTreeEntry(new Shrink(), "Shrink");
 		registerSkillTreeEntry(new Nauseate(), "Nauseate");
+		registerSkillTreeEntry(new Wither(), "Wither");
+		registerSkillTreeEntry(new Poison(), "Poison");
+		registerSkillTreeEntry(new Weakness(), "Weakness");
+		registerSkillTreeEntry(new Hunger(), "Hunger");
+		registerSkillTreeEntry(new Saturation(), "Saturation");
+		registerSkillTreeEntry(new DigSpeed(), "DigSpeed");
+		registerSkillTreeEntry(new Fatigue(), "Fatigue");
 
 		//Modifiers
 		registerSkillTreeEntry(new Bounce(), "Bounce");

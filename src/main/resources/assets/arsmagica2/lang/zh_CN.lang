@@ -310,6 +310,13 @@ am2.spell.shrink=缩小
 am2.spell.silence=沉默
 am2.spell.wizardsautumn=巫师之秋
 am2.spell.redstonesignal=红石信号
+am2.spell.fatigue=疲劳
+am2.spell.digspeed=挖掘速度
+am2.spell.saturation=饱和度
+am2.spell.hunger=饥饿
+am2.spell.weakness=弱点
+am2.spell.poison=毒药
+am2.spell.wither=凋零
 
 am2.spell.accelerate=神行术
 am2.spell.astraldistortion=星界扭曲
