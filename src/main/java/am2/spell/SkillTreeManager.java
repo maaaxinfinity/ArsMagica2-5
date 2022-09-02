@@ -165,6 +165,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("Fling"), 390, 245, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Knockback"));
 		RegisterPart(SkillManager.instance.getSkill("VelocityAdded"), 390, 290, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Fling"));
+		RegisterPart(SkillManager.instance.getSkill("Homing"), 435, 290, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("VelocityAdded"));
 		RegisterPart(SkillManager.instance.getSkill("WateryGrave"), 435, 245, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Drown"));
 
 		RegisterPart(SkillManager.instance.getSkill("Piercing"), 323, 215, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Freeze"));

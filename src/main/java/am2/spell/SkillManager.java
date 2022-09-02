@@ -288,6 +288,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new Damage(), "Damage");
 		registerSkillTreeEntry(new Healing(), "Healing");
 		registerSkillTreeEntry(new VelocityAdded(), "VelocityAdded");
+		registerSkillTreeEntry(new Homing(), "Homing");
 		registerSkillTreeEntry(new Radius(), "Radius");
 		registerSkillTreeEntry(new Duration(), "Duration");
 		registerSkillTreeEntry(new RuneProcs(), "RuneProcs");

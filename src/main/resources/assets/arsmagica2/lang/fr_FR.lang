@@ -388,6 +388,7 @@ am2.spell.targetnonsolid=Cible les blocks non-solides
 am2.spell.piercing=Transperce
 am2.spell.colour=Couleur
 am2.spell.miningpower=Puissance de Minage
+am2.spell.homing=Homing
 am2.spell.feathertouch=Touche de Plume
 am2.spell.prosperity=Prospérité
 am2.spell.dismembering=Démembrement

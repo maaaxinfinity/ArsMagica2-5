@@ -255,10 +255,9 @@ public class EntitySpellProjectile extends Entity{
 		}
 
 		//TODO Fix homing
-		if (this.dataWatcher.getWatchableObjectByte(DW_HOMING) != (byte)0 && this.ticksExisted > 10){
+		if (isHoming() && this.ticksExisted > 10){
 			if (this.dataWatcher.getWatchableObjectInt(DW_HOMING_TARGET) == -1){
 				findHomingTarget();
-
 			}else{
 				EntityLivingBase homingTarget = getHomingEntity();
 				//AMCore.log.info("%.2f, %.2f, %.2f", posX, posY, posZ);
