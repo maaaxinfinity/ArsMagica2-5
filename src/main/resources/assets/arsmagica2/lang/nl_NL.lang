@@ -607,6 +607,7 @@ am2.spell.prosperity=Prosperity
 am2.spell.nauseate=Nauseate
 am2.spell.scramblesynapses=Scramble Synapses
 am2.spell.meltarmor=Melt Armor
+am2.spell.explosion=Explosion
 am2.tooltip.approError=Something went wrong restoring the block. This spell was likely a spell from an older version. The stored block has been cleared to prevent a crash, and the spell should work moving forward. Sorry!
 am2.tooltip.bn_red=Burnout Reduction Bonus
 am2.tooltip.candlecantplace=You cannot place an attuned candle.
@@ -752,6 +753,7 @@ am2.affinity.thunderpunch=Thunderpunch
 am2.affinity.enderTPFailed=Nope nope nope nope nope!!!!
 Epic Mana Restoration.postfix=Epic Mana Potion
 Greater Mana Restoration.postfix=Greater Mana Potion
-Legendary Mana Restoration.postfix=Legendary Mana Potionitem.arsmagica2:FlickerFocusPrefix=Flicker Focus: %s
+Legendary Mana Restoration.postfix=Legendary Mana Potion
+item.arsmagica2:FlickerFocusPrefix=Flicker Focus: %s
 am2.gui.EssenceRefiner=Essence Refiner
 am2.gui.EntropicEnervator=Entropic Enervator

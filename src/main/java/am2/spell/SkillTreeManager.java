@@ -139,6 +139,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Ignition"), 165, 135, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("FireDamage"));
 		RegisterPart(SkillManager.instance.getSkill("Forge"), 120, 135, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Ignition"));
 		RegisterPart(SkillManager.instance.getSkill("MeltArmor"), 120, 180, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Forge"));
+		RegisterPart(SkillManager.instance.getSkill("Explosion"), 120, 225, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("MeltArmor"));
 
 		RegisterPart(SkillManager.instance.getSkill("Contingency_Fire"), 165, 180, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Ignition"));
 

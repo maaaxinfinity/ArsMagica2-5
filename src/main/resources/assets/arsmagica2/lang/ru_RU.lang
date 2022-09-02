@@ -224,7 +224,7 @@ tile.arsmagica2:slipstreamGenerator.name=Генератор воздушного
 tile.arsmagica2:spellRune.name=Руна заклинаний
 tile.arsmagica2:stairsWitchwood.name=Ступеньки из ведьминого дерева
 tile.arsmagica2:summoner.name=Призыватель
-Stile.arsmagica2:spellReplicator.name=Репликатор заклинаний
+tile.arsmagica2:spellReplicator.name=Репликатор заклинаний
 tile.arsmagica2:tarmaroot.name=Корень тарма
 tile.arsmagica2:vinteumTorch.name=Винтеумный факел
 tile.arsmagica2:wakebloom.name=Цветок пробуждения
@@ -680,10 +680,10 @@ am2.affinity.reflexes=Отблески молнии
 am2.affinity.shortcircuit=Короткое замыкание
 am2.affinity.thunderpunch=Громовой шлепок
 
-
 #achievements
 achievement.compendiumData=Новая запись открыта
-achievement.componentUnlock=Обнаружена часть заклинанияitem.arsmagica2:FlickerOperatorFishing.name=Fishing
+achievement.componentUnlock=Обнаружена часть заклинания
+item.arsmagica2:FlickerOperatorFishing.name=Fishing
 item.arsmagica2:inscup_1.name=Inscription Table Tier 1 Upgrade
 item.arsmagica2:inscup_2.name=Inscription Table Tier 2 Upgrade
 item.arsmagica2:inscup_3.name=Inscription Table Tier 3 Upgrade
@@ -705,6 +705,7 @@ entity.arsmagica2.DaBroom.name=Magic Broom
 am2.spell.nauseate=Nauseate
 am2.spell.scramblesynapses=Scramble Synapses
 am2.spell.meltarmor=Melt Armor
+am2.spell.explosion=Explosion
 am2.tooltip.approError=Something went wrong restoring the block. This spell was likely a spell from an older version. The stored block has been cleared to prevent a crash, and the spell should work moving forward. Sorry!
 am2.tooltip.cantTeleport=The distortion around you is preventing all teleportation!
 am2.tooltip.compEntryNotFound=Compendium Entry (identified by: %s) Not Found

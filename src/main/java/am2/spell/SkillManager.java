@@ -256,6 +256,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new WateryGrave(), "WateryGrave");
 		registerSkillTreeEntry(new Charm(), "Charm");
 		registerSkillTreeEntry(new MeltArmor(), "MeltArmor");
+		registerSkillTreeEntry(new Explosion(), "Explosion");
 		registerSkillTreeEntry(new Drown(), "Drown");
 		registerSkillTreeEntry(new Blizzard(), "Blizzard");
 		registerSkillTreeEntry(new Daylight(), "Daylight");
