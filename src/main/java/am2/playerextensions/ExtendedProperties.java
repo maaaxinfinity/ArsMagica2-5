@@ -897,6 +897,11 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 				summon_ent_ids.remove(i);
 				i--;
 				removeSummon();
+			} else if (e.getDistanceToEntity(entity) > 200) {
+				e.setDead();
+				summon_ent_ids.remove(i);
+				i--;
+				removeSummon();
 			}
 		}
 	}

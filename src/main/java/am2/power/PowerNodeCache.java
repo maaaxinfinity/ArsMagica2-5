@@ -166,8 +166,8 @@ public class PowerNodeCache{
 		if (!event.world.isRemote && PowerNodeRegistry.For(event.world).hasDataForChunk(event.getChunk())){
 			NBTTagCompound dataCompound = new NBTTagCompound();
 			PowerNodeRegistry.For(event.world).SaveChunkToNBT(event.getChunk().getChunkCoordIntPair(), dataCompound);
-			PowerNodeRegistry.For(event.world).unloadChunk(event.getChunk());
 			SaveNBTToFile(event.world, event.getChunk().getChunkCoordIntPair(), dataCompound, false);
+			PowerNodeRegistry.For(event.world).unloadChunk(event.getChunk());
 		}
 	}
 
