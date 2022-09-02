@@ -27,4 +27,8 @@ Spell icons used include Painterly Spell Packs 1 through 4, courtesy of J. W. Bj
 
 Some icons used courtesy of Ails http://www.alteredgamer.com/rpg-maker/100053-vx-custom-icons
 
+Some textures used have been adapted from the Sanity texturepack by Alvoria
+
+https://www.curseforge.com/minecraft/texture-packs/alvorias-sanity
+
 Sounds are courtesy of opengameart.com and freesound.org, and licenses are that of their respective owners.

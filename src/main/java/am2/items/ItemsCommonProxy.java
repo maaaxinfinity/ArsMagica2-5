@@ -10,6 +10,7 @@ import am2.blocks.BlocksCommonProxy;
 import am2.blocks.tileentities.flickers.FlickerOperatorRegistry;
 import am2.enchantments.AMEnchantmentHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import jdk.nashorn.internal.ir.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -65,6 +66,11 @@ public class ItemsCommonProxy{
 	public static ItemFlickerFocus flickerFocus;
 
 	public static Item wizardChalk;
+
+	public static Item boundCatalystHelmet;
+	public static Item boundCatalystArmor;
+	public static Item boundCatalystLeggings;
+	public static Item boundCatalystBoots;
 
 	public static ItemManaCake manaCake;
 
@@ -155,6 +161,11 @@ public class ItemsCommonProxy{
 	public static Item BoundPickaxe;
 	public static Item BoundSword;
 
+	public static Item BoundHelmet;
+	public static Item BoundArmor;
+	public static Item BoundLeggings;
+	public static Item BoundBoots;
+
 	public static ItemManaStone manaStone;
 
 	//public static Item boundBow;
@@ -211,6 +222,10 @@ public class ItemsCommonProxy{
 		battlemageArmor = (new AMArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BATTLEMAGE, ArmorHelper.getArmorRenderIndex("battlemage"), 1)).setUnlocalizedAndTextureName("arsmagica2:chest_battlemage").setCreativeTab(itemTab);
 		battlemageLeggings = (new AMArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BATTLEMAGE, ArmorHelper.getArmorRenderIndex("battlemage"), 2)).setUnlocalizedAndTextureName("arsmagica2:legs_battlemage").setCreativeTab(itemTab);
 		battlemageBoots = (new AMArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BATTLEMAGE, ArmorHelper.getArmorRenderIndex("battlemage"), 3)).setUnlocalizedAndTextureName("arsmagica2:boots_battlemage").setCreativeTab(itemTab);
+		BoundHelmet = (new BoundArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BOUND, ArmorHelper.getArmorRenderIndex("bound"), 0)).setUnlocalizedAndTextureName("arsmagica2:bound_helmet").setCreativeTab(itemTab);
+		BoundArmor = (new BoundArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BOUND, ArmorHelper.getArmorRenderIndex("bound"), 1)).setUnlocalizedAndTextureName("arsmagica2:bound_chest").setCreativeTab(itemTab);
+		BoundLeggings = (new BoundArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BOUND, ArmorHelper.getArmorRenderIndex("bound"), 2)).setUnlocalizedAndTextureName("arsmagica2:bound_legs").setCreativeTab(itemTab);
+		BoundBoots = (new BoundArmor(ArmorMaterial.IRON, ArsMagicaArmorMaterial.BOUND, ArmorHelper.getArmorRenderIndex("bound"), 3)).setUnlocalizedAndTextureName("arsmagica2:bound_boots").setCreativeTab(itemTab);
 		archmageHood = (new AMArmor(ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 0)).setUnlocalizedAndTextureName("arsmagica2:helmet_archmage").setCreativeTab(itemTab).setMaxDamage(0);
 		archmageArmor = new AMArmor(ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 1) {
 			public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack){
@@ -266,6 +281,10 @@ public class ItemsCommonProxy{
 		liquidEssenceBottle = (ItemLiquidEssenceBottle)new ItemLiquidEssenceBottle().setUnlocalizedAndTextureName("arsmagica2:mana_boost_potion").setCreativeTab(itemTab);
 		evilBook = new Item().setUnlocalizedName("arsmagica2:evilBook").setTextureName("arsmagica2:evilBook").setCreativeTab(itemTab);
 		woodenLeg = new Item().setUnlocalizedName("arsmagica2:woodenLeg").setTextureName("arsmagica2:woodenLeg").setCreativeTab(itemTab);
+		boundCatalystHelmet = new Item().setUnlocalizedName("arsmagica2:bound_helmet_catalyst").setTextureName("arsmagica2:bound_helmet_catalyst").setCreativeTab(itemTab);
+		boundCatalystArmor =new Item().setUnlocalizedName("arsmagica2:bound_chestplate_catalyst").setTextureName("arsmagica2:bound_chestplate_catalyst").setCreativeTab(itemTab);
+		boundCatalystLeggings =new Item().setUnlocalizedName("arsmagica2:bound_leggings_catalyst").setTextureName("arsmagica2:bound_leggings_catalyst").setCreativeTab(itemTab);
+		boundCatalystBoots =new Item().setUnlocalizedName("arsmagica2:bound_boots_catalyst").setTextureName("arsmagica2:bound_boots_catalyst").setCreativeTab(itemTab);
 		cowHorn = (ItemHellCowHorn)new ItemHellCowHorn().setUnlocalizedName("arsmagica2:cowhorn").setCreativeTab(itemTab);
 		magicBroom = (ItemMagicBroom)new ItemMagicBroom().setUnlocalizedAndTextureName("arsmagica2:magic_broom").setCreativeTab(itemTab);
 		//witchwoodSlab = new ItemSlab(AMCore.config.getConfigurableItemID("witchwood__doubleslab_placer", 20119), BlocksCommonProxy.witchwoodSingleSlab, BlocksCommonProxy.witchwoodDoubleSlab, true);
@@ -303,7 +322,8 @@ public class ItemsCommonProxy{
 		protectiveArmors = new Item[]{
 				mageHood, mageArmor, mageLeggings, mageBoots,
 				battlemageHood, battlemageArmor, battlemageLeggings, battlemageBoots,
-				archmageHood, archmageArmor, archmageLeggings, archmageBoots
+				archmageHood, archmageArmor, archmageLeggings, archmageBoots,
+				BoundHelmet, BoundArmor, BoundLeggings, BoundBoots
 		};
 
 		RegisterItems();
@@ -395,6 +415,11 @@ public class ItemsCommonProxy{
 		registerItem(battlemageLeggings, "battlemageLeggings");
 		registerItem(battlemageBoots, "battlemageBoots");
 
+		registerItem(BoundHelmet, "boundHood");
+		registerItem(BoundArmor, "boundArmor");
+		registerItem(BoundLeggings, "boundLeggings");
+		registerItem(BoundBoots, "boundBoots");
+
 		registerItem(archmageHood, "ArchmageHood");
 		registerItem(archmageArmor, "ArchmageArmor");
 		registerItem(archmageLeggings, "ArchmageLeggings");
@@ -432,6 +457,11 @@ public class ItemsCommonProxy{
 		registerItem(evilBook, "evilBook");
 		registerItem(woodenLeg, "woodenLeg");
 		registerItem(cowHorn, "cowHorn");
+
+		registerItem(boundCatalystArmor, "boundCatalystArmor");
+		registerItem(boundCatalystBoots, "boundCatalystBoots");
+		registerItem(boundCatalystHelmet, "boundCatalystHelmet");
+		registerItem(boundCatalystLeggings, "boundCatalystLeggings");
 
 		registerItem(magicBroom, "magicBroom");
 
@@ -680,6 +710,46 @@ public class ItemsCommonProxy{
 				Character.valueOf('P'), "plankWood",
 				Character.valueOf('L'), "slabWood",
 				Character.valueOf('S'), "stickWood"
+		}));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(boundCatalystHelmet, new Object[]{
+				"ASA",
+				"EIE",
+				"ASA",
+				Character.valueOf('S'), Items.slime_ball,
+				Character.valueOf('I'), Items.iron_helmet,
+				Character.valueOf('A'), "arcaneAsh",
+				Character.valueOf('E'), Items.ender_eye
+		}));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(boundCatalystArmor, new Object[]{
+				"ASA",
+				"BIB",
+				"ASA",
+				Character.valueOf('S'), Items.slime_ball,
+				Character.valueOf('I'), Items.iron_chestplate,
+				Character.valueOf('A'), "arcaneAsh",
+				Character.valueOf('B'), Items.blaze_powder
+		}));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(boundCatalystLeggings, new Object[]{
+				"ASA",
+				"EIE",
+				"ASA",
+				Character.valueOf('S'), Items.slime_ball,
+				Character.valueOf('I'), Items.iron_leggings,
+				Character.valueOf('A'), "arcaneAsh",
+				Character.valueOf('E'), Items.experience_bottle
+		}));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(boundCatalystBoots, new Object[]{
+				"ASA",
+				"NIN",
+				"ASA",
+				Character.valueOf('S'), Items.slime_ball,
+				Character.valueOf('I'), Items.iron_boots,
+				Character.valueOf('A'), "arcaneAsh",
+				Character.valueOf('N'), Items.gold_nugget
 		}));
 
 		GameRegistry.addShapelessRecipe(
@@ -986,6 +1056,38 @@ public class ItemsCommonProxy{
 						Character.valueOf('L'), BlocksCommonProxy.goldInlay,
 						Character.valueOf('R'), new ItemStack(rune, 1, 1),
 						Character.valueOf('E'), new ItemStack(essence, 1, 2)
+				}));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BoundBoots, 1),
+				new Object[]{
+						"B B", "BEB", " L ",
+						Character.valueOf('L'), new ItemStack(essence, 1, essence.META_LIFE),
+						Character.valueOf('B'), new ItemStack(rune, 1, rune.META_RED),
+						Character.valueOf('E'), boundCatalystBoots
+				}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BoundArmor, 1),
+				new Object[]{
+						"BLB", "BEB", "RBR",
+						Character.valueOf('L'), new ItemStack(essence, 1, essence.META_LIFE),
+						Character.valueOf('B'), new ItemStack(rune, 1, rune.META_RED),
+						Character.valueOf('E'), boundCatalystArmor,
+						Character.valueOf('R'), new ItemStack(BlocksCommonProxy.redstoneInlay)
+				}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BoundLeggings, 1),
+				new Object[]{
+						"RBR", "BEB", "BLB",
+						Character.valueOf('L'), new ItemStack(essence, 1, essence.META_LIFE),
+						Character.valueOf('B'), new ItemStack(rune, 1, rune.META_RED),
+						Character.valueOf('E'), boundCatalystLeggings,
+						Character.valueOf('R'), new ItemStack(BlocksCommonProxy.redstoneInlay)
+				}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(BoundHelmet, 1),
+				new Object[]{
+						"RBR", "BEB", " L ",
+						Character.valueOf('L'), new ItemStack(essence, 1, essence.META_LIFE),
+						Character.valueOf('B'), new ItemStack(rune, 1, rune.META_RED),
+						Character.valueOf('E'), boundCatalystHelmet,
+						Character.valueOf('R'), new ItemStack(BlocksCommonProxy.redstoneInlay)
 				}));
 
 

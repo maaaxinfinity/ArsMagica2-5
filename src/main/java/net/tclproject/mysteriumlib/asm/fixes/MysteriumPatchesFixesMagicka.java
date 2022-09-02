@@ -2,6 +2,7 @@ package net.tclproject.mysteriumlib.asm.fixes;
 
 import am2.affinity.AffinityHelper;
 import am2.api.spell.ItemSpellBase;
+import am2.armor.BoundArmor;
 import am2.items.ItemSpellStaff;
 import am2.items.SpellBase;
 import am2.spell.SkillManager;
@@ -28,8 +29,9 @@ public class MysteriumPatchesFixesMagicka {
 
 	public static List<int[]> providingRedstone = new ArrayList<int[]>();
 	static int staffSlotTo = -1, staffSlotColumnTo = -1, staffSlotFrom = -1, staffSlotColumnFrom = -1;
+	static int armorSlotTo = -1, armorSlotColumnTo = -1;
 	static int spellSlotFrom = -1, spellSlotColumnFrom = -1;
-	static boolean craftingStaffsPossible = false, craftingSpellsPossible = false;
+	static boolean craftingStaffsPossible = false, craftingSpellsPossible = false, craftingArmorPossible = false;
 
 	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, booleanAlwaysReturned = true)
 	public static boolean isBlockIndirectlyGettingPowered(World world, int x, int y, int z)
@@ -103,7 +105,8 @@ public class MysteriumPatchesFixesMagicka {
 	public static boolean findMatchingRecipe(CraftingManager cm, InventoryCrafting p_82787_1_, World p_82787_2_) {
 		craftingStaffsPossible = false;
 		craftingSpellsPossible = false;
-		int craftingCompsStaffs = 0, craftingCompsSpells = 0;
+		craftingArmorPossible = false;
+		int craftingCompsStaffs = 0, craftingCompsSpells = 0, craftingCompsArmor = 0;
 		for (int i = 0; i<3; i++) {
 			for (int j = 0; j<3; j++) {
 				if (p_82787_1_.getStackInRowAndColumn(i,j) != null) {
@@ -118,11 +121,14 @@ public class MysteriumPatchesFixesMagicka {
 								staffSlotColumnFrom = j;
 							}
 						}
-					}
-					if (p_82787_1_.getStackInRowAndColumn(i,j).getItem() instanceof SpellBase) {
+					} else if (p_82787_1_.getStackInRowAndColumn(i,j).getItem() instanceof SpellBase) {
 						craftingCompsSpells++;
 						spellSlotFrom = i;
 						spellSlotColumnFrom = j;
+					} else if (p_82787_1_.getStackInRowAndColumn(i,j).getItem() instanceof BoundArmor) {
+						craftingCompsArmor++;
+						armorSlotTo = i;
+						armorSlotColumnTo = j;
 					}
 				}
 			}
@@ -130,13 +136,13 @@ public class MysteriumPatchesFixesMagicka {
 
 		if (craftingCompsSpells == 1 && craftingCompsStaffs == 1) {
 			craftingSpellsPossible = true;
-		}
-
-		if (craftingCompsStaffs == 2) {
+		} else if (craftingCompsStaffs == 2) {
 			craftingStaffsPossible = true;
+		} else if (craftingCompsSpells == 1 && craftingCompsArmor == 1) {
+			craftingArmorPossible = true;
 		}
 
-		if (craftingStaffsPossible || craftingSpellsPossible) {
+		if (craftingStaffsPossible || craftingSpellsPossible || craftingArmorPossible) {
 			return true;
 		} else {
 			staffSlotTo = -1;
@@ -145,6 +151,8 @@ public class MysteriumPatchesFixesMagicka {
 			spellSlotColumnFrom = -1;
 			staffSlotFrom = -1;
 			staffSlotColumnFrom = -1;
+			armorSlotColumnTo = -1;
+			armorSlotTo = -1;
 		}
 		return false;
 	}
@@ -160,7 +168,7 @@ public class MysteriumPatchesFixesMagicka {
 			staffSlotColumnTo = -1;
 			staffSlotColumnFrom = -1;
 			return result;
-		} else { // if craftingSpells possible
+		} else if (craftingSpellsPossible) {
 			ItemStack result = ItemSpellStaff.setSpellScroll(
 					p_82787_1_.getStackInRowAndColumn(staffSlotTo, staffSlotColumnTo).copy(),
 					p_82787_1_.getStackInRowAndColumn(spellSlotFrom, spellSlotColumnFrom));
@@ -169,8 +177,16 @@ public class MysteriumPatchesFixesMagicka {
 			spellSlotFrom = -1;
 			spellSlotColumnFrom = -1;
 			return result;
+		} else { // if crafting armor possible
+			ItemStack result = BoundArmor.setSpell(
+					p_82787_1_.getStackInRowAndColumn(armorSlotTo, armorSlotColumnTo).copy(),
+					p_82787_1_.getStackInRowAndColumn(spellSlotFrom, spellSlotColumnFrom));
+			armorSlotTo = -1;
+			armorSlotColumnTo = -1;
+			spellSlotFrom = -1;
+			spellSlotColumnFrom = -1;
+			return result;
 		}
-
 	}
 
 }

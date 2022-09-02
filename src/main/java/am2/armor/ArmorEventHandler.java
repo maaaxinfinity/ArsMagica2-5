@@ -170,6 +170,12 @@ public class ArmorEventHandler{
 			}else{
 				event.texture = "arsmagica2:textures/models/archmage_1.png";
 			}
+		}else if (event.renderIndex == ArmorHelper.getArmorRenderIndex("bound")){
+			if (event.slot == 2){
+				event.texture = "arsmagica2:textures/models/bound_2.png";
+			}else{
+				event.texture = "arsmagica2:textures/models/bound_1.png";
+			}
 		}else if (event.renderIndex == ArmorHelper.getArmorRenderIndex("ender")){
 			event.texture = "arsmagica2:textures/models/ender_1.png";
 		}else if (event.renderIndex == ArmorHelper.getArmorRenderIndex("magitech")){

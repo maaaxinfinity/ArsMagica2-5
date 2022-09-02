@@ -20,6 +20,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -354,31 +355,36 @@ public class AMIngameGUI{
 	public void RenderContingency(int i, int j){
 
 		AMVector2 contingencyPos = getShiftedVector(AMCore.config.getContingencyPosition(), i, j);
+		int yToAdd = 0;
 
-		IIcon icon = null;
-		ContingencyTypes type = ExtendedProperties.For(Minecraft.getMinecraft().thePlayer).getContingencyType();
-		switch (type){
-		case DAMAGE_TAKEN:
-			icon = SpellIconManager.instance.getIcon("Contingency_Damage");
-			break;
-		case FALL:
-			icon = SpellIconManager.instance.getIcon("Contingency_Fall");
-			break;
-		case HEALTH_LOW:
-			icon = SpellIconManager.instance.getIcon("Contingency_Health");
-			break;
-		case ON_FIRE:
-			icon = SpellIconManager.instance.getIcon("Contingency_Fire");
-			break;
-		case DEATH:
-			icon = SpellIconManager.instance.getIcon("Contingency_Death");
-			break;
-		case NONE:
-		default:
-			return;
+		for (int z = 0; z < 5; z++){
+			IIcon icon = null;
+			ItemStack type = ExtendedProperties.For(Minecraft.getMinecraft().thePlayer).getContingencyEffect(z);
+			switch (z){
+			case 0:
+				icon = SpellIconManager.instance.getIcon("Contingency_Damage");
+				break;
+			case 2:
+				icon = SpellIconManager.instance.getIcon("Contingency_Fall");
+				break;
+			case 4:
+				icon = SpellIconManager.instance.getIcon("Contingency_Health");
+				break;
+			case 3:
+				icon = SpellIconManager.instance.getIcon("Contingency_Fire");
+				break;
+			case 1:
+				icon = SpellIconManager.instance.getIcon("Contingency_Death");
+				break;
+			default:
+				continue;
+			}
+
+			if (!(type.getItem() instanceof ItemSnowball)){
+				DrawIconAtXY(icon, "items", contingencyPos.iX, contingencyPos.iY - yToAdd, 16, 16, true);
+				yToAdd += 16;
+			}
 		}
-
-		DrawIconAtXY(icon, "items", contingencyPos.iX, contingencyPos.iY, 16, 16, true);
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 	}
 

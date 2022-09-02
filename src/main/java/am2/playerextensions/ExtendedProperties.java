@@ -33,6 +33,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -98,8 +100,10 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	private int fallProtection = 0;
 	private int previousBreath = 300;
 
-	private ContingencyTypes contingencyType = ContingencyTypes.NONE;
-	private ItemStack contingencyStack = null;
+	private ContingencyTypes[] contingencyTypes = {ContingencyTypes.DAMAGE_TAKEN, ContingencyTypes.DEATH,
+			ContingencyTypes.FALL, ContingencyTypes.ON_FIRE, ContingencyTypes.HEALTH_LOW};
+	private ItemStack[] contingencyStacks = {new ItemStack(Items.snowball), new ItemStack(Items.snowball),
+			new ItemStack(Items.snowball), new ItemStack(Items.snowball), new ItemStack(Items.snowball)};
 
 	public float TK_Distance = 8;
 
@@ -255,12 +259,12 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		return AuraSpeed;
 	}
 
-	public ContingencyTypes getContingencyType(){
-		return this.contingencyType;
+	public ContingencyTypes getContingencyType(int num){
+		return this.contingencyTypes[num];
 	}
 
-	public ItemStack getContingencyEffect(){
-		return this.contingencyStack;
+	public ItemStack getContingencyEffect(int num){
+		return this.contingencyStacks[num];
 	}
 
 	public int getFallProtection(){
@@ -410,9 +414,12 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 			writer.add(this.getAuraSpeed());
 		}
 		if ((this.updateFlags & UPD_CONTINGENCY) == UPD_CONTINGENCY){
-			writer.add(this.contingencyType.ordinal());
-			if (this.contingencyType != ContingencyTypes.NONE){
-				writer.add(this.contingencyStack);
+			for (int i = 0; i < 5; i++){
+				if (this.contingencyStacks[i] != null){
+					writer.add(this.contingencyStacks[i]);
+				} else {
+					writer.add(new ItemStack(Items.snowball));
+				}
 			}
 		}
 		if ((this.updateFlags & UPD_MANALINK) == UPD_MANALINK){
@@ -687,8 +694,25 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	}
 
 	public void setContingency(ContingencyTypes type, ItemStack effect){
-		this.contingencyType = type;
-		this.contingencyStack = effect;
+		int num = 0;
+		switch (type) {
+			case DAMAGE_TAKEN:
+				num = 0;
+				break;
+			case DEATH:
+				num = 1;
+				break;
+			case FALL:
+				num = 2;
+				break;
+			case ON_FIRE:
+				num = 3;
+				break;
+			case HEALTH_LOW:
+				num = 4;
+				break;
+		}
+		this.contingencyStacks[num] = effect;
 		this.setUpdateFlag(UPD_CONTINGENCY);
 	}
 
@@ -964,9 +988,11 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 			this.AuraSpeed = rdr.getFloat();
 		}
 		if ((flags & UPD_CONTINGENCY) == UPD_CONTINGENCY){
-			this.contingencyType = ContingencyTypes.values()[rdr.getInt()];
-			if (this.contingencyType != ContingencyTypes.NONE){
-				this.contingencyStack = rdr.getItemStack();
+			for (int i = 0; i < 5; i++){
+				ItemStack stack = rdr.getItemStack();
+				if (!(stack.getItem() instanceof ItemSnowball)){
+					this.contingencyStacks[i] = stack;
+				}
 			}
 		}
 		if ((flags & UPD_MANALINK) == UPD_MANALINK){
@@ -1080,10 +1106,9 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 
 		compound.setFloat("magicXP", magicXP);
 
-		if (contingencyType != ContingencyTypes.NONE){
-			compound.setInteger("contingency_type", contingencyType.ordinal());
-			NBTTagCompound effectSave = contingencyStack.writeToNBT(new NBTTagCompound());
-			compound.setTag("contingency_effect", effectSave);
+		for (int i = 0; i < 5; i++) {
+			NBTTagCompound effectSave = contingencyStacks[i].writeToNBT(new NBTTagCompound());
+			compound.setTag("contingency_effect" + i, effectSave);
 		}
 
 		//mark location
@@ -1148,9 +1173,12 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 			this.setMarkSet(true);
 		}
 
-		if (compound.hasKey("contingency_type")){
-			this.contingencyType = ContingencyTypes.values()[compound.getInteger("contingency_type")];
-			this.contingencyStack = ItemStack.loadItemStackFromNBT((NBTTagCompound)compound.getTag("contingency_effect"));
+		for (int i = 0; i < 5; i++) {
+			try{
+				this.contingencyStacks[i] = ItemStack.loadItemStackFromNBT((NBTTagCompound)compound.getTag("contingency_effect" + i));
+			} catch (NullPointerException e) {
+				// prevent console spam that doesn't mean anything, I don't mind that it can be null
+			}
 		}
 	}
 
@@ -1308,11 +1336,11 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		forceSync();
 	}
 
-	public void procContingency(){
-		SpellHelper.instance.applyStackStage(contingencyStack, entity, entity, entity.posX, entity.posY, entity.posZ, 0, entity.worldObj, false, false, 0);
-		AMNetHandler.INSTANCE.sendSpellApplyEffectToAllAround(entity, entity, entity.posX, entity.posY, entity.posZ, entity.worldObj, contingencyStack);
-
-		this.setContingency(ContingencyTypes.NONE, null);
+	public void procContingency(int num, EntityLivingBase attacker){
+		ItemStack spell = contingencyStacks[num].copy();
+		this.setContingency(getContingencyType(num), new ItemStack(Items.snowball));
+		SpellHelper.instance.applyStackStage(spell, entity, attacker == null ? entity : attacker, entity.posX, entity.posY, entity.posZ, 0, entity.worldObj, false, false, 0);
+		AMNetHandler.INSTANCE.sendSpellApplyEffectToAllAround(entity, attacker == null ? entity : attacker, entity.posX, entity.posY, entity.posZ, entity.worldObj, spell);
 		this.forceSync();
 	}
 

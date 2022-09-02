@@ -44,10 +44,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemPotion;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.util.ChatComponentText;
@@ -162,8 +159,8 @@ public class AMEventHandler{
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onEntityDeath(LivingDeathEvent event){
 		EntityLivingBase soonToBeDead = event.entityLiving;
-		if (ExtendedProperties.For(soonToBeDead).getContingencyType() == ContingencyTypes.DEATH){
-			ExtendedProperties.For(soonToBeDead).procContingency();
+		if (!(ExtendedProperties.For(soonToBeDead).getContingencyEffect(1).getItem() instanceof ItemSnowball)){
+			ExtendedProperties.For(soonToBeDead).procContingency(1, null);
 		}
 
 		if (soonToBeDead instanceof EntityPlayer){
@@ -421,14 +418,14 @@ public class AMEventHandler{
 			}
 		}
 
-		if (!ent.onGround && ent.fallDistance >= 4f && extendedProperties.getContingencyType() == ContingencyTypes.FALL && extendedProperties.getContingencyEffect() != null){
+		if (!ent.onGround && ent.fallDistance >= 4f && !(extendedProperties.getContingencyEffect(2).getItem() instanceof ItemSnowball)){
 			int distanceToGround = MathUtilities.getDistanceToGround(ent, world);
 			if (distanceToGround < -8 * ent.motionY){
-				extendedProperties.procContingency();
+				extendedProperties.procContingency(2, null);
 			}
 		}
-		if (extendedProperties.getContingencyType() == ContingencyTypes.ON_FIRE && ent.isBurning()){
-			extendedProperties.procContingency();
+		if (!(extendedProperties.getContingencyEffect(3).getItem() instanceof ItemSnowball) && ent.isBurning()){
+			extendedProperties.procContingency(3, null);
 		}
 
 		if (!ent.worldObj.isRemote && ent.ticksExisted % 200 == 0){
@@ -732,11 +729,11 @@ public class AMEventHandler{
 
 		ExtendedProperties extendedProperties = ExtendedProperties.For(event.entityLiving);
 		EntityLivingBase ent = event.entityLiving;
-		if (extendedProperties.getContingencyType() == ContingencyTypes.DAMAGE_TAKEN){
-			extendedProperties.procContingency();
+		if (!(extendedProperties.getContingencyEffect(0).getItem() instanceof ItemSnowball)){
+			extendedProperties.procContingency(0, (event.source.getEntity() != null && event.source.getEntity() instanceof EntityLivingBase) ? (EntityLivingBase)event.source.getEntity() : null);
 		}
-		if (extendedProperties.getContingencyType() == ContingencyTypes.HEALTH_LOW && ent.getHealth() <= ent.getMaxHealth() / 3){
-			extendedProperties.procContingency();
+		if (!(extendedProperties.getContingencyEffect(4).getItem() instanceof ItemSnowball) && ent.getHealth() <= ent.getMaxHealth() / 3){
+			extendedProperties.procContingency(4, (event.source.getEntity() != null && event.source.getEntity() instanceof EntityLivingBase) ? (EntityLivingBase)event.source.getEntity() : null);
 		}
 
 		if (entitySource instanceof EntityPlayer

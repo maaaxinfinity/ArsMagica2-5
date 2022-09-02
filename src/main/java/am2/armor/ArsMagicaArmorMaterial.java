@@ -29,6 +29,19 @@ public enum ArsMagicaArmorMaterial{
 			new float[]{0.5f, 0.5f, 0.5f, 0.5f} //cooldown ticks of protection ( n / 20 -> time in seconds)
 	), //stable at L12, ~65% DR w/ full set
 
+	BOUND(
+			"BOUND",
+			45,
+			new int[]{2, 6, 4, 2},
+			30,
+			0.055588625f, //infusion cost
+			0.06670635f, //infusion repair
+			//the following arrays match up to:
+			//[boots, leggings, chest, helmet]
+			new float[]{0.10f, 0.18f, 0.14f, 0.10f},
+			new float[]{0.5f, 0.5f, 0.5f, 0.5f} //cooldown ticks of protection ( n / 20 -> time in seconds)
+	), //stable at L8, 52% DR w/ full set
+
 	UNIQUE(
 			"UNIQUE",
 			200,
