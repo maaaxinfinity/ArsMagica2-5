@@ -28,6 +28,7 @@ import am2.particles.AMParticle;
 import am2.particles.ParticleFadeOut;
 import am2.playerextensions.ExtendedProperties;
 import am2.power.PowerNodeEntry;
+import am2.spell.SpellHelper;
 import am2.spell.SpellUtils;
 import am2.spell.components.Telekinesis;
 import am2.utility.DimensionUtilities;
@@ -51,6 +52,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import static am2.spell.SpellHelper.lingeringSpellList;
 
 @SideOnly(Side.CLIENT)
 public class ClientTickHandler{
@@ -343,6 +346,24 @@ public class ClientTickHandler{
 								cloud.addRandomOffset(0.5, 0.65, 0.75);
 								cloud.AddParticleController(new ParticleFadeOut(cloud, 1, false).setFadeSpeed(0.01f));
 							}
+						}
+					}
+				}
+			}
+
+			if (Minecraft.getMinecraft().theWorld != null) {
+				//update lingering spells
+				if (lingeringSpellList.size() > 0){
+					SpellHelper.LingeringSpell[] toRemove = new SpellHelper.LingeringSpell[lingeringSpellList.size()];
+					for (int i = 0; i < lingeringSpellList.size(); i++){
+						boolean toRemoveThis = lingeringSpellList.get(i).doUpdate();
+						if (toRemoveThis) toRemove[i] = lingeringSpellList.get(i);
+						else toRemove[i] = null;
+					}
+
+					for (int j = 0; j < toRemove.length; j++){
+						if (toRemove[j] != null){
+							lingeringSpellList.remove(toRemove[j]);
 						}
 					}
 				}

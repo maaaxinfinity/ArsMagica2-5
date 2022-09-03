@@ -8,6 +8,7 @@ import am2.items.ItemsCommonProxy;
 import am2.network.AMDataWriter;
 import am2.network.AMNetHandler;
 import am2.network.AMPacketIDs;
+import am2.spell.SpellHelper;
 import am2.utility.DimensionUtilities;
 import am2.worldgen.RetroactiveWorldgenerator;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
+import static am2.spell.SpellHelper.lingeringSpellList;
 
 public class ServerTickHandler{
 
@@ -68,6 +71,22 @@ public class ServerTickHandler{
 		applyDeferredPotionEffects();
 		if (event.phase == TickEvent.Phase.END){
 			applyDeferredDimensionTransfers();
+		}
+
+		//update lingering spells
+		if (lingeringSpellList.size() > 0){
+			SpellHelper.LingeringSpell[] toRemove = new SpellHelper.LingeringSpell[lingeringSpellList.size()];
+			for (int i = 0; i < lingeringSpellList.size(); i++){
+				boolean toRemoveThis = lingeringSpellList.get(i).doUpdate();
+				if (toRemoveThis) toRemove[i] = lingeringSpellList.get(i);
+				else toRemove[i] = null;
+			}
+
+			for (int j = 0; j < toRemove.length; j++){
+				if (toRemove[j] != null){
+					lingeringSpellList.remove(toRemove[j]);
+				}
+			}
 		}
 	}
 

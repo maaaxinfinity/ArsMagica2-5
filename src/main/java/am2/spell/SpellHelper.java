@@ -15,6 +15,7 @@ import am2.blocks.BlocksCommonProxy;
 import am2.buffs.BuffList;
 import am2.entities.EntityDarkMage;
 import am2.entities.EntityLightMage;
+import am2.entities.EntitySpellEffect;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMDataWriter;
 import am2.network.AMNetHandler;
@@ -44,6 +45,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class SpellHelper{
@@ -94,6 +96,15 @@ public class SpellHelper{
 			}
 		}
 
+		if (lingeringSpellZoneList.contains(stack)) {
+			lingeringSpellZoneList.remove(stack);
+			return SpellCastResult.SUCCESS;
+		}
+		int persistenceModifiers = SpellUtils.instance.getModifiedInt_Add(0, stack, caster, caster, world, 0, SpellModifiers.LINGERING);
+		if (persistenceModifiers > 0){
+			int timeToNextCast = SpellUtils.instance.getModifiedInt_Mul(15, stack, caster, caster, world, 0, SpellModifiers.DURATION);
+			lingeringSpellList.add(new LingeringSpell(persistenceModifiers, stack, world, caster, blockX, blockY, blockZ, blockFace, impactX, impactY, impactZ, timeToNextCast));
+		}
 		return SpellCastResult.SUCCESS;
 	}
 
@@ -139,10 +150,20 @@ public class SpellHelper{
 			}
 		}
 
-		if (appliedOneComponent)
+		if (lingeringSpellZoneList.contains(stack)) {
+			lingeringSpellZoneList.remove(stack);
 			return SpellCastResult.SUCCESS;
-		else
+		}
+		if (appliedOneComponent){
+			int persistenceModifiers = SpellUtils.instance.getModifiedInt_Add(0, stack, caster, target, world, 0, SpellModifiers.LINGERING);
+			if (persistenceModifiers > 0){
+				int timeToNextCast = SpellUtils.instance.getModifiedInt_Mul(15, stack, caster, target, world, 0, SpellModifiers.DURATION);
+				lingeringSpellList.add(new LingeringSpell(persistenceModifiers, stack, world, caster, target, timeToNextCast));
+			}
+			return SpellCastResult.SUCCESS;
+		} else{
 			return SpellCastResult.EFFECT_FAILED;
+		}
 	}
 
 	private boolean canApplyToEntity(ItemStack stack, EntityLivingBase caster, World world, Entity target){
@@ -407,5 +428,147 @@ public class SpellHelper{
 		item.setEntityItemStack(stack);
 		item.setPosition(x, y, z);
 		world.spawnEntityInWorld(item);
+	}
+
+	public static List<LingeringSpell> lingeringSpellList = new ArrayList<LingeringSpell>();
+	// used to not add zone spells twice
+	public static List<ItemStack> lingeringSpellZoneList = new ArrayList<ItemStack>();
+
+	public static class LingeringSpell {
+
+		public ItemStack stack = null;
+		public World world = null;
+		public EntityLivingBase caster = null;
+		public EntitySpellEffect zoneEntity = null;
+		public Entity target = null;
+		// zone spells linger in a special way, think of a 'Cloak' spell
+		public boolean zoneSpell = false;
+		// if zone, determines how long it lasts
+		public int timeToNextCastConstant = -1;
+		private int timeToNextCast = -1;
+		private int amountOfModifiers = 1;
+		public boolean applyToBlock = false;
+
+		public int blockX = -1;
+		public int blockY = -1;
+		public int blockZ = -1;
+		public int blockFace = -1;
+		public double impactX = -1;
+		public double impactY = -1;
+		public double impactZ = -1;
+
+		private LingeringSpell(int amountOfModifiers, ItemStack stack, World world, EntityLivingBase caster, int timeToNextCast) {
+			this.amountOfModifiers = amountOfModifiers;
+			this.stack = stack;
+			this.caster = caster;
+			this.world = world;
+			this.timeToNextCast = timeToNextCast;
+			this.timeToNextCastConstant = timeToNextCast;
+		}
+
+	    // lingers on an entity
+		public LingeringSpell(int amountOfModifiers, ItemStack stack, World world, EntityLivingBase caster, Entity target, int timeToNextCast) {
+			this(amountOfModifiers, stack, world, caster, timeToNextCast);
+			this.target = target;
+			this.applyToBlock = false;
+			this.zoneSpell = false;
+		}
+
+		// lingers on an entity, zone
+		public LingeringSpell(int amountOfModifiers, ItemStack stack, World world, EntityLivingBase caster, Entity target, int timeToNextCast, EntitySpellEffect zoneEntity) {
+			this(amountOfModifiers, stack, world, caster, target, timeToNextCast);
+			this.zoneEntity = zoneEntity;
+			this.zoneSpell = true;
+		}
+
+		// lingers on a block
+		public LingeringSpell(int amountOfModifiers, ItemStack stack, World world, EntityLivingBase caster, int blockX, int blockY, int blockZ, int blockFace, double impactX, double impactY, double impactZ, int timeToNextCast) {
+			this(amountOfModifiers, stack, world, caster, timeToNextCast);
+			this.blockX = blockX;
+			this.blockY = blockY;
+			this.blockZ = blockZ;
+			this.blockFace = blockFace;
+			this.impactX = impactX;
+			this.impactY = impactY;
+			this.impactZ = impactZ;
+			this.applyToBlock = true;
+		}
+
+		// true if needs to delete from list
+		public boolean doUpdate() {
+			if (this.zoneSpell) {
+				if (this.zoneEntity != null) {
+					if (this.target != null) this.zoneEntity.setPosition(this.target.posX, this.target.posY, this.target.posZ);
+					else this.zoneEntity.setPosition(this.caster.posX, this.caster.posY, this.caster.posZ);
+				}
+				// counter code still present
+				timeToNextCast--;
+				if (timeToNextCast <= 0) {
+					timeToNextCast = timeToNextCastConstant;
+					amountOfModifiers--;
+					if (amountOfModifiers <= 0) return true;
+				}
+			} else {
+				timeToNextCast--;
+				if (timeToNextCast <= 0) {
+					timeToNextCast = timeToNextCastConstant;
+					if (this.applyToBlock) doCastBlock();
+					else doCastEntity();
+					amountOfModifiers--;
+					if (amountOfModifiers <= 0) return true;
+				}
+			}
+			return false;
+		}
+
+		private void doCastEntity(){
+			ISpellComponent[] components = SpellUtils.instance.getComponentsForStage(stack, 0);
+			for (ISpellComponent component : components){
+				if (SpellHelper.instance.canApplyToEntity(stack, caster, world, target)){
+					if (component.applyEffectEntity(stack, world, caster, target)){
+						if (world.isRemote){
+							int color = -1;
+							if (SpellUtils.instance.modifierIsPresent(SpellModifiers.COLOR, stack, 0)){
+								ISpellModifier[] mods = SpellUtils.instance.getModifiersForStage(stack, 0);
+								int ordinalCount = 0;
+								for (ISpellModifier mod : mods){
+									if (mod instanceof Colour){
+										byte[] meta = SpellUtils.instance.getModifierMetadataFromStack(stack, mod, 0, ordinalCount++);
+										color = (int)mod.getModifier(SpellModifiers.COLOR, null, null, null, meta);
+									}
+								}
+							}
+							component.spawnParticles(world, target.posX, target.posY + target.getEyeHeight(), target.posZ, caster, target, world.rand, color);
+						}
+					}
+				}
+			}
+		}
+
+		private void doCastBlock(){
+			ISpellComponent[] components = SpellUtils.instance.getComponentsForStage(stack, 0);
+			for (ISpellComponent component : components){
+				if (BlocksCommonProxy.spellSealedDoor.applyComponentToDoor(world, component, blockX, blockY, blockZ))
+					continue;
+				if (SpellHelper.instance.canApplyToBlock(stack, caster, world)){
+					if (component.applyEffectBlock(stack, world, blockX, blockY, blockZ, blockFace, impactX, impactY, impactZ, caster)){
+						if (world.isRemote){
+							int color = -1;
+							if (SpellUtils.instance.modifierIsPresent(SpellModifiers.COLOR, stack, 0)){
+								ISpellModifier[] mods = SpellUtils.instance.getModifiersForStage(stack, 0);
+								int ordinalCount = 0;
+								for (ISpellModifier mod : mods){
+									if (mod instanceof Colour){
+										byte[] meta = SpellUtils.instance.getModifierMetadataFromStack(stack, mod, 0, ordinalCount++);
+										color = (int)mod.getModifier(SpellModifiers.COLOR, null, null, null, meta);
+									}
+								}
+							}
+							component.spawnParticles(world, blockX, blockY, blockZ, caster, caster, world.rand, color);
+						}
+					}
+				}
+			}
+		}
 	}
 }

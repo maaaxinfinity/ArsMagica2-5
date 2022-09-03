@@ -238,6 +238,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("Reflect"), 357, 315, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Shield"));
 		RegisterPart(SkillManager.instance.getSkill("ChronoAnchor"), 312, 315, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Reflect"));
+		RegisterPart(SkillManager.instance.getSkill("Lingering"), 267, 315, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("ChronoAnchor"));
 
 		RegisterPart(SkillManager.instance.getSkill("Duration"), 312, 360, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("ChronoAnchor"));
 
