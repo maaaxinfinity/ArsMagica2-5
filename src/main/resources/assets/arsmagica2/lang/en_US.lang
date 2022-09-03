@@ -391,6 +391,10 @@ am2.spell.waterygrave=Watery Grave
 
 am2.spell.bounce=Bounce
 am2.spell.buffpower=Buff Power
+am2.spell.targetblocks=Target Blocks
+am2.spell.targetcreatures=Target Creatures
+am2.spell.targetmonsters=Target Monsters
+am2.spell.targetplayers=Target Players
 am2.spell.colour=Color
 am2.spell.damage=Damage
 am2.spell.dismembering=Dismembering

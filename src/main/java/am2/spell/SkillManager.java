@@ -295,6 +295,10 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new Range(), "Range");
 		registerSkillTreeEntry(new Lunar(), "Lunar");
 		registerSkillTreeEntry(new TargetNonSolidBlocks(), "TargetNonSolid");
+		registerSkillTreeEntry(new TargetBlocks(), "TargetBlocks");
+		registerSkillTreeEntry(new TargetCreatures(), "TargetCreatures");
+		registerSkillTreeEntry(new TargetMonsters(), "TargetMonsters");
+		registerSkillTreeEntry(new TargetPlayers(), "TargetPlayers");
 		registerSkillTreeEntry(new Solar(), "Solar");
 		registerSkillTreeEntry(new Piercing(), "Piercing");
 		registerSkillTreeEntry(new Colour(), "Colour");

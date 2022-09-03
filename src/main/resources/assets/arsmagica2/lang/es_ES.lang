@@ -377,6 +377,10 @@ am2.spell.waterygrave=Tumba del Mar
 
 am2.spell.bounce=Rebotar
 am2.spell.buffpower=Poder de Mejora
+am2.spell.targetblocks=Bloques objetivo
+am2.spell.targetcreatures=Criaturas objetivo
+am2.spell.targetmonsters=Monstruos objetivo
+am2.spell.targetplayers=Jugadores objetivo
 am2.spell.colour=Color
 am2.spell.damage=Daño
 am2.spell.dismembering=Desmembramiento

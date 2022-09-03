@@ -403,7 +403,10 @@ am2.spell.feathertouch=Feather Touch
 am2.spell.prosperity=Prosperity
 am2.spell.dismembering=Dismembering
 am2.spell.buffpower=Buff Power
-
+am2.spell.targetblocks=Target Blocks
+am2.spell.targetcreatures=Target Creatures
+am2.spell.targetmonsters=Target Monsters
+am2.spell.targetplayers=Target Players
 am2.spell.affinitygains=Affinity Gains Boost
 am2.spell.augmentedcasting=Augmented Casting
 am2.spell.extrasummon=Extra Summon

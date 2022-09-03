@@ -6,6 +6,7 @@ import am2.api.math.AMVector3;
 import am2.api.spell.component.interfaces.ISpellModifier;
 import am2.api.spell.enums.Affinity;
 import am2.api.spell.enums.SpellModifiers;
+import am2.blocks.BlocksCommonProxy;
 import am2.buffs.BuffList;
 import am2.items.ItemsCommonProxy;
 import am2.particles.AMParticle;
@@ -24,6 +25,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -134,12 +136,12 @@ public class EntitySpellProjectile extends Entity{
 		List<EntityLivingBase> entities = this.worldObj.getEntitiesWithinAABB(
 				EntityLivingBase.class,
 				AxisAlignedBB.getBoundingBox(
-						this.posX - 15,
-						this.posY - 15,
-						this.posZ - 15,
-						this.posX + 15,
-						this.posY + 15,
-						this.posZ + 15));
+						this.posX - 10,
+						this.posY - 10,
+						this.posZ - 10,
+						this.posX + 10,
+						this.posY + 10,
+						this.posZ + 10));
 
 		EntityLivingBase closest = null;
 		double curShortestDistance = 900;
@@ -253,9 +255,8 @@ public class EntitySpellProjectile extends Entity{
 				return;
 			}
 		}
-
-		//TODO Fix homing
-		if (isHoming() && this.ticksExisted > 10){
+		
+		if (isHoming() && this.ticksExisted > 8){
 			if (this.dataWatcher.getWatchableObjectInt(DW_HOMING_TARGET) == -1){
 				findHomingTarget();
 			}else{

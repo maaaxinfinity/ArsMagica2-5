@@ -3,9 +3,12 @@ package net.tclproject.mysteriumlib.asm.fixes;
 import am2.affinity.AffinityHelper;
 import am2.api.spell.ItemSpellBase;
 import am2.armor.BoundArmor;
+import am2.buffs.BuffList;
 import am2.items.ItemSpellStaff;
 import am2.items.SpellBase;
 import am2.spell.SkillManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -25,13 +28,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MysteriumPatchesFixesMagicka {
+public class MysteriumPatchesFixesMagicka{
 
 	public static List<int[]> providingRedstone = new ArrayList<int[]>();
 	static int staffSlotTo = -1, staffSlotColumnTo = -1, staffSlotFrom = -1, staffSlotColumnFrom = -1;
 	static int armorSlotTo = -1, armorSlotColumnTo = -1;
 	static int spellSlotFrom = -1, spellSlotColumnFrom = -1;
 	static boolean craftingStaffsPossible = false, craftingSpellsPossible = false, craftingArmorPossible = false;
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	@SideOnly(Side.CLIENT)
+	public static boolean isInvisibleToPlayer(Entity e, EntityPlayer p_98034_1_){
+		return p_98034_1_.isPotionActive(BuffList.trueSight.id) ? false : e.isInvisible();
+	}
 
 	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, booleanAlwaysReturned = true)
 	public static boolean isBlockIndirectlyGettingPowered(World world, int x, int y, int z)

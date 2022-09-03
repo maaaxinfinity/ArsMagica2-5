@@ -393,7 +393,10 @@ am2.spell.feathertouch=Touche de Plume
 am2.spell.prosperity=Prospérité
 am2.spell.dismembering=Démembrement
 am2.spell.buffpower=Puissance du Buff
-
+am2.spell.targetblocks=Blocs cibles
+am2.spell.targetcreatures=Cibler les créatures
+am2.spell.targetmonsters=Monstres ciblés
+am2.spell.targetplayers=Cibler les joueurs
 am2.spell.affinitygains=Affinité Augmentée
 am2.spell.augmentedcasting=Incantation Supérieure
 am2.spell.extrasummon=Invocation Supplémentaire

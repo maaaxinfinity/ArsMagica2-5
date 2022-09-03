@@ -390,6 +390,10 @@ am2.spell.waterygrave=水墓术
 
 am2.spell.bounce=弹跳
 am2.spell.buffpower=光环能量
+am2.spell.targetblocks=目标块
+am2.spell.targetcreatures=目标生物
+am2.spell.targetmonsters=目标怪物
+am2.spell.targetplayers=目标玩家
 am2.spell.colour=颜色
 am2.spell.damage=伤害
 am2.spell.dismembering=肢解

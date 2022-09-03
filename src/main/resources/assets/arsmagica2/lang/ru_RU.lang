@@ -373,6 +373,10 @@ am2.spell.waterygrave=Подводная могила
 
 am2.spell.bounce=Отскок
 am2.spell.buffpower=Поглощение силы
+am2.spell.targetblocks=Нацелить на блоки
+am2.spell.targetcreatures=Нацелить на существо
+am2.spell.targetmonsters=Нацелить на монстр
+am2.spell.targetplayers=Нацелить на игрок
 am2.spell.colour=Покраска
 am2.spell.damage=Урон
 am2.spell.dismembering=Расчленение

@@ -166,6 +166,8 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Fling"), 390, 245, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Knockback"));
 		RegisterPart(SkillManager.instance.getSkill("VelocityAdded"), 390, 290, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Fling"));
 		RegisterPart(SkillManager.instance.getSkill("Homing"), 435, 290, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("VelocityAdded"));
+		RegisterPart(SkillManager.instance.getSkill("TargetPlayers"), 435, 335, SkillTrees.Offense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Homing"));
+		RegisterPart(SkillManager.instance.getSkill("TargetMonsters"), 480, 290, SkillTrees.Offense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Homing"));
 		RegisterPart(SkillManager.instance.getSkill("WateryGrave"), 435, 245, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Drown"));
 
 		RegisterPart(SkillManager.instance.getSkill("Piercing"), 323, 215, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Freeze"));
@@ -186,6 +188,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("Leap"), 222, 90, SkillTrees.Defense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Self"));
 		RegisterPart(SkillManager.instance.getSkill("Regeneration"), 357, 90, SkillTrees.Defense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Self"));
+		RegisterPart(SkillManager.instance.getSkill("TargetCreatures"), 312, 90, SkillTrees.Defense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Regeneration"));
 
 		RegisterPart(SkillManager.instance.getSkill("Shrink"), 402, 90, SkillTrees.Defense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Regeneration"));
 		RegisterPart(SkillManager.instance.getSkill("Slowfall"), 222, 135, SkillTrees.Defense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Leap"));
@@ -249,13 +252,13 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Dig"), 275, 120, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Touch"));
 		RegisterPart(SkillManager.instance.getSkill("WizardsAutumn"), 315, 120, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Dig"));
 		RegisterPart(SkillManager.instance.getSkill("TargetNonSolid"), 230, 75, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Touch"));
-
 		RegisterPart(SkillManager.instance.getSkill("Fatigue"), 315, 75, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("WizardsAutumn"));
 		RegisterPart(SkillManager.instance.getSkill("DigSpeed"), 365, 75, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Fatigue"));
 
 		RegisterPart(SkillManager.instance.getSkill("PlaceBlock"), 185, 93, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Dig"));
 		RegisterPart(SkillManager.instance.getSkill("FeatherTouch"), 230, 137, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Dig"));
 		RegisterPart(SkillManager.instance.getSkill("MiningPower"), 185, 137, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("FeatherTouch"));
+		RegisterPart(SkillManager.instance.getSkill("TargetBlocks"), 145, 137, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("MiningPower"));
 
 		RegisterPart(SkillManager.instance.getSkill("Light"), 275, 165, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Dig"));
 		RegisterPart(SkillManager.instance.getSkill("RedstoneSignal"), 315, 165, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Light"));

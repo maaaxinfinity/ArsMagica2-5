@@ -24,12 +24,16 @@ import am2.spell.SpellUtils.SpellRequirements;
 import am2.spell.modifiers.Colour;
 import am2.utility.EntityUtilities;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -68,23 +72,25 @@ public class SpellHelper{
 			if (BlocksCommonProxy.spellSealedDoor.applyComponentToDoor(world, component, blockX, blockY, blockZ))
 				continue;
 
-			if (component.applyEffectBlock(stack, world, blockX, blockY, blockZ, blockFace, impactX, impactY, impactZ, caster)){
-				if (world.isRemote){
-					int color = -1;
-					if (SpellUtils.instance.modifierIsPresent(SpellModifiers.COLOR, stack, 0)){
-						ISpellModifier[] mods = SpellUtils.instance.getModifiersForStage(stack, 0);
-						int ordinalCount = 0;
-						for (ISpellModifier mod : mods){
-							if (mod instanceof Colour){
-								byte[] meta = SpellUtils.instance.getModifierMetadataFromStack(stack, mod, 0, ordinalCount++);
-								color = (int)mod.getModifier(SpellModifiers.COLOR, null, null, null, meta);
+			if (canApplyToBlock(stack, caster, world)){
+				if (component.applyEffectBlock(stack, world, blockX, blockY, blockZ, blockFace, impactX, impactY, impactZ, caster)){
+					if (world.isRemote){
+						int color = -1;
+						if (SpellUtils.instance.modifierIsPresent(SpellModifiers.COLOR, stack, 0)){
+							ISpellModifier[] mods = SpellUtils.instance.getModifiersForStage(stack, 0);
+							int ordinalCount = 0;
+							for (ISpellModifier mod : mods){
+								if (mod instanceof Colour){
+									byte[] meta = SpellUtils.instance.getModifierMetadataFromStack(stack, mod, 0, ordinalCount++);
+									color = (int)mod.getModifier(SpellModifiers.COLOR, null, null, null, meta);
+								}
 							}
 						}
+						component.spawnParticles(world, blockX, blockY, blockZ, caster, caster, world.rand, color);
 					}
-					component.spawnParticles(world, blockX, blockY, blockZ, caster, caster, world.rand, color);
+					if (consumeMBR)
+						SpellUtils.instance.doAffinityShift(caster, component, stageShape, mana);
 				}
-				if (consumeMBR)
-					SpellUtils.instance.doAffinityShift(caster, component, stageShape, mana);
 			}
 		}
 
@@ -110,24 +116,26 @@ public class SpellHelper{
 			if (SkillTreeManager.instance.isSkillDisabled(component))
 				continue;
 
-			if (component.applyEffectEntity(stack, world, caster, target)){
-				appliedOneComponent = true;
-				if (world.isRemote){
-					int color = -1;
-					if (SpellUtils.instance.modifierIsPresent(SpellModifiers.COLOR, stack, 0)){
-						ISpellModifier[] mods = SpellUtils.instance.getModifiersForStage(stack, 0);
-						int ordinalCount = 0;
-						for (ISpellModifier mod : mods){
-							if (mod instanceof Colour){
-								byte[] meta = SpellUtils.instance.getModifierMetadataFromStack(stack, mod, 0, ordinalCount++);
-								color = (int)mod.getModifier(SpellModifiers.COLOR, null, null, null, meta);
+			if (canApplyToEntity(stack, caster, world, target)){
+				if (component.applyEffectEntity(stack, world, caster, target)){
+					appliedOneComponent = true;
+					if (world.isRemote){
+						int color = -1;
+						if (SpellUtils.instance.modifierIsPresent(SpellModifiers.COLOR, stack, 0)){
+							ISpellModifier[] mods = SpellUtils.instance.getModifiersForStage(stack, 0);
+							int ordinalCount = 0;
+							for (ISpellModifier mod : mods){
+								if (mod instanceof Colour){
+									byte[] meta = SpellUtils.instance.getModifierMetadataFromStack(stack, mod, 0, ordinalCount++);
+									color = (int)mod.getModifier(SpellModifiers.COLOR, null, null, null, meta);
+								}
 							}
 						}
+						component.spawnParticles(world, target.posX, target.posY + target.getEyeHeight(), target.posZ, caster, target, world.rand, color);
 					}
-					component.spawnParticles(world, target.posX, target.posY + target.getEyeHeight(), target.posZ, caster, target, world.rand, color);
+					if (shiftAffinityAndXP)
+						SpellUtils.instance.doAffinityShift(caster, component, stageShape, mana);
 				}
-				if (shiftAffinityAndXP)
-					SpellUtils.instance.doAffinityShift(caster, component, stageShape, mana);
 			}
 		}
 
@@ -135,6 +143,33 @@ public class SpellHelper{
 			return SpellCastResult.SUCCESS;
 		else
 			return SpellCastResult.EFFECT_FAILED;
+	}
+
+	private boolean canApplyToEntity(ItemStack stack, EntityLivingBase caster, World world, Entity target){
+		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_PLAYERS, stack, caster, target, world, 0) != 0 && target instanceof EntityPlayer) {
+			return true;
+		} else if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_MONSTERS, stack, caster, target, world, 0) != 0 && target instanceof EntityMob) {
+			return true;
+		} else if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_CREATURES, stack, caster, target, world, 0) != 0 && target instanceof EntityAgeable) {
+			return true;
+		}
+		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_BLOCKS, stack, caster, target, world, 0) != 0) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean canApplyToBlock(ItemStack stack, EntityLivingBase caster, World world){
+		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_BLOCKS, stack, caster, caster, world, 0) == 0){
+			if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_PLAYERS, stack, caster, caster, world, 0) != 0){
+				return false;
+			}else if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_MONSTERS, stack, caster, caster, world, 0) != 0){
+				return false;
+			}else if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_CREATURES, stack, caster, caster, world, 0) != 0){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private SpellCastingEvent.Pre preSpellCast(ItemStack stack, EntityLivingBase caster, boolean isChanneled){
