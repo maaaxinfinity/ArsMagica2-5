@@ -10,8 +10,10 @@ import am2.armor.infusions.*;
 import am2.blocks.BlocksCommonProxy;
 import am2.blocks.tileentities.TileEntityParticleEmitter;
 import am2.buffs.BuffList;
+import am2.configuration.AMConfig;
 import am2.enchantments.AMEnchantments;
 import am2.entities.EntityManager;
+import am2.entities.ai.MageVillagerTrade;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMNetHandler;
 import am2.network.AMPacketProcessorServer;
@@ -30,6 +32,7 @@ import am2.worldgen.RetroactiveWorldgenerator;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.server.FMLServerHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -170,6 +173,8 @@ public class CommonProxy{
 
 		enchantments = new AMEnchantments();
 		enchantments.Init();
+		VillagerRegistry.instance().registerVillagerId(AMCore.config.getVillagerProfessionID());
+		VillagerRegistry.instance().registerVillageTradeHandler(AMCore.config.getVillagerProfessionID(), new MageVillagerTrade());
 	}
 
 	public AM2WorldDecorator getWorldGen(){

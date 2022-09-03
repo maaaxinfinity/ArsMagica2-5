@@ -26,7 +26,7 @@ public class MageVillagerTrade implements IVillageTradeHandler{
 		for (int i = 0; i < numChoices; ++i){
 			ItemStack choice = getRandomChoiceForTrade(random);
 			if (choice != null){
-				MerchantRecipe itemToSell = new MerchantRecipe(new ItemStack(Items.emerald, random.nextInt(max - min) + min), choice);
+				MerchantRecipe itemToSell = new MerchantRecipe(new ItemStack(Items.emerald, random.nextInt(Math.abs(max - min) + min) + 1), choice);
 				recipeList.add(itemToSell);
 			}
 		}
