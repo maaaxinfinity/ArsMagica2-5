@@ -233,6 +233,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Rune"), 157, 315, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Accelerate"), SkillManager.instance.getSkill("Entangle"));
 
 		RegisterPart(SkillManager.instance.getSkill("RuneProcs"), 157, 360, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Rune"));
+		RegisterPart(SkillManager.instance.getSkill("Glyph"), 112, 315, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Rune"));
 
 		RegisterPart(SkillManager.instance.getSkill("Speed"), 202, 315, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Accelerate"), SkillManager.instance.getSkill("Flight"));
 
@@ -322,6 +323,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("ManaRegenIII"), 275, 165, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("ManaRegenII"));
 
 		RegisterPart(SkillManager.instance.getSkill("ExtraSummon"), 365, 165, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("AffinityGains"));
+		RegisterPart(SkillManager.instance.getSkill("ExtraGlyphs"), 365, 210, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("ExtraSummon"));
 
 		RegisterPart(SkillManager.instance.getSkill("MageBandI"), 320, 120, SkillTrees.Talents, SkillPointTypes.GREEN, SkillManager.instance.getSkill("ManaRegenI"));
 		RegisterPart(SkillManager.instance.getSkill("MageBandII"), 320, 165, SkillTrees.Talents, SkillPointTypes.RED, SkillManager.instance.getSkill("MageBandI"));

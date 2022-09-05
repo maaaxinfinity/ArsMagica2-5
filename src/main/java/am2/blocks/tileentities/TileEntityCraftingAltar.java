@@ -816,7 +816,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 
 		if (random.nextInt(10) >= 7){
 			// explosion
-			worldObj.newExplosion(null, xCoord + 0.5, yCoord - 1.5, zCoord + 0.5, fail * 2, false, true);
+			if (!worldObj.isRemote) worldObj.newExplosion(null, xCoord + 0.5, yCoord - 1.5, zCoord + 0.5, fail * 2, false, true);
 		}
 		if (random.nextBoolean()){
 			// set on fire

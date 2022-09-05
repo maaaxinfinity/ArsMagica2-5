@@ -36,6 +36,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -45,10 +46,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ExtendedProperties implements IExtendedProperties, IExtendedEntityProperties{
 	private EntityLivingBase entity;
@@ -62,6 +60,15 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	private int ticksForFullRegen = baseTicksForFullRegen;
 
 	private ArrayList<Integer> summon_ent_ids = new ArrayList<Integer>();
+
+	// I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!
+	// I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!
+	// I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!
+	// I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!
+	// I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!
+	// I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!
+	/** I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!*/
+	private Map<String, String> extra_properties = new HashMap<String, String>();
 
 	private double markX;
 	private double markY;
@@ -169,7 +176,7 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	public static final int BIT_SHRUNK = 0x8;
 
 	private int updateFlags;
-	private static final int syncTickDelay = 200; //10 seconds
+	private static final int syncTickDelay = 50; //2.5 seconds
 	private int ticksToSync;
 	public int redGlint = 0;
 	private int lightningsLeft = 0;
@@ -430,6 +437,18 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		if ((this.updateFlags & UPD_DISABLE_GRAVITY) == UPD_DISABLE_GRAVITY){
 			writer.add(this.disableGravity);
 		}
+
+		NBTTagCompound extra_data = new NBTTagCompound();
+		int c = 0;
+		for (Object o : extra_properties.keySet()) {
+			String iS = (String)o;
+			String iValue = extra_properties.get(iS);
+			extra_data.setString("persistentobj" + c, iValue);
+			extra_data.setString("persistentobjname" + c, iS);
+			c++;
+		}
+		extra_data.setInteger("persistentobjsize", extra_properties.size());
+		writer.add(extra_data);
 
 		this.updateFlags = 0;
 		this.forcingSync = false;
@@ -1013,6 +1032,12 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 			this.disableGravity = rdr.getBoolean();
 		}
 
+		extra_properties.clear();
+		NBTTagCompound nbt = rdr.getNBTTagCompound();
+		for (int j = 0; j < nbt.getInteger("persistentobjsize"); j++) {
+			extra_properties.put(nbt.getString("persistentobjname" + j), nbt.getString("persistentobj" + j));
+		}
+
 		return true;
 	}
 
@@ -1123,6 +1148,16 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 			compound.setDouble("marklocationz", this.getMarkZ());
 			compound.setInteger("markdimension", this.getMarkDimension());
 		}
+
+		int c = 0;
+		for (Object o : extra_properties.keySet()) {
+			String iS = (String)o;
+			String iValue = extra_properties.get(iS);
+			compound.setString("persistentobj" + c, iValue);
+			compound.setString("persistentobjname" + c, iS);
+			c++;
+		}
+		compound.setInteger("persistentobjsize", extra_properties.size());
 	}
 
 	@Override
@@ -1185,6 +1220,33 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 				// prevent console spam that doesn't mean anything, I don't mind that it can be null
 			}
 		}
+
+		for (int j = 0; j < compound.getInteger("persistentobjsize"); j++) {
+			extra_properties.put(compound.getString("persistentobjname" + j), compound.getString("persistentobj" + j));
+		}
+	}
+
+	public void addToExtraVariables(String name, String value) {
+		extra_properties.put(name, value);
+		setFullSync();
+	}
+
+	public void removeFromExtraVariables(String name) {
+		extra_properties.remove(name);
+		setFullSync();
+	}
+
+	public void clearExtraVariables() {
+		extra_properties.clear();
+		setFullSync();
+	}
+
+	public String getExtraVariable(String name) {
+		return extra_properties.get(name);
+	}
+
+	public boolean hasExtraVariable(String name) {
+		return extra_properties.get(name) != null;
 	}
 
 	@Override

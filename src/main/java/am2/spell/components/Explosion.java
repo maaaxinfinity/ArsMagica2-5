@@ -40,14 +40,14 @@ public class Explosion implements ISpellComponent{
 		}
 
 		int explosion = 2 + SpellUtils.instance.countModifiers(SpellModifiers.MINING_POWER, stack, 0);
-		world.newExplosion(null, blockx, blocky, blockz, explosion, false, true);
+		if (!world.isRemote) world.newExplosion(null, blockx, blocky, blockz, explosion, false, true);
 		return true;
 	}
 
 	@Override
 	public boolean applyEffectEntity(ItemStack stack, World world, EntityLivingBase caster, Entity target){
 		int explosion = 2 + SpellUtils.instance.countModifiers(SpellModifiers.MINING_POWER, stack, 0);
-		world.newExplosion(target, target.posX, target.posY, target.posZ, explosion, false, true);
+		if (!world.isRemote) world.newExplosion(target, target.posX, target.posY, target.posZ, explosion, false, true);
 		return true;
 	}
 

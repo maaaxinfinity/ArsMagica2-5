@@ -7,8 +7,10 @@ import am2.api.spell.enums.SpellCastResult;
 import am2.api.spell.enums.SpellModifiers;
 import am2.entities.EntitySpellProjectile;
 import am2.items.ItemsCommonProxy;
+import am2.playerextensions.ExtendedProperties;
 import am2.spell.SpellUtils;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -33,6 +35,37 @@ public class Projectile implements ISpellShape{
 			boolean tWater = SpellUtils.instance.modifierIsPresent(SpellModifiers.TARGET_NONSOLID_BLOCKS, stack, 0);
 
 			EntitySpellProjectile projectile = new EntitySpellProjectile(world, caster, projectileSpeed);
+
+			if (caster instanceof EntityPlayer){
+				ExtendedProperties ep = ExtendedProperties.For(caster);
+				if (ep.hasExtraVariable("spellposuse")){
+					if (ep.hasExtraVariable("SPELLPOS")) {
+						String pos = ep.getExtraVariable("SPELLPOS");
+						double actualX = Double.valueOf(pos.split(",")[0]);
+						double actualY = Double.valueOf(pos.split(",")[1]);
+						double actualZ = Double.valueOf(pos.split(",")[2]);
+						projectile.setPosition(actualX, actualY, actualZ);
+						ep.removeFromExtraVariables("SPELLPOS");
+						projectile.setGlyphCast(true);
+					} else if (ep.hasExtraVariable("SPELLPOS2")) {
+						String pos = ep.getExtraVariable("SPELLPOS2");
+						double actualX = Double.valueOf(pos.split(",")[0]);
+						double actualY = Double.valueOf(pos.split(",")[1]);
+						double actualZ = Double.valueOf(pos.split(",")[2]);
+						projectile.setPosition(actualX, actualY, actualZ);
+						ep.removeFromExtraVariables("SPELLPOS2");
+						projectile.setGlyphCast(true);
+					} else if (ep.hasExtraVariable("SPELLPOS3")) { // 3
+						String pos = ep.getExtraVariable("SPELLPOS3");
+						double actualX = Double.valueOf(pos.split(",")[0]);
+						double actualY = Double.valueOf(pos.split(",")[1]);
+						double actualZ = Double.valueOf(pos.split(",")[2]);
+						projectile.setPosition(actualX, actualY, actualZ);
+						ep.removeFromExtraVariables("SPELLPOS3");
+						projectile.setGlyphCast(true);
+					}
+				}
+			}
 			projectile.setShootingEntity(caster);
 			projectile.setBounces(projectileBounce);
 			projectile.setEffectStack(stack);
@@ -41,7 +74,6 @@ public class Projectile implements ISpellShape{
 			projectile.setGravity(projectileGravity);
 			projectile.setNumPierces(pierces);
 			projectile.setHoming(homing);
-
 			world.spawnEntityInWorld(projectile);
 		}
 

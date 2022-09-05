@@ -181,6 +181,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new Channel(), "Channel");
 		registerSkillTreeEntry(new Projectile(), "Projectile");
 		registerSkillTreeEntry(new Rune(), "Rune");
+		registerSkillTreeEntry(new Glyph(), "Glyph");
 		registerSkillTreeEntry(new Self(), "Self");
 		registerSkillTreeEntry(new Summon(), "Summon");
 		registerSkillTreeEntry(new Touch(), "Touch");
@@ -313,6 +314,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new AffinityGainsBoost(), "AffinityGains");
 		registerSkillTreeEntry(new AugmentedCasting(), "AugmentedCasting");
 		registerSkillTreeEntry(new ExtraSummon(), "ExtraSummon");
+		registerSkillTreeEntry(new ExtraGlyphs(), "ExtraGlyphs");
 		registerSkillTreeEntry(new MagePosseI(), "MageBandI");
 		registerSkillTreeEntry(new MagePosseII(), "MageBandII");
 		registerSkillTreeEntry(new ManaRegenBoostI(), "ManaRegenI");

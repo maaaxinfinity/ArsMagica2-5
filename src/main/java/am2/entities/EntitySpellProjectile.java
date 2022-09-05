@@ -17,6 +17,7 @@ import am2.playerextensions.ExtendedProperties;
 import am2.spell.SpellHelper;
 import am2.spell.SpellUtils;
 import am2.spell.modifiers.Colour;
+import am2.spell.shapes.Glyph;
 import am2.utility.DummyEntityPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -57,6 +58,7 @@ public class EntitySpellProjectile extends Entity{
 	private static final int DW_TARGETGRASS = 28;
 	private static final int DW_HOMING = 29;
 	private static final int DW_HOMING_TARGET = 30;
+	private static final int DW_GLYPH_CAST = 31;
 
 	private static final float GRAVITY_TERMINAL_VELOCITY = -2.0f;
 
@@ -89,6 +91,21 @@ public class EntitySpellProjectile extends Entity{
 		maxTicksToExist = -1;
 		setSpellProjectileHeading(motionX, motionY, motionZ, projectileSpeed, projectileSpeed);
 	}
+
+	public EntitySpellProjectile(World world, EntityLivingBase entityLiving, double projectileSpeed, double x, double y, double z){
+		super(world);
+		this.noClip = true;
+		setSize(0.25F, 0.25F);
+		setLocationAndAngles(x, y, z, entityLiving.rotationYaw, entityLiving.rotationPitch);
+		setPosition(x, y, z);
+		yOffset = 0.0F;
+		float f = 0.01F;
+		motionX = -MathHelper.sin((rotationYaw / 180F) * 3.141593F) * MathHelper.cos((rotationPitch / 180F) * 3.141593F) * f;
+		motionZ = MathHelper.cos((rotationYaw / 180F) * 3.141593F) * MathHelper.cos((rotationPitch / 180F) * 3.141593F) * f;
+		motionY = -MathHelper.sin((rotationPitch / 180F) * 3.141593F) * f;
+		maxTicksToExist = -1;
+		setSpellProjectileHeading(motionX, motionY, motionZ, projectileSpeed, projectileSpeed);
+	}
 	//=========================================================================
 
 	@Override
@@ -103,6 +120,7 @@ public class EntitySpellProjectile extends Entity{
 		this.dataWatcher.addObject(DW_TARGETGRASS, (byte)0);
 		this.dataWatcher.addObject(DW_HOMING, (byte)0);
 		this.dataWatcher.addObject(DW_HOMING_TARGET, -1);
+		this.dataWatcher.addObject(DW_GLYPH_CAST, 0);
 		blockhits = new ArrayList<AMVector3>();
 		entityHits = new ArrayList<Integer>();
 	}
@@ -129,6 +147,12 @@ public class EntitySpellProjectile extends Entity{
 	public void setHomingTarget(EntityLivingBase entity){
 		if (!this.worldObj.isRemote){
 			this.dataWatcher.updateObject(DW_HOMING_TARGET, entity.getEntityId());
+		}
+	}
+
+	public void setGlyphCast(boolean cast){
+		if (!this.worldObj.isRemote){
+			this.dataWatcher.updateObject(DW_GLYPH_CAST, cast ? 999 : 0);
 		}
 	}
 
@@ -201,6 +225,10 @@ public class EntitySpellProjectile extends Entity{
 		if (e != null && e instanceof EntityLivingBase)
 			return (EntityLivingBase)e;
 		return null;
+	}
+
+	public boolean isGlyphCast() {
+		return this.dataWatcher.getWatchableObjectInt(DW_GLYPH_CAST) == 999 ? true : false;
 	}
 
 	public void moveTowards(Entity entity, float maxYaw, float maxPitch){
@@ -419,14 +447,22 @@ public class EntitySpellProjectile extends Entity{
 
 			if (e instanceof EntityLivingBase && getShootingEntity() != null && !this.entityHits.contains(movingobjectposition.entityHit.getEntityId())){
 				SpellHelper.instance.applyStageToEntity(this.getEffectStack(), getShootingEntity(), this.worldObj, e, 0, true);
-				SpellHelper.instance.applyStackStage(SpellUtils.instance.popStackStage(getEffectStack()), getShootingEntity(), (EntityLivingBase)e, movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord, 0, worldObj, false, true, 0);
+				if (isGlyphCast()) {
+					SpellHelper.instance.applyStackStage(Glyph.getNewStack(getEffectStack(),1), getShootingEntity(), (EntityLivingBase)e, movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord, 0, worldObj, false, true, 0);
+				} else{
+					SpellHelper.instance.applyStackStage(SpellUtils.instance.popStackStage(getEffectStack()), getShootingEntity(), (EntityLivingBase)e, movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord, 0, worldObj, false, true, 0);
+				}
 				this.entityHits.add(movingobjectposition.entityHit.getEntityId());
 			}
 		}else{
 			AMVector3 blockLoc = new AMVector3(movingobjectposition.blockX, movingobjectposition.blockY, movingobjectposition.blockZ);
 			if (getShootingEntity() != null && !this.blockhits.contains(blockLoc)){
 				SpellHelper.instance.applyStageToGround(getEffectStack(), getShootingEntity(), worldObj, movingobjectposition.blockX, movingobjectposition.blockY, movingobjectposition.blockZ, movingobjectposition.sideHit, movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord, 0, true);
-				SpellHelper.instance.applyStackStage(SpellUtils.instance.popStackStage(getEffectStack()), getShootingEntity(), getShootingEntity(), movingobjectposition.blockX, movingobjectposition.blockY, movingobjectposition.blockZ, movingobjectposition.sideHit, worldObj, false, true, 0);
+				if (isGlyphCast()) {
+					SpellHelper.instance.applyStackStage(Glyph.getNewStack(getEffectStack(),1), getShootingEntity(), getShootingEntity(), movingobjectposition.blockX, movingobjectposition.blockY, movingobjectposition.blockZ, movingobjectposition.sideHit, worldObj, false, true, 0);
+				} else{
+					SpellHelper.instance.applyStackStage(SpellUtils.instance.popStackStage(getEffectStack()), getShootingEntity(), getShootingEntity(), movingobjectposition.blockX, movingobjectposition.blockY, movingobjectposition.blockZ, movingobjectposition.sideHit, worldObj, false, true, 0);
+				}
 				this.blockhits.add(blockLoc);
 			}
 		}
