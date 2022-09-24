@@ -47,6 +47,11 @@
       <desc>You can create a magically-infused rune on the ground that when triggered can apply powerful buffs...or deadly traps.</desc>
       <modifiedBy>PROCS,TARGET_NONSOLID_BLOCKS</modifiedBy>
     </shape>
+    <shape id="Glyph">
+      <name>Glyph</name>
+      <desc>You can create a magically-infused glyph in the air and activate the spell at that location at a later time.</desc>
+      <modifiedBy></modifiedBy>
+    </shape>
     <shape id="Contingency_Fall">
       <name>Contingency: Fall</name>
       <desc>You have figured out a spell shape that triggers when falling the instant before you hit the ground. !d Oh gravity, thou art a heartless... !d You can only have one contingency active at a time.</desc>
@@ -544,6 +549,31 @@
       <desc>Fortune strikes!  You can make your digging spells more likely to drop additional ores, and your damaging spells more likely to cause enemies to drop better loot.  Each modifier added is equivalent to one level of fortune/looting on the spell.</desc>
       <modifies>FORTUNE_LEVEL</modifies>
     </modifier>
+    <modifier id="Homing">
+      <name>Homing</name>
+      <desc>You can make your projectiles automatically aim at targets. This only works in a certain radius, though.</desc>
+      <modifies>HOMING</modifies>
+    </modifier>
+    <modifier id="TargetPlayers">
+      <name>Target Players</name>
+      <desc>You can make your spells only apply their effects to players, unless other Target modifiers are also present.</desc>
+      <modifies>TARGET_PLAYERS</modifies>
+    </modifier>
+    <modifier id="TargetBlocks">
+      <name>Target Blocks</name>
+      <desc>You can make your spells only apply their effects to blocks, unless other Target modifiers are also present.</desc>
+      <modifies>TARGET_BLOCKS</modifies>
+    </modifier>
+    <modifier id="TargetCreatures">
+      <name>Target Creatures</name>
+      <desc>You can make your spells only apply their effects to creatures, unless other Target modifiers are also present.</desc>
+      <modifies>TARGET_CREATURES</modifies>
+    </modifier>
+    <modifier id="TargetMonsters">
+      <name>Target Monsters</name>
+      <desc>You can make your spells only apply their effects to monsters, unless other Target modifiers are also present.</desc>
+      <modifies>TARGET_MONSTERS</modifies>
+    </modifier>
     <modifier id="BuffPower">
       <name>Buff Power</name>
       <desc>You can put more power into your buffs.  Each modifier added increases the level of the buff applied.  This will not affect duration.</desc>
@@ -596,6 +626,22 @@
     <talent id="SpellMotion">
       <name>Spell Movement</name>
       <desc>You have realized that agility is key.  To that end, you have trained yourself to be able to move at normal speed while using a spell.</desc>
+    </talent>
+    <talent id="ExtraGlyphs">
+      <name>Extra Glyphs</name>
+      <desc>You have gained the ability to keep track of one more glyph. You believe this is to do with how magic changes your perception of locations. Or better memory.</desc>
+    </talent>
+    <talent id="ManaCapacityI">
+      <name>Mana Capacity I</name>
+      <desc>You are more attuned with the world around you.  Your magic capacity slightly increases.</desc>
+    </talent>
+    <talent id="ManaCapacityII">
+      <name>Mana Capacity II</name>
+      <desc>You are even more attuned with the world around you.  Your magic capacity moderately increases.</desc>
+    </talent>
+    <talent id="ManaCapacityIII">
+      <name>Mana Capacity III</name>
+      <desc>You are much more attuned with the world around you.  Your magic capacity hugely increases.</desc>
     </talent>
     <talent id="Colour">
       <name>Colour</name>
@@ -1421,6 +1467,13 @@
         <relatedEntries>obelisk,wizardChalk,warding_candle</relatedEntries>
         <ritualName>corruption</ritualName>
         <ritualController>FireDamage</ritualController>
+      </subitem>
+      <subitem id="world_fusion">
+        <name>Ritual of World Fusion</name>
+        <desc>The Ritual of World Fusion magically and spiritually connects you to the world around you, granting you additional mana.  An emerald block must act as the core of the ritual and a Mana Link spell must be used.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <ritualName>worldFusion</ritualName>
+        <ritualController>ManaLink</ritualController>
       </subitem>
       <subitem id="corruption_obelisk">
         <name>Ritual of Corruption (Monster Spawner)</name>
