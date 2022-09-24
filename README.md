@@ -3,6 +3,22 @@ Ars Magica 2.5
 
 Ars Magica 2.5 Source Code Repository
 
+## New Features (TL;DR)
+
+- Re-added Staffs
+- Re-added Caster Blocks and Runes
+- Re-added Moo Moo Farm
+- Added New Components, Shape, Modifiers and Talents
+- Added an enormous amount of new spell icons
+- Added compat with Not Enough Items
+- Added recipes for multiple previously uncraftable items
+- Added multiple new items and blocks with utility
+- Balanced Altar, Burnout, Leveling and Bosses
+- Improved/optimized startup time
+- Fixed missing lang entries
+- Fixed bugs and crashes
+- See in-game or commit comments for more details
+
 ### License
 This mod is open sourced under the Creative Commons 3.0 Attribution Non-Commercial License
 https://creativecommons.org/licenses/by-nc/3.0/legalcode
