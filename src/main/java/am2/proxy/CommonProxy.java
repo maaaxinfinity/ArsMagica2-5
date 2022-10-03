@@ -90,8 +90,10 @@ public class CommonProxy{
 	}
 
 	public void postinit(){
+
 		blocks.setupSpellConstraints();
 		items.postInit();
+
 		playerTracker.postInit();
 		
 		BuffList.postInit();
@@ -103,6 +105,7 @@ public class CommonProxy{
 		MinecraftForge.EVENT_BUS.register(new ArmorEventHandler());
 		MinecraftForge.EVENT_BUS.register(EntityManager.instance);
 		MinecraftForge.EVENT_BUS.register(new AMWorldEventHandler());
+
 		if (!SkillTreeManager.instance.isSkillDisabled(SkillManager.instance.getSkill("Shrink")))
 			MinecraftForge.EVENT_BUS.register(new ShrinkHandler());
 
