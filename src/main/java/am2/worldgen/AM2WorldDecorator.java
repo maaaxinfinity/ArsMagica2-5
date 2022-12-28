@@ -2,6 +2,7 @@ package am2.worldgen;
 
 import am2.AMCore;
 import am2.blocks.BlocksCommonProxy;
+import am2.configuration.AMConfig;
 import am2.entities.SpawnBlacklists;
 import cpw.mods.fml.common.IWorldGenerator;
 import net.minecraft.init.Blocks;
@@ -75,9 +76,18 @@ public class AM2WorldDecorator implements IWorldGenerator{
 
 	public AM2WorldDecorator(){
 
-		for (int i : AMCore.config.getWorldgenBlacklist()){
-			if (i == -1) continue;
-			dimensionBlacklist.add(i);
+		if (AMCore.config.getWorldgenWhitelistEnabled()) {
+			for (int i = -999; i <= 999; i++){
+				dimensionBlacklist.add(i);
+			}
+			for (int k : AMCore.config.getWorldgenWhitelist()){
+				dimensionBlacklist.remove((Integer)k);
+			}
+		} else{
+			for (int i : AMCore.config.getWorldgenBlacklist()){
+				if (i == -1) continue;
+				dimensionBlacklist.add(i);
+			}
 		}
 
 		vinteum = new WorldGenMinable(BlocksCommonProxy.AMOres, BlocksCommonProxy.AMOres.META_VINTEUM_ORE, vinteumVein, Blocks.stone);

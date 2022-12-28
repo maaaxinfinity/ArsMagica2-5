@@ -48,6 +48,9 @@ public class AMConfig extends Configuration{
 	private final String KEY_DigDisabledBlocks = "dig_blacklist";
 	private final String KEY_WorldgenBlacklist = "worldgen_blacklist";
 
+	private final String KEY_WorldgenWhitelist = "worldgen_whitelist";
+	private final String KEY_WorldgenWhitelistEnabled = "worldgen_whitelist_enabled";
+
 	private final String KEY_GetRandomSpellNames = "suggest_spell_names";
 	private final String KEY_DisarmAffectsPlayers = "disarm_affects_players";
 
@@ -182,6 +185,7 @@ public class AMConfig extends Configuration{
 	private boolean NPCSpellsDamageTerrain;
 	private float DamageMultiplier;
 	private boolean UseSpecialRenderers;
+	private boolean useDimWhitelist;
 	private boolean DisplayManaInInventory;
 	private boolean IsImbueEnabled;
 	private boolean RetroWorldGen;
@@ -202,6 +206,7 @@ public class AMConfig extends Configuration{
 	private int mageVillagerProfessionID;
 	private String[] digBlacklist;
 	private int[] worldgenBlacklist;
+	private int[] worldgenWhitelist;
 	private boolean enableWitchwoodForest;
 	private int witchwoodForestRarity;
 	
@@ -414,6 +419,24 @@ public class AMConfig extends Configuration{
 		String digBlacklistString = get(CATEGORY_GENERAL, KEY_DigDisabledBlocks, "", "Comma-separated list of block IDs that dig cannot break.  If a block is flagged as unbreackable in code, Dig will already be unable to break it.  There is no need to set it here (eg, bedrock, etc.).  Dig also makes use of Forge block harvest checks.  This is mainly for fine-tuning.").getString();
 		digBlacklist = digBlacklistString.split(",");
 
+		useDimWhitelist = get(CATEGORY_GENERAL, KEY_WorldgenWhitelistEnabled, false, "Use the dimension whitelist instead of the dimension blacklist").getBoolean(false);
+		String worldgenWhiteList = get(CATEGORY_GENERAL, KEY_WorldgenWhitelist, "0", "Comma-separated list of dimension IDs that AM *should* do worldgen in.").getString();
+		String[] asplit = worldgenWhiteList.split(",");
+		worldgenWhitelist = new int[asplit.length];
+		int count1 = 0;
+		for (String s : asplit){
+			if (s.equals("")) continue;
+			try{
+				worldgenWhitelist[count1] = Integer.parseInt(s.trim());
+			}catch (Throwable t){
+				LogHelper.info("Malformed item in worldgen whitelist (%s).  Skipping.", s);
+				t.printStackTrace();
+				worldgenWhitelist[count1] = -1;
+			}finally{
+				count1++;
+			}
+		}
+
 		String worldgenBlackList = get(CATEGORY_GENERAL, KEY_WorldgenBlacklist, "-27,-28,-29", "Comma-separated list of dimension IDs that AM should *not* do worldgen in.").getString();
 		String[] split = worldgenBlackList.split(",");
 		worldgenBlacklist = new int[split.length];
@@ -622,6 +645,14 @@ public class AMConfig extends Configuration{
 
 	public int[] getWorldgenBlacklist(){
 		return worldgenBlacklist;
+	}
+
+	public int[] getWorldgenWhitelist(){
+		return worldgenWhitelist;
+	}
+
+	public boolean getWorldgenWhitelistEnabled(){
+		return useDimWhitelist;
 	}
 
 	public boolean moonstoneMeteorsDestroyTerrain(){
