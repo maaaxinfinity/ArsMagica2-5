@@ -99,6 +99,7 @@ public class CommonProxy{
 		BuffList.postInit();
 
 		MinecraftForge.EVENT_BUS.register(new AMEventHandler());
+		FMLCommonHandler.instance().bus().register(new AMEventHandler());
 		MinecraftForge.EVENT_BUS.register(PowerNodeCache.instance);
 		MinecraftForge.EVENT_BUS.register(new AffinityHelper());
 		MinecraftForge.EVENT_BUS.register(new SpellUnlockManager());

@@ -14,17 +14,21 @@ import am2.spell.SkillTreeManager;
 import am2.utility.EntityUtilities;
 import am2.utility.WebRequestUtils;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -169,24 +173,10 @@ public class PlayerTracker{
 
 			SkillData.For(event.player).loadNBTData(stored);
 		}
-		//================================================================================
-		//soulbound items
-		//================================================================================
-		if (soulbound_Storage.containsKey(event.player.getUniqueID())){
-			HashMap<Integer, ItemStack> soulboundItems = soulbound_Storage.get(event.player.getUniqueID());
-			for (Integer i : soulboundItems.keySet()){
-				if (i < event.player.inventory.getSizeInventory())
-					event.player.inventory.setInventorySlotContents(i, soulboundItems.get(i));
-				else
-					event.player.entityDropItem(soulboundItems.get(i), 0);
-			}
-		}
-		//================================================================================
 	}
 
 	public void onPlayerDeath(EntityPlayer player){
 		storeExtendedPropertiesForRespawn(player);
-		storeSoulboundItemsForRespawn(player);
 	}
 
 	public static void storeExtendedPropertiesForRespawn(EntityPlayer player){

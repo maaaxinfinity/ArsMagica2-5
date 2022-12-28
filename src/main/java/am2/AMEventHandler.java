@@ -26,6 +26,8 @@ import am2.playerextensions.ExtendedProperties;
 import am2.playerextensions.RiftStorage;
 import am2.playerextensions.SkillData;
 import am2.utility.*;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -64,12 +66,16 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.world.WorldEvent;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static am2.PlayerTracker.soulbound_Storage;
+import static am2.PlayerTracker.storeSoulboundItemsForRespawn;
 
 public class AMEventHandler{
 
@@ -95,6 +101,11 @@ public class AMEventHandler{
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public void onUnload(WorldEvent.Unload we) {
+		soulbound_Storage.clear();
 	}
 
 	@SubscribeEvent
@@ -153,6 +164,14 @@ public class AMEventHandler{
 			}
 			soonToBeDead.removePotionEffect(BuffList.temporalAnchor.id);
 			return;
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onEntityDeathHighPriority(LivingDeathEvent event){
+		EntityLivingBase soonToBeDead = event.entityLiving;
+		if (soonToBeDead instanceof EntityPlayer){
+			storeSoulboundItemsForRespawn((EntityPlayer)soonToBeDead);
 		}
 	}
 
@@ -341,6 +360,36 @@ public class AMEventHandler{
 		extendedProperties = ExtendedProperties.For(ent);
 		extendedProperties.handleSpecialSyncData();
 		extendedProperties.manaBurnoutTick();
+
+		//================================================================================
+		//soulbound items
+		//================================================================================
+		if (ent instanceof EntityPlayer){
+			EntityPlayer player = (EntityPlayer)ent;
+			if (!ent.isDead){
+				if (ent.ticksExisted > 5 && ent.ticksExisted < 10 && !ent.worldObj.isRemote){
+					if (soulbound_Storage.containsKey(player.getUniqueID())){
+						HashMap<Integer, ItemStack> soulboundItems = soulbound_Storage.get(player.getUniqueID());
+						for (Integer i : soulboundItems.keySet()){
+							if (i < player.inventory.getSizeInventory()){
+								player.inventory.setInventorySlotContents(i, soulboundItems.get(i));
+							}else{
+								boolean done = false;
+								for (int l = 0; l < player.inventory.getSizeInventory(); l++){
+									if (player.inventory.getStackInSlot(l) == null){
+										player.inventory.setInventorySlotContents(l, soulboundItems.get(i));
+										done = true;
+										break;
+									}
+								}
+								if (!done) player.entityDropItem(soulboundItems.get(i), 0);
+							}
+						}
+					}
+				}
+			}
+		}
+		//================================================================================
 
 		// unflip flipped players
 		if (tempFlipped.containsKey(extendedProperties)) {
