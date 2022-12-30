@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.4.3-highstorageremoteclear"
+version = "1.4.4"
 group= "am2" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "AM2"
 sourceCompatibility = 1.8

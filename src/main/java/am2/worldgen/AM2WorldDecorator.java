@@ -159,7 +159,7 @@ public class AM2WorldDecorator implements IWorldGenerator{
 		}
 
 		if (random.nextInt(witchChance) == 0){
-			generateTree(random.nextInt(6) == 0 ? witchwoodTree : witchwoodTreeEvenMoreHuge, world, random, chunkX, chunkZ);
+			generateTree(random.nextInt(AMCore.config.spawnHugeTrees() ? 6 : 1) == 0 ? witchwoodTree : witchwoodTreeEvenMoreHuge, world, random, chunkX, chunkZ);
 		}
 
 		if (random.nextInt(poolChance) == 0){

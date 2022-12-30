@@ -40,6 +40,7 @@ public class AMConfig extends Configuration{
 	private final String KEY_DamageMultiplier = "DamageMultiplier";
 
 	private final String KEY_UseSpecialRenderers = "Use_Special_Renderers";
+	private final String KEY_SpawnHugeTrees = "SpawnHugeTrees";
 	private final String KEY_LowResParticles = "Low_Res_Particles";
 	private final String KEY_FrictionCoefficient = "FrictionCoefficient";
 
@@ -185,6 +186,7 @@ public class AMConfig extends Configuration{
 	private boolean NPCSpellsDamageTerrain;
 	private float DamageMultiplier;
 	private boolean UseSpecialRenderers;
+	private boolean SpawnHugeTrees;
 	private boolean useDimWhitelist;
 	private boolean DisplayManaInInventory;
 	private boolean IsImbueEnabled;
@@ -308,6 +310,7 @@ public class AMConfig extends Configuration{
 		DamageMultiplier = (float)get(CATEGORY_GENERAL, KEY_DamageMultiplier, 1.0, "How much the damage in Ars Magica is scaled.").getDouble(1.0);
 
 		UseSpecialRenderers = get(CATEGORY_GENERAL, KEY_UseSpecialRenderers, true, "Render spell effects on equipped scrolls rather than the scroll itself (only applies to the in-game one, the one on your hotbar remains unchanged)").getBoolean(true);
+		SpawnHugeTrees =  get(CATEGORY_GENERAL, KEY_SpawnHugeTrees, true, "Spawn big witchwood trees. If disabled, will only spawn normal witchwood trees.").getBoolean(true);
 
 		boolean def = !Loader.isModLoaded("NotEnoughItems");
 		DisplayManaInInventory = get(CATEGORY_GENERAL, KEY_DisplayManaInInventory, def, "This will toggle mana display on and off in your inventory.  Default 'O' key in game.").getBoolean(def);
@@ -545,6 +548,10 @@ public class AMConfig extends Configuration{
 
 	public boolean useSpecialRenderers(){
 		return UseSpecialRenderers;
+	}
+
+	public boolean spawnHugeTrees(){
+		return SpawnHugeTrees;
 	}
 
 	public boolean displayManaInInventory(){

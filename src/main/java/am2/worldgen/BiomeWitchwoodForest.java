@@ -46,6 +46,6 @@ public class BiomeWitchwoodForest extends BiomeGenBase{
 	@Override
 	public WorldGenAbstractTree func_150567_a(Random p_150567_1_)
 	{
-	  return (WorldGenAbstractTree)(p_150567_1_.nextInt(3) == 0 ? hugeTree : evenMoreHugeTree);
+	  return (WorldGenAbstractTree)(p_150567_1_.nextInt(AMCore.config.spawnHugeTrees() ? 3 : 1) == 0 ? hugeTree : evenMoreHugeTree);
 	}
 }
