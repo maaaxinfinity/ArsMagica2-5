@@ -3,6 +3,7 @@ package net.tclproject.mysteriumlib.asm.fixes;
 import am2.affinity.AffinityHelper;
 import am2.api.spell.ItemSpellBase;
 import am2.armor.BoundArmor;
+import am2.blocks.liquid.BlockLiquidEssence;
 import am2.buffs.BuffList;
 import am2.items.ItemSpellStaff;
 import am2.items.SpellBase;
@@ -23,10 +24,9 @@ import net.minecraft.world.World;
 import net.tclproject.mysteriumlib.asm.annotations.EnumReturnSetting;
 import net.tclproject.mysteriumlib.asm.annotations.Fix;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static am2.blocks.liquid.BlockLiquidEssence.liquidEssenceMaterial;
 
 public class MysteriumPatchesFixesMagicka{
 
@@ -82,7 +82,24 @@ public class MysteriumPatchesFixesMagicka{
 		return false;
 	}
 
-	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "isInsideWater")
+	@Fix
+	public static void updateTick(BlockDynamicLiquid bdl, World p_149674_1_, int p_149674_2_, int p_149674_3_, int p_149674_4_, Random p_149674_5_){
+		if (bdl.getMaterial() == Material.lava && p_149674_1_.getBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_) instanceof BlockLiquidEssence) {
+			p_149674_1_.setBlock(p_149674_2_, p_149674_3_ - 1, p_149674_4_, Blocks.stained_glass, 11, 3);
+			func_149799_m(p_149674_1_, p_149674_2_, p_149674_3_ - 1, p_149674_4_);
+			return;
+		}
+	}
+
+	protected static void func_149799_m(World p_149799_1_, int p_149799_2_, int p_149799_3_, int p_149799_4_) {
+		p_149799_1_.playSoundEffect((double)((float)p_149799_2_ + 0.5F), (double)((float)p_149799_3_ + 0.5F), (double)((float)p_149799_4_ + 0.5F), "random.fizz", 0.5F, 2.6F + (p_149799_1_.rand.nextFloat() - p_149799_1_.rand.nextFloat()) * 0.8F);
+
+		for (int l = 0; l < 8; ++l) {
+			p_149799_1_.spawnParticle("largesmoke", (double)p_149799_2_ + Math.random(), (double)p_149799_3_ + 1.2D, (double)p_149799_4_ + Math.random(), 0.0D, 0.0D, 0.0D);
+		}
+	}
+
+		@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "isInsideWater")
 	public static boolean isInWater(Entity e) {
 		if (e instanceof EntityPlayer) {
 			if (AffinityHelper.isNotInWaterActually.contains((EntityPlayer)e)) {
