@@ -313,6 +313,8 @@ public class EntityFlicker extends EntityAmbientCreature{
 
 	@Override
 	public boolean getCanSpawnHere(){
+		if (!SpawnBlacklists.getPermanentBlacklistValue(worldObj, this))
+			return false;
 		if (AMCore.proxy.getTotalFlickerCount() > 8 * worldObj.playerEntities.size() || worldObj.rand.nextDouble() > 0.2f){
 			return false;
 		}

@@ -15,6 +15,13 @@ public class EntityDarkling extends EntityMob{
 	}
 
 	@Override
+	public boolean getCanSpawnHere(){
+		if (!SpawnBlacklists.getPermanentBlacklistValue(worldObj, this))
+			return false;
+		return super.getCanSpawnHere();
+	}
+
+	@Override
 	protected void applyEntityAttributes(){
 		super.applyEntityAttributes();
 		this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(7D);

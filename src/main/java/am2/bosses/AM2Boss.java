@@ -4,6 +4,7 @@ import am2.AMCore;
 import am2.blocks.BlocksCommonProxy;
 import am2.buffs.BuffList;
 import am2.entities.EntityLightMage;
+import am2.entities.SpawnBlacklists;
 import am2.items.ItemsCommonProxy;
 import am2.playerextensions.ExtendedProperties;
 import am2.spell.components.Dig;
@@ -277,5 +278,12 @@ public abstract class AM2Boss extends EntityMob implements IArsMagicaBoss, IEnti
 
 	public World func_82194_d(){
 		return this.worldObj;
+	}
+
+	@Override
+	public boolean getCanSpawnHere(){
+		if (!SpawnBlacklists.getPermanentBlacklistValue(worldObj, this))
+			return false;
+		return super.getCanSpawnHere();
 	}
 }

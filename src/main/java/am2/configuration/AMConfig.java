@@ -173,6 +173,7 @@ public class AMConfig extends Configuration{
 	private final String KEY_ColourblindMode = "ColourblindMode";
 
 	private final String KEY_EtheriumSpawnMode = "ColourblindMode";
+	private final String KEY_MobBlacklist = "EntityBlacklist";
 	/**
 	 * End GUI Config
 	 **/
@@ -212,6 +213,7 @@ public class AMConfig extends Configuration{
 	private String[] digBlacklist;
 	private int[] worldgenBlacklist;
 	private int[] worldgenWhitelist;
+	private int[] mobBlacklist;
 	private boolean enableWitchwoodForest;
 	private int witchwoodForestRarity;
 	
@@ -461,6 +463,23 @@ public class AMConfig extends Configuration{
 			}
 		}
 
+		String mobBlackList = get(CATEGORY_GENERAL, KEY_MobBlacklist, "-27,-28,-29", "Comma-separated list of dimension IDs that AM should *not* spawn mobs in.").getString();
+		String[] split2 = worldgenBlackList.split(",");
+		mobBlacklist = new int[split2.length];
+		int count2 = 0;
+		for (String s : split2){
+			if (s.equals("")) continue;
+			try{
+				mobBlacklist[count2] = Integer.parseInt(s.trim());
+			}catch (Throwable t){
+				LogHelper.info("Malformed item in worldgen blacklist (%s).  Skipping.", s);
+				t.printStackTrace();
+				mobBlacklist[count2] = -1;
+			}finally{
+				count2++;
+			}
+		}
+
 		String apBlockBL = get(CATEGORY_GENERAL, KEY_Appropriation_Block_Blacklist, "", "Comma-separated list of block IDs that appropriation cannot pick up.").getString();
 		appropriationBlockBlacklist = apBlockBL.split(",");
 
@@ -662,6 +681,10 @@ public class AMConfig extends Configuration{
 
 	public int[] getWorldgenWhitelist(){
 		return worldgenWhitelist;
+	}
+
+	public int[] getMobBlacklist(){
+		return mobBlacklist;
 	}
 
 	public boolean getWorldgenWhitelistEnabled(){

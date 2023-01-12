@@ -1,5 +1,6 @@
 package am2.entities;
 
+import am2.AMCore;
 import am2.LogHelper;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.entity.EntityLivingBase;
@@ -43,9 +44,19 @@ public class SpawnBlacklists{
 		BiomeGenBase biome = world.getBiomeGenForCoords((int)x, (int)z);
 		if (blacklistedBiomeSpawns.containsEntry(biome.biomeID, entity.getClass()))
 			return false;
-
+		if (!getPermanentBlacklistValue(world, entity)) return false;
 		return true;
 	}
+
+	public static boolean getPermanentBlacklistValue(World world, EntityLivingBase entity){
+		for (int i : AMCore.config.getMobBlacklist()){
+			if (i == world.provider.dimensionId){
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	public static void addBlacklistedDimensionForWorldgen(int dimensionID){
 		if (dimensionID == 0 || dimensionID == -1)
