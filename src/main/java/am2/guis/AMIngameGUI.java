@@ -15,16 +15,21 @@ import am2.spell.SkillManager;
 import am2.spell.SpellUtils;
 import am2.texture.ResourceManager;
 import am2.texture.SpellIconManager;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
@@ -33,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+
+import static am2.blocks.liquid.BlockLiquidEssence.liquidEssenceMaterial;
 
 public class AMIngameGUI{
 	private final Minecraft mc;
@@ -48,6 +55,7 @@ public class AMIngameGUI{
 	private static final ResourceLocation inventory = new ResourceLocation("textures/gui/container/inventory.png");
 	private static final ResourceLocation items = new ResourceLocation("textures/atlas/items.png");
 	private static final ResourceLocation redTexture = new ResourceLocation("arsmagica2:textures/guis/red.png");
+	private static final ResourceLocation resEth = new ResourceLocation("arsmagica2:textures/misc/underether.png");
 
 	public AMIngameGUI(){
 		mc = Minecraft.getMinecraft();
@@ -55,6 +63,12 @@ public class AMIngameGUI{
 	}
 
 	public void renderGameOverlay(){
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		if (this.mc.thePlayer.isInsideOfMaterial(liquidEssenceMaterial)) {
+			renderFluidOverlay();
+		}
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+
 		ItemStack ci = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
 
 		boolean drawAMHud = !AMCore.config.showHudMinimally() || (ci != null && (ci.getItem() == ItemsCommonProxy.spellBook || ci.getItem() == ItemsCommonProxy.spell || ci.getItem() == ItemsCommonProxy.arcaneSpellbook || ci.getItem() instanceof IBoundItem));
@@ -89,6 +103,16 @@ public class AMIngameGUI{
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glColor4f(1, 1, 1, 1);
+	}
+
+	public void renderFluidOverlay() {
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDepthMask(false);
+		GL11.glColor4d(1.0, 1.0, 1.0, 0.5);
+		Minecraft.getMinecraft().renderEngine.bindTexture(resEth);
+		this.drawTexturedModalRect(0, 0, 0, 0, 1920, 1080);
+		GL11.glDepthMask(true);
+		GL11.glDisable(GL11.GL_BLEND);
 	}
 
 	private void RenderArsMagicaGUIItems(int i, int j, FontRenderer fontRenderer){
