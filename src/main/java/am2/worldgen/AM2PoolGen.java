@@ -1,5 +1,6 @@
 package am2.worldgen;
 
+import am2.AMCore;
 import am2.blocks.BlocksCommonProxy;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -13,7 +14,7 @@ public class AM2PoolGen{
 	public void generate(World world, Random rand, int x, int y, int z){
 		y = correctYCoord(world, x, y, z);
 		if (y == -1) return;
-		if (validPoolLocation(world, x, y, z)){
+		if (validPoolLocation(world, x, y, z) && (AMCore.config.spawnEtherMode() == 0 || AMCore.config.spawnEtherMode() == 2)){
 			world.setBlock(x, y, z, BlocksCommonProxy.liquidEssence);
 			world.setBlock(x - 1, y, z, BlocksCommonProxy.liquidEssence);
 			world.setBlock(x, y, z - 1, BlocksCommonProxy.liquidEssence);

@@ -166,7 +166,7 @@ public class AM2WorldDecorator implements IWorldGenerator{
 			generatePools(world, random, chunkX, chunkZ);
 		}
 
-		if ((BiomeDictionary.isBiomeOfType(biome, Type.MAGICAL) || BiomeDictionary.isBiomeOfType(biome, Type.FOREST)) && random.nextInt(4) == 0 && TerrainGen.populate(chunkProvider, world, random, chunkX, chunkZ, true, LAKE)){
+		if ((BiomeDictionary.isBiomeOfType(biome, Type.MAGICAL) || BiomeDictionary.isBiomeOfType(biome, Type.FOREST)) && random.nextInt(4) == 0 && TerrainGen.populate(chunkProvider, world, random, chunkX, chunkZ, true, LAKE) && (AMCore.config.spawnEtherMode() == 0 || AMCore.config.spawnEtherMode() == 1)){
 			int lakeGenX = (chunkX * 16) + random.nextInt(16) + 8;
 			int lakeGenY = random.nextInt(128);
 			int lakeGenZ = (chunkZ * 16) + random.nextInt(16) + 8;

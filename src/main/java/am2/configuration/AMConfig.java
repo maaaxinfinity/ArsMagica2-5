@@ -171,6 +171,8 @@ public class AMConfig extends Configuration{
 	private final String KEY_ShowXPAlways = "ShowXPAlways";
 	private final String KEY_ShowHUDBars = "ShowHUDBars";
 	private final String KEY_ColourblindMode = "ColourblindMode";
+
+	private final String KEY_EtheriumSpawnMode = "ColourblindMode";
 	/**
 	 * End GUI Config
 	 **/
@@ -182,6 +184,7 @@ public class AMConfig extends Configuration{
 	private static final String CATEGORY_POTIONS = "potions";
 
 	private int GFXLevel;
+	private int EtherMode;
 	private boolean PlayerSpellsDamageTerrain;
 	private boolean NPCSpellsDamageTerrain;
 	private float DamageMultiplier;
@@ -352,6 +355,7 @@ public class AMConfig extends Configuration{
 		showXPAlways = get(CATEGORY_UI, KEY_ShowXPAlways, false).getBoolean(false);
 		showHudBars = get(CATEGORY_UI, KEY_ShowHUDBars, true).getBoolean(true);
 
+		EtherMode = get(CATEGORY_GENERAL, KEY_EtheriumSpawnMode, 0, "0 = spawn both large and small pools. 1 = spawn large pools only. 2 = spawn small pools only.").getInt();
 		witchwoodForestID = get(CATEGORY_GENERAL, KEY_WitchwoodForestBiomeID, 100, "The biome ID for Witchwood Forests. Change this if you run into issues with other mods that add biomes.").getInt();
 		mmfBiomeID = get(CATEGORY_GENERAL, KEY_MMFBiomeID, 110, "The biome ID for Moo Moo Farm. Change this if you run into issues with other mods that add biomes.").getInt();
 		mmfDimensionID = get(CATEGORY_GENERAL, KEY_MMFDimensionID, -31, "The dimension ID for Moo Moo Farm. Change this if you run into issues with other mods that add dimensions.").getInt();
@@ -521,6 +525,8 @@ public class AMConfig extends Configuration{
 	public boolean NoGFX(){
 		return GFXLevel == 0;
 	}
+
+	public int spawnEtherMode() { return EtherMode; };
 
 	public boolean NPCSpellsDamageTerrain(){
 		return NPCSpellsDamageTerrain;
