@@ -1,8 +1,5 @@
 package am2.blocks.tileentities;
 
-import am2.AMCore;
-import am2.api.math.AMVector3;
-import am2.api.power.IPowerNode;
 import am2.api.power.PowerTypes;
 import am2.api.spell.component.interfaces.ISpellShape;
 import am2.api.spell.enums.SpellCastResult;
@@ -10,29 +7,22 @@ import am2.entities.EntityDummyCaster;
 import am2.items.ISpellFocus;
 import am2.items.ItemFocusCharge;
 import am2.navigation.Point3D;
-import am2.network.AMDataReader;
 import am2.network.AMDataWriter;
-import am2.network.AMNetHandler;
 import am2.playerextensions.ExtendedProperties;
 import am2.power.PowerNodeRegistry;
 import am2.spell.SpellHelper;
 import am2.spell.SpellUtils;
 import am2.utility.DummyEntityPlayer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.SoundHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 public class TileEntityBlockCaster extends TileEntityAMPower implements IInventory {
    protected float rotation = 0.0F;
@@ -159,8 +149,7 @@ public class TileEntityBlockCaster extends TileEntityAMPower implements IInvento
          if (!this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord)) {
             if (this.hasCast) {
                if (this.worldObj.isRemote && castingStack != null && SpellUtils.instance.spellIsChanneled(castingStack)) {
-                  ISpellShape shape = SpellUtils.instance.getShapeForStage(castingStack, 0);
-                  Minecraft.getMinecraft().getSoundHandler().stopSound(PositionedSoundRecord.func_147674_a(new ResourceLocation(shape.getSoundForAffinity(SpellUtils.instance.mainAffinityFor(castingStack), castingStack, (World)null)), 1.0F));
+                  playSound(castingStack);
                }
 
                this.hasCast = false;
@@ -180,6 +169,12 @@ public class TileEntityBlockCaster extends TileEntityAMPower implements IInvento
 
          super.updateEntity();
       }
+   }
+
+   @SideOnly(Side.CLIENT)
+   private void playSound(ItemStack castingStack) {
+      ISpellShape shape = SpellUtils.instance.getShapeForStage(castingStack, 0);
+      net.minecraft.client.Minecraft.getMinecraft().getSoundHandler().stopSound(net.minecraft.client.audio.PositionedSoundRecord.func_147674_a(new ResourceLocation(shape.getSoundForAffinity(SpellUtils.instance.mainAffinityFor(castingStack), castingStack, (World)null)), 1.0F));
    }
 
    public boolean hasCharge() {
