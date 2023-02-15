@@ -10,7 +10,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import sun.misc.ExtensionDependency;
 
 import java.util.List;
 
