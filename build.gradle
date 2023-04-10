@@ -2,8 +2,12 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            name = "gt6-maven"
+            url = "https://gregtech.mechaenetia.com/"
+        }
+        maven {
+            name = "gtnh"
+            url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
         }
         maven {
             name = "sonatype"
@@ -11,13 +15,20 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2.11'
     }
+}
+
+repositories {
+	maven {
+		name = "gt"
+		url = "https://gregtech.mechaenetia.com/"
+	}
 }
 
 apply plugin: 'forge'
 
-version = "1.5.0-hotfix"
+version = "1.5.0-hotfix1"
 group= "am2" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "AM2"
 sourceCompatibility = 1.8
@@ -36,8 +47,29 @@ jar {
 	}
 }
 
-dependencies {
+task devJar(type: Jar) {
+	manifest {
+		attributes 'FMLCorePlugin' : 'am2.preloader.AM2PreloaderContainer'
+		attributes 'FMLCorePluginContainsFMLMod' : 'true'
+	}
+	classifier = 'dev'
+	from sourceSets.main.output
+}
 
+task sourceJar(type: Jar) {
+	manifest {}
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+reobf {
+}
+
+artifacts {
+	archives devJar, sourceJar
+}
+
+dependencies {
 }
 
 processResources
@@ -62,3 +94,26 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+if (!hasProperty("mavenUsername")) {
+	ext.mavenUsername="${System.getenv().MAVEN_USERNAME}"
+}
+
+if (!hasProperty("mavenPassword")) {
+	ext.mavenPassword="${System.getenv().MAVEN_PASSWORD}"
+}
+
+if (!hasProperty("mavenURL")) {
+	ext.mavenURL="${System.getenv().MAVEN_URL}"
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: mavenURL) {
+				authentication(userName: mavenUsername, password: mavenPassword)
+			}
+		}
+	}
+}
+
