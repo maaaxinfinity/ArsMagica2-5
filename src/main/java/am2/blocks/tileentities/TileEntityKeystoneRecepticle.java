@@ -274,9 +274,11 @@ public class TileEntityKeystoneRecepticle extends TileEntityAMPower implements I
 					double newX = myLocation.x + (Math.cos(angleH) * distanceWeCanGo);
 					double newZ = myLocation.z + (Math.sin(angleH) * distanceWeCanGo);
 					double newY = myLocation.y;
+					double originalY = myLocation.y;
 
 					while (worldObj.isAirBlock((int)newX, (int)newY, (int)newZ)){
 						newY++;
+						if (newY > (originalY + 100)) break; // prevent infinite loop (?)
 					}
 
 					newLocation = new AMVector3(newX, newY, newZ);
