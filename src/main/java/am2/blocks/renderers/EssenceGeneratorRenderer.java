@@ -139,7 +139,6 @@ public class EssenceGeneratorRenderer extends TileEntitySpecialRenderer{
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-
 		RenderHelper.disableStandardItemLighting();
 
 		Tessellator tessellator = Tessellator.instance;
@@ -163,10 +162,12 @@ public class EssenceGeneratorRenderer extends TileEntitySpecialRenderer{
 		Minecraft.getMinecraft().renderEngine.bindTexture(rLoc_black);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glTranslatef(0.0f, 0.25f, 0.0f);
+		GL11.glPushMatrix();
 		GL11.glRotatef(Minecraft.getMinecraft().thePlayer.ticksExisted, 0, 0, 1);
 		GL11.glScalef(scale * 2, scale * 2, scale * 2);
 		GL11.glTranslatef(0.0f, -0.25f, 0.0f);
 		renderSprite(tessellator);
+		GL11.glPopMatrix();
 
 	}
 
