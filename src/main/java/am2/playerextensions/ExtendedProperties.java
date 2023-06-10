@@ -353,8 +353,10 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		if (hasRitual) {
 			max += 23000; // changed from 25000
 		}
-		if (this.entity.isPotionActive(BuffList.manaBoost))
-		max *= 1 + (0.25 * (this.entity.getActivePotionEffect(BuffList.manaBoost).getAmplifier() + 1));
+		if (this.entity instanceof EntityPlayer) {
+			if (this.entity.isPotionActive(BuffList.manaBoost))
+			max *= 1 + (0.25 * (this.entity.getActivePotionEffect(BuffList.manaBoost).getAmplifier() + 1));
+		}
 		return (float)(max + this.entity.getAttributeMap().getAttributeInstance(ArsMagicaApi.maxManaBonus).getAttributeValue());
 	}
 
