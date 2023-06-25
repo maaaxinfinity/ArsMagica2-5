@@ -41,7 +41,7 @@ public class Fury implements ISpellComponent, IRitualInteraction{
 				Items.fish,
 				Items.fish,
 				Items.fish,
-				Items.fish,
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_HELLFISH),
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SUNSTONE)
 		};
 	}

@@ -18,6 +18,7 @@ import am2.buffs.BuffList;
 import am2.damage.DamageSources;
 import am2.guis.AMGuiHelper;
 import am2.items.ItemManaStone;
+import am2.items.ItemSoulspike;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMDataReader;
 import am2.network.AMDataWriter;
@@ -1243,6 +1244,14 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		setFullSync();
 	}
 
+	public Map<String, String> getExtraVariablesContains(String contains) {
+		Map<String, String> toReturn = new HashMap<>();
+		for (String key : extra_properties.keySet()) {
+			if (key.contains(contains)) toReturn.put(key, extra_properties.get(key));
+		}
+		return toReturn;
+	}
+
 	public String getExtraVariable(String name) {
 		return extra_properties.get(name);
 	}
@@ -1298,6 +1307,15 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 							float amt = Math.min(availablemana, leftOver);
 							if (amt > 0){
 								ItemManaStone.deductManaFromStone(casterPlayer.inventory.mainInventory[i], (int)amt);
+								leftOver -= amt;
+								if (leftOver <= 0)
+									break;
+							}
+						} else if (casterPlayer.inventory.mainInventory[i].getItem() instanceof ItemSoulspike){
+							int availablemana = ItemSoulspike.getManaInSpike(casterPlayer.inventory.mainInventory[i]);
+							float amt = Math.min(availablemana, leftOver);
+							if (amt > 0){
+								ItemSoulspike.deductManaFromSpike(casterPlayer.inventory.mainInventory[i], (int)amt);
 								leftOver -= amt;
 								if (leftOver <= 0)
 									break;

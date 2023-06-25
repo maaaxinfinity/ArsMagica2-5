@@ -187,6 +187,23 @@ public class RecipesEssenceRefiner extends RecipesArsMagica{
 				},
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_ENDER));
 
+		//nightmare essence
+		AddRecipe(new ItemStack[]{
+						new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIFE),
+						new ItemStack(Items.fermented_spider_eye),
+						new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_ARCANEASH),
+						new ItemStack(Items.gunpowder),
+						new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_COGNITIVEDUST)
+				},
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_NIGHTMAREESSENCE));
+		AddRecipe(new ItemStack[]{
+						new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_COGNITIVEDUST),
+						new ItemStack(Items.gunpowder),
+						new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_ARCANEASH),
+						new ItemStack(Items.fermented_spider_eye),
+						new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIFE)
+				},
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_NIGHTMAREESSENCE));
 		//base essence core
 		AddRecipe(new ItemStack[]{
 						new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_AIR),
@@ -240,5 +257,39 @@ public class RecipesEssenceRefiner extends RecipesArsMagica{
 				new ItemStack(Items.magma_cream),
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_ENDER),
 		}, new ItemStack(ItemsCommonProxy.deficitCrystal));
+
+		//infused stem
+		AddRecipe(new ItemStack[]{
+				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIFE),
+				new ItemStack(Items.melon_seeds),
+				new ItemStack(Blocks.sapling),
+				new ItemStack(Blocks.lapis_block),
+				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIFE),
+		}, new ItemStack(BlocksCommonProxy.infusedStem));
+
+		AddRecipe(new ItemStack[]{
+				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIFE),
+				new ItemStack(Blocks.lapis_block),
+				new ItemStack(Blocks.sapling),
+				new ItemStack(Items.melon_seeds),
+				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIFE),
+		}, new ItemStack(BlocksCommonProxy.infusedStem));
+
+		//imbued moonflower
+		AddRecipe(new ItemStack[]{
+				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_AIR),
+				new ItemStack(BlocksCommonProxy.tarmaRoot),
+				new ItemStack(Blocks.pumpkin_stem),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONEFRAGMENT),
+				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_NATURE),
+		}, new ItemStack(ItemsCommonProxy.imbuedMoonflowerSeeds));
+
+		AddRecipe(new ItemStack[]{
+				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_NATURE),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONEFRAGMENT),
+				new ItemStack(Blocks.pumpkin_stem),
+				new ItemStack(BlocksCommonProxy.tarmaRoot),
+				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_AIR),
+		}, new ItemStack(ItemsCommonProxy.imbuedMoonflowerSeeds));
 	}
 }

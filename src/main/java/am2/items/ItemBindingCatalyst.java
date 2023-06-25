@@ -83,7 +83,7 @@ public class ItemBindingCatalyst extends ArsMagicaItem{
 			case META_HOE:
 				return ItemsCommonProxy.BoundHoe.getIconFromDamage(0);
 			case META_BOW:
-				return Items.bow.getIconFromDamage(0);
+				return ItemsCommonProxy.BoundBow.getIconFromDamage(0);
 			}
 		}
 
@@ -98,7 +98,7 @@ public class ItemBindingCatalyst extends ArsMagicaItem{
 		par3List.add(new ItemStack(par1, 1, META_SHOVEL));
 		par3List.add(new ItemStack(par1, 1, META_SWORD));
 		par3List.add(new ItemStack(par1, 1, META_HOE));
-		//par3List.add(new ItemStack(par1, 1, META_BOW));
+		par3List.add(new ItemStack(par1, 1, META_BOW));
 	}
 
 }

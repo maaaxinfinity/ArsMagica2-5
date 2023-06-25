@@ -97,6 +97,7 @@ public class Flight implements ISpellComponent, IRitualInteraction{
 	public Object[] getRecipeItems(){
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_WHITE),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_CELESTIALFISH),
 				Items.nether_star,
 				Items.ghast_tear
 		};

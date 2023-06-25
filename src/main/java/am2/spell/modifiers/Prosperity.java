@@ -31,6 +31,7 @@ public class Prosperity implements ISpellModifier{
 	public Object[] getRecipeItems(){
 		return new Object[]{
 				Items.gold_ingot,
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_COGNITIVEDUST),
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_BASE_CORE),
 				Items.gold_ingot
 		};

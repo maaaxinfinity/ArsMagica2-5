@@ -91,6 +91,7 @@ public class ClientProxy extends CommonProxy{
 		guiManager = new ClientGuiManager();
 		NetworkRegistry.INSTANCE.registerGuiHandler(AMCore.instance, guiManager);
 		clientTickHandler = new ClientTickHandler();
+		MinecraftForge.EVENT_BUS.register(clientTickHandler);
 		FMLCommonHandler.instance().bus().register(clientTickHandler);
 		AMNetHandler.INSTANCE.registerChannels(new AMPacketProcessorClient());
 

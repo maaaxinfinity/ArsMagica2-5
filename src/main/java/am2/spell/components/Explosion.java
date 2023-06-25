@@ -99,6 +99,7 @@ public class Explosion implements ISpellComponent{
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_ORANGE),
 				new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_YELLOW),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SUNSTONEFRAGMENT),
 				Items.flint_and_steel,
 				Items.gunpowder,
 				new ItemStack(Blocks.tnt)

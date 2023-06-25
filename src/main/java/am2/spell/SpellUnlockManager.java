@@ -51,14 +51,17 @@ public class SpellUnlockManager{
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("FallingStar"), SkillManager.instance.getSkill("MagicDamage"), SkillManager.instance.getSkill("Gravity"), SkillManager.instance.getSkill("AstralDistortion")));
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("Blizzard"), SkillManager.instance.getSkill("Storm"), SkillManager.instance.getSkill("FrostDamage"), SkillManager.instance.getSkill("Freeze"), SkillManager.instance.getSkill("Damage")));
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("FireRain"), SkillManager.instance.getSkill("Storm"), SkillManager.instance.getSkill("FireDamage"), SkillManager.instance.getSkill("Ignition"), SkillManager.instance.getSkill("Damage")));
+		entries.add(new UnlockEntry(SkillManager.instance.getSkill("ConcentrateTime"), SkillManager.instance.getSkill("Accelerate"), SkillManager.instance.getSkill("Haste"), SkillManager.instance.getSkill("Lingering")));
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("Dismembering"), SkillManager.instance.getSkill("Piercing"), SkillManager.instance.getSkill("Damage")));
 
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("ManaLink"), SkillManager.instance.getSkill("ManaDrain"), SkillManager.instance.getSkill("Entangle")));
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("ManaShield"), SkillManager.instance.getSkill("Shield"), SkillManager.instance.getSkill("Reflect"), SkillManager.instance.getSkill("LifeTap")));
+		entries.add(new UnlockEntry(SkillManager.instance.getSkill("DiluteTime"), SkillManager.instance.getSkill("Freeze"), SkillManager.instance.getSkill("Slowfall"), SkillManager.instance.getSkill("Slow"), SkillManager.instance.getSkill("Weakness"), SkillManager.instance.getSkill("Lingering")));
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("BuffPower"), SkillManager.instance.getSkill("Haste"), SkillManager.instance.getSkill("Slowfall"), SkillManager.instance.getSkill("SwiftSwim"), SkillManager.instance.getSkill("GravityWell"), SkillManager.instance.getSkill("Leap")));
 
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("Daylight"), SkillManager.instance.getSkill("TrueSight"), SkillManager.instance.getSkill("DivineIntervention"), SkillManager.instance.getSkill("Light")));
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("Moonrise"), SkillManager.instance.getSkill("NightVision"), SkillManager.instance.getSkill("EnderIntervention"), SkillManager.instance.getSkill("Lunar")));
+		entries.add(new UnlockEntry(SkillManager.instance.getSkill("FortifyTime"), SkillManager.instance.getSkill("Shield"), SkillManager.instance.getSkill("ChronoAnchor"), SkillManager.instance.getSkill("Duration")));
 		entries.add(new UnlockEntry(SkillManager.instance.getSkill("Prosperity"), SkillManager.instance.getSkill("Dig"), SkillManager.instance.getSkill("FeatherTouch"), SkillManager.instance.getSkill("MiningPower")));
 	}
 

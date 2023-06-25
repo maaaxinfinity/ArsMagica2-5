@@ -175,12 +175,14 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Beam"), 300, 270, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("AoE"));
 		RegisterPart(SkillManager.instance.getSkill("Damage"), 300, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Beam"));
 		RegisterPart(SkillManager.instance.getSkill("Fury"), 255, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Beam"), SkillManager.instance.getSkill("Storm"));
+		RegisterPart(SkillManager.instance.getSkill("Curse"), 255, 355, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Fury"));
 		RegisterPart(SkillManager.instance.getSkill("Wave"), 367, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Beam"), SkillManager.instance.getSkill("Fling"));
 
 		RegisterPart(SkillManager.instance.getSkill("Blizzard"), 75, 45, SkillTrees.Offense, SkillPointTypes.SILVER);
 		RegisterPart(SkillManager.instance.getSkill("FallingStar"), 75, 90, SkillTrees.Offense, SkillPointTypes.SILVER);
 		RegisterPart(SkillManager.instance.getSkill("FireRain"), 75, 135, SkillTrees.Offense, SkillPointTypes.SILVER);
-		RegisterPart(SkillManager.instance.getSkill("Dismembering"), 75, 180, SkillTrees.Offense, SkillPointTypes.SILVER);
+		RegisterPart(SkillManager.instance.getSkill("ConcentrateTime"), 75, 180, SkillTrees.Offense, SkillPointTypes.SILVER);
+		RegisterPart(SkillManager.instance.getSkill("Dismembering"), 75, 225, SkillTrees.Offense, SkillPointTypes.SILVER);
 
 		//defense tree
 		defenseTree.clear();
@@ -245,7 +247,8 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("ManaLink"), 30, 45, SkillTrees.Defense, SkillPointTypes.SILVER);
 		RegisterPart(SkillManager.instance.getSkill("ManaShield"), 30, 90, SkillTrees.Defense, SkillPointTypes.SILVER);
-		RegisterPart(SkillManager.instance.getSkill("BuffPower"), 30, 135, SkillTrees.Defense, SkillPointTypes.SILVER);
+		RegisterPart(SkillManager.instance.getSkill("DiluteTime"), 30, 135, SkillTrees.Defense, SkillPointTypes.SILVER);
+		RegisterPart(SkillManager.instance.getSkill("BuffPower"), 30, 180, SkillTrees.Defense, SkillPointTypes.SILVER);
 
 		//utility tree
 		utilityTree.clear();
@@ -305,12 +308,14 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("DivineIntervention"), 172, 480, SkillTrees.Utility, SkillPointTypes.RED, SkillManager.instance.getSkill("Recall"), SkillManager.instance.getSkill("Mark"));
 		RegisterPart(SkillManager.instance.getSkill("EnderIntervention"), 198, 480, SkillTrees.Utility, SkillPointTypes.RED, SkillManager.instance.getSkill("Recall"), SkillManager.instance.getSkill("Mark"));
+		RegisterPart(SkillManager.instance.getSkill("Banish"), 234, 480, SkillTrees.Utility, SkillPointTypes.RED, SkillManager.instance.getSkill("EnderIntervention"));
 
 		RegisterPart(SkillManager.instance.getSkill("Contingency_Death"), 198, 524, SkillTrees.Utility, SkillPointTypes.RED, SkillManager.instance.getSkill("EnderIntervention"));
 
 		RegisterPart(SkillManager.instance.getSkill("Daylight"), 75, 45, SkillTrees.Utility, SkillPointTypes.SILVER);
 		RegisterPart(SkillManager.instance.getSkill("Moonrise"), 75, 90, SkillTrees.Utility, SkillPointTypes.SILVER);
-		RegisterPart(SkillManager.instance.getSkill("Prosperity"), 75, 135, SkillTrees.Utility, SkillPointTypes.SILVER);
+		RegisterPart(SkillManager.instance.getSkill("FortifyTime"), 75, 135, SkillTrees.Utility, SkillPointTypes.SILVER);
+		RegisterPart(SkillManager.instance.getSkill("Prosperity"), 75, 180, SkillTrees.Utility, SkillPointTypes.SILVER);
 
 		//talent tree
 		RegisterPart(SkillManager.instance.getSkill("ManaRegenI"), 275, 75, SkillTrees.Talents, SkillPointTypes.BLUE);

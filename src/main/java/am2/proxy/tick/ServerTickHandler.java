@@ -11,19 +11,24 @@ import am2.network.AMPacketIDs;
 import am2.spell.SpellHelper;
 import am2.utility.DimensionUtilities;
 import am2.worldgen.RetroactiveWorldgenerator;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixesMagicka;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import static am2.AMEventHandler.tempCurseMap;
 import static am2.spell.SpellHelper.lingeringSpellList;
 
 public class ServerTickHandler{
@@ -86,6 +91,32 @@ public class ServerTickHandler{
 				if (toRemove[j] != null){
 					lingeringSpellList.remove(toRemove[j]);
 				}
+			}
+		}
+
+		// handle temporary curses
+		ArrayList<EntityCreature> toRemove = new ArrayList<EntityCreature>();
+		HashMap<EntityCreature, Integer> toChange = new HashMap<EntityCreature, Integer>();
+		for (Map.Entry<EntityCreature, Integer> entry : tempCurseMap.entrySet()) {
+			EntityCreature key = entry.getKey();
+			Integer value = entry.getValue();
+			if (value <= 3) toRemove.add(key);
+			else toChange.put(key, value-1);
+		}
+		for (Map.Entry<EntityCreature, Integer> entry : toChange.entrySet()) {
+			tempCurseMap.put(entry.getKey(), entry.getValue()); // overwrite with new value
+		}
+		for (EntityCreature ec : toRemove) {
+			tempCurseMap.remove(ec);
+			ec.setDead();
+		}
+
+		if (!event.world.isRemote || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) {
+			if (MysteriumPatchesFixesMagicka.countdownToChangeBack >= 3) {
+				MysteriumPatchesFixesMagicka.countdownToChangeBack--;
+			} else if (MysteriumPatchesFixesMagicka.countdownToChangeBack != -1) {
+				MysteriumPatchesFixesMagicka.countdownToChangeBack = -1;
+				MysteriumPatchesFixesMagicka.changeTickrate(20);
 			}
 		}
 	}

@@ -30,5 +30,6 @@ public class ItemManaMartini extends ItemFood{
 	public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean iHaveNoIdea){
 		super.addInformation(stack, player, lines, iHaveNoIdea);
 		lines.add(StatCollector.translateToLocal("am2.tooltip.shaken"));
+		lines.add(StatCollector.translateToLocal("am2.tooltip.drink"));
 	}
 }

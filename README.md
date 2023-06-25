@@ -1,23 +1,25 @@
 Ars Magica 2.5
 ==========
 
-Ars Magica 2.5 Source Code Repository
+Ars Magica 2.5 - Carrying the Torch of True Magic
 
 ## New Features (TL;DR)
 
 - Re-added Staffs
 - Re-added Caster Blocks and Runes
-- Re-added Moo Moo Farm
 - Added New Components, Shape, Modifiers and Talents
 - Added an enormous amount of new spell icons
-- Added compat with Not Enough Items
+- Added compat with Not Enough Items and Magic Bees
 - Added recipes for multiple previously uncraftable items
-- Added multiple new items and blocks with utility
-- Balanced Altar, Burnout, Leveling and Bosses
+- Added multiple new items, blocks and contraptions with utility
+- Added and changed multiple core mod mechanics
+- Re-added and implemented multiple lost and unfinished features
+- Refined Altar, Burnout, Leveling and Bosses
 - Improved/optimized startup time
 - Fixed missing lang entries
-- Fixed bugs and crashes
-- See in-game or commit comments for more details
+- Fixed a plethora of bugs and crashes
+- See the Arcane Compendium in-game: for a detailed and thorough documentation
+- See the commits and release notes: for a better and more specific summary
 
 ### License
 This mod is open sourced under the Creative Commons 3.0 Attribution Non-Commercial License

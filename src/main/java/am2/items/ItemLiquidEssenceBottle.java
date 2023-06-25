@@ -10,7 +10,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ItemLiquidEssenceBottle extends ArsMagicaItem{
 
@@ -47,5 +50,11 @@ public class ItemLiquidEssenceBottle extends ArsMagicaItem{
 	@Override
 	public int getMaxItemUseDuration(ItemStack par1ItemStack){
 		return 32;
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean iHaveNoIdea){
+		super.addInformation(stack, player, lines, iHaveNoIdea);
+		lines.add(StatCollector.translateToLocal("am2.tooltip.potionEssence"));
 	}
 }

@@ -39,6 +39,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,6 +48,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.event.GuiOpenEvent;
+import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixesMagicka;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,6 +121,11 @@ public class ClientTickHandler{
 		}
 
 		AMCore.proxy.clearDeferredPotionEffects();
+	}
+
+	@SubscribeEvent
+	public void onGuiOpen(GuiOpenEvent event) { // you're a ghost, how are you looking inside yourself
+		if (MysteriumPatchesFixesMagicka.isPlayerEthereal(Minecraft.getMinecraft().thePlayer) && event.gui instanceof GuiInventory) event.setCanceled(true);
 	}
 
 	private void applyDeferredDimensionTransfers(){

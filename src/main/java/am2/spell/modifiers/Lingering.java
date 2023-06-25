@@ -25,6 +25,7 @@ public class Lingering implements ISpellModifier {
 				Items.slime_ball,
 				Items.magma_cream,
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_CHIMERITE),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_STORMSAWTOOTH),
 				Items.compass
 		};
 	}

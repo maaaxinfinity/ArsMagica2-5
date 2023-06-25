@@ -17,9 +17,9 @@ import java.util.Random;
 public class BlockWitchwoodLog extends BlockLog{
 
 	@SideOnly(Side.CLIENT)
-	private IIcon tree_side;
+	protected IIcon tree_side;
 	@SideOnly(Side.CLIENT)
-	private IIcon tree_top;
+	protected IIcon tree_top;
 
 	protected BlockWitchwoodLog(){
 		super();
@@ -60,6 +60,7 @@ public class BlockWitchwoodLog extends BlockLog{
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister par1IconRegister){
 		tree_side = ResourceManager.RegisterTexture("Witchwood", par1IconRegister);
 		tree_top = ResourceManager.RegisterTexture("WitchwoodTop", par1IconRegister);

@@ -199,14 +199,18 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new AstralDistortion(), "AstralDistortion");
 		registerSkillTreeEntry(new Attract(), "Attract");
 		registerSkillTreeEntry(new BanishRain(), "BanishRain");
+		registerSkillTreeEntry(new Banish(), "Banish");
 		registerSkillTreeEntry(new Blind(), "Blind");
 		registerSkillTreeEntry(new Blink(), "Blink");
 		registerSkillTreeEntry(new ChronoAnchor(), "ChronoAnchor");
 		registerSkillTreeEntry(new CreateWater(), "CreateWater");
+		registerSkillTreeEntry(new ConcentrateTime(), "ConcentrateTime");
+		registerSkillTreeEntry(new Curse(), "Curse");
 		registerSkillTreeEntry(new Dig(), "Dig");
 		registerSkillTreeEntry(new Disarm(), "Disarm");
 		registerSkillTreeEntry(new Dispel(), "Dispel");
 		registerSkillTreeEntry(new DivineIntervention(), "DivineIntervention");
+		registerSkillTreeEntry(new DiluteTime(), "DiluteTime");
 		registerSkillTreeEntry(new Drought(), "Drought");
 		registerSkillTreeEntry(new EnderIntervention(), "EnderIntervention");
 		registerSkillTreeEntry(new Entangle(), "Entangle");
@@ -216,6 +220,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new Forge(), "Forge");
 		registerSkillTreeEntry(new Freeze(), "Freeze");
 		registerSkillTreeEntry(new FrostDamage(), "FrostDamage");
+		registerSkillTreeEntry(new FortifyTime(), "FortifyTime");
 		registerSkillTreeEntry(new GravityWell(), "GravityWell");
 		registerSkillTreeEntry(new Grow(), "Grow");
 		registerSkillTreeEntry(new HarvestPlants(), "HarvestPlants");

@@ -21,6 +21,7 @@ public class Homing implements ISpellModifier{
 	public Object[] getRecipeItems(){
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_AIR),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_STORMSAWTOOTH),
 				Items.arrow,
 				Items.redstone,
 				Items.ender_eye

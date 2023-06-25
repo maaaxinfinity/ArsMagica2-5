@@ -14,6 +14,7 @@ import am2.armor.ArsMagicaArmorMaterial;
 import am2.armor.infusions.GenericImbuement;
 import am2.enchantments.AMEnchantmentHelper;
 import am2.items.ItemManaStone;
+import am2.items.ItemSoulspike;
 import am2.items.ItemsCommonProxy;
 import am2.playerextensions.AffinityData;
 import am2.playerextensions.ExtendedProperties;
@@ -700,10 +701,10 @@ public class SpellUtils implements ISpellUtils{
 	public boolean casterHasMana(EntityLivingBase caster, float mana){
 		if (caster instanceof EntityPlayer && ((EntityPlayer)caster).capabilities.isCreativeMode)
 			return true;
-		return ExtendedProperties.For(caster).getCurrentMana() + ExtendedProperties.For(caster).getBonusCurrentMana() + getStoneMana(caster) >= mana;
+		return ExtendedProperties.For(caster).getCurrentMana() + ExtendedProperties.For(caster).getBonusCurrentMana() + getStoredItemMana(caster) >= mana;
 	}
 
-	public float getStoneMana(EntityLivingBase caster){
+	public float getStoredItemMana(EntityLivingBase caster){
 		float mana = 0;
 		if (caster instanceof EntityPlayer){
 			EntityPlayer casterPlayer = (EntityPlayer) caster;
@@ -711,6 +712,8 @@ public class SpellUtils implements ISpellUtils{
 				if (casterPlayer.inventory.mainInventory[i] != null){
 					if (casterPlayer.inventory.mainInventory[i].getItem() instanceof ItemManaStone){
 						mana += ItemManaStone.getManaInStone(casterPlayer.inventory.mainInventory[i]);
+					} else if (casterPlayer.inventory.mainInventory[i].getItem() instanceof ItemSoulspike){
+						mana += ItemSoulspike.getManaInSpike(casterPlayer.inventory.mainInventory[i]);
 					}
 				}
 			}

@@ -54,27 +54,27 @@
     </shape>
     <shape id="Contingency_Fall">
       <name>Contingency: Fall</name>
-      <desc>You have figured out a spell shape that triggers when falling the instant before you hit the ground. !d Oh gravity, thou art a heartless... !d You can only have one contingency active at a time.</desc>
+      <desc>You have figured out a spell shape that triggers when falling the instant before you hit the ground. !d Oh gravity, thou art a heartless...</desc>
       <modifiedBy></modifiedBy>
     </shape>
     <shape id="Contingency_Damage">
       <name>Contingency: Damage</name>
-      <desc>You have managed to create a spell that triggers only when you get hurt. !d Let's play shot for shot. !d You can only have one contingency active at a time.</desc>
+      <desc>You have managed to create a spell that triggers only when you get hurt. !d Let's play shot for shot.</desc>
       <modifiedBy></modifiedBy>
     </shape>
     <shape id="Contingency_Fire">
       <name>Contingency: Fire</name>
-      <desc>You've decided you really don't like being on fire anymore.  To that end, you made a spell that will light up when the flames do. !d You can only have one contingency active at a time.</desc>
+      <desc>You've decided you really don't like being on fire anymore.  To that end, you made a spell that will light up when the flames do.</desc>
       <modifiedBy></modifiedBy>
     </shape>
     <shape id="Contingency_Health">
       <name>Contingency: Health</name>
-      <desc>No matter how subtle the wizard, a knife between the shoulder blades will seriously cramp his style.  You think you have found a way to make them regret trying that.  Or need two knives. !d This contingency procs when your health is less than or equal to 25% of maximum.  !d You can only have one contingency active at a time.</desc>
+      <desc>No matter how subtle the wizard, a knife between the shoulder blades will seriously cramp his style.  You think you have found a way to make them regret trying that.  Or need two knives. !d This contingency procs when your health is less than or equal to 25% of maximum.</desc>
       <modifiedBy></modifiedBy>
     </shape>
     <shape id="Contingency_Death">
       <name>Contingency: Death</name>
-      <desc>You may get me, but in those few seconds it takes you, I will have all the time I need to ensure you come along for the ride. !d You can only have one contingency active at a time.</desc>
+      <desc>You may get me, but in those few seconds it takes you, I will have all the time I need to ensure you come along for the ride.</desc>
       <modifiedBy></modifiedBy>
     </shape>
     <shape id="Binding">
@@ -125,9 +125,19 @@
       <desc>Many magi see fire as a damaging, destructive force, and that can be true.  But how many hear fire and imagine lighting a stove, campfire or candle?  </desc>
       <modifiedBy>DURATION</modifiedBy>
     </component>
+    <component id="Explosion">
+      <name>Explosion</name>
+      <desc>Those are the sounds of the enemy fortresses falling apart.  Their entire forces - crushed to bits.  With this spell, your destructive power is, at last, indisputable.</desc>
+      <modifiedBy>MINING_POWER</modifiedBy>
+    </component>
     <component id="Forge">
       <name>Forge</name>
       <desc>You have gained fine control over fire and can use it to magically smelt blocks where they stand, without charring them to ash.</desc>
+      <modifiedBy></modifiedBy>
+    </component>
+    <component id="MeltArmor">
+      <name>Melt Armor</name>
+      <desc>You have achieved the greatest mastery of the fire element, for you are now able to concentrate and direct it to such a degree, as to quickly render most armors useless simply by melting them in a magical flame.</desc>
       <modifiedBy></modifiedBy>
     </component>
     <component id="Blind">
@@ -196,6 +206,11 @@
       <desc>By applying the equivalent of a magical ball and chain, a mage can greatly slow the movements of his target.</desc>
       <modifiedBy>BUFF_POWER,DURATION</modifiedBy>
     </component>
+    <component id="Hunger">
+      <name>Hunger</name>
+      <desc>Ever really wanted to eat something, but had no appetite for it?  Well don't you worry, because a magical solution was just discovered...</desc>
+      <modifiedBy>BUFF_POWER,DURATION</modifiedBy>
+    </component>
     <component id="Haste">
       <name>Haste</name>
       <desc>Wrapping the target's legs in arcane energy, a mage can greatly increase movement speed.</desc>
@@ -209,6 +224,16 @@
     <component id="LifeDrain">
       <name>Life Drain</name>
       <desc>By creating a sinister link with the target's life force, you can siphon it off into your own, bolstering your own health.</desc>
+      <modifiedBy>DAMAGE</modifiedBy>
+    </component>
+    <component id="RedstoneFluxDrain">
+      <name>Redstone Flux Drain</name>
+      <desc>Those nasty cyborgs and futurists have had it far too good.  No life essence to be drained in principle?  No problem, the spell can be adapted to your chosen power sources, just you wait and see.</desc>
+      <modifiedBy>DAMAGE</modifiedBy>
+    </component>
+    <component id="RedstoneSignal">
+      <name>Redstone Signal</name>
+      <desc>Out and about your travels, you have met an old man, seemingly a professor of some sort.  After a lengthy discussion and exchange of knowledge, the old man agreed to teach you one of his special tricks - emulating a technological signal using magic.</desc>
       <modifiedBy>DAMAGE</modifiedBy>
     </component>
     <component id="Dispel">
@@ -245,6 +270,16 @@
       <name>Flight</name>
       <desc>With a word, I rose into the air and mingled with the clouds and sky.  I flew effortlessly, quick and agile.  The skies were mine alone.</desc>
       <modifiedBy>BUFF_POWER,DURATION</modifiedBy>
+    </component>
+    <component id="Saturation">
+      <name>Saturation</name>
+      <desc>Between the researching, practicing, eating, working, and sleeping, mages have almost no free time.  But what if, one of those time drains could be eliminated?  By artificially saturating yourself without the need for food, you can dedicate more of your life to the things that truly matter.</desc>
+      <modifiedBy>BUFF_POWER,DURATION</modifiedBy>
+    </component>
+    <component id="ScrambleSynapses">
+      <name>Scramble Synapses</name>
+      <desc>You have learned the ability to interfere with the workings of your opponent's nervous systems, disorienting and perplexing them.</desc>
+      <modifiedBy>DURATION</modifiedBy>
     </component>
     <component id="Shield">
       <name>Shield</name>
@@ -324,6 +359,16 @@
     <component id="WaterBreathing">
       <name>Water Breathing</name>
       <desc>You can use your magic to pull oxygen from the water, allowing you to get enough to not drown.</desc>
+      <modifiedBy>BUFF_POWER,DURATION</modifiedBy>
+    </component>
+    <component id="Weakness">
+      <name>Weakness</name>
+      <desc>You are able to dissipate the strength of your enemies, leaving them weak and helpless.</desc>
+      <modifiedBy>BUFF_POWER,DURATION</modifiedBy>
+    </component>
+    <component id="Wither">
+      <name>Wither</name>
+      <desc>You are able to drain, split and burn most of the water, the foundation of life, in the target's organism, leaving them not only dehydrated but struggling to survive.</desc>
       <modifiedBy>BUFF_POWER,DURATION</modifiedBy>
     </component>
     <component id="NightVision">
@@ -407,6 +452,21 @@
       <desc>You have discovered the secret to linking your mana together with another entity.  When you cast this spell, your target will be able to draw upon your mana pool as if it were their own. !d The target will use their own mana first, then will begin to draw upon yours. !d It has a limited radius, but can have radius modifiers if you so desire.  If the target leaves the radius, the link is not broken, but is rather temporarily disabled.  When they again return into the radius, the link will reactivate and will function again.  To end the link, simply cast the spell on the target again. !d You can link your own mana to multiple entities, and on the other side, you can have multiple links coming in from other sources.</desc>
       <modifiedBy></modifiedBy>
     </component>
+    <component id="ConcentrateTime">
+      <name>Concentrate Time</name>
+      <desc>As you inch ever closer to discovering the true nature of the universe, you discover the secret behind accelerating time by concentrating it in one spot.  This can effect both the non-living and some living (to an extent - manipulating the time of living beings is an unstudied field, and it may not always behave the way you want it to), and the magnitude of the effect depends on its power.  You also have an intuitive feeling, that this is not the true limit of its power, but to seek its true potential, you would need to find a suitable catalyst to apply it to - something that is prominent universally, in every biome, and yet is formidable in its own right...</desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="DiluteTime">
+      <name>Dilute Time</name>
+      <desc>As you stop to think about the universe's flow, you begin understanding it at an entirely new level.  This allows you to slow time by diluting it in one spot.  This can effect both the non-living and some living (to an extent - manipulating the time of living beings is an unstudied field, and it may not always behave the way you want it to), and the magnitude of the effect depends on its power.  You also have an intuitive feeling, that this is not the true limit of its power, but to seek its true potential, you would need to find a suitable catalyst to apply it to - something that is prominent universally, in every biome, and yet is formidable in its own right...</desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="FortifyTime">
+      <name>Fortify Time</name>
+      <desc>Your understanding of the universe indisputable, you are able to take one more leap in the direction of your inevitable Ascension.  You have attained a degree of mastery in manipulating the world itself, allowing you to bring the world's attention to an entity or object.  As long as the spell lasts, the world, being sentient, will not take its eyes off the target.</desc>
+      <modifiedBy>DURATION</modifiedBy>
+    </component>
     <component id="ManaShield">
       <name>Mana Shield</name>
       <desc>Your target becomes shielded by their available mana, causing damage to drain 250 mana per half heart absorbed, and preventing HP damage entirely.</desc>
@@ -421,6 +481,11 @@
       <name>Drought</name>
       <desc>You have taken your knowledge of creating water and have reversed the process.  This spell will draw water out of whatever it hits, removing water blocks and turning dirt, grass, sandstone and mycelium to sand, withering plants it hits, and stone to cobblestone.</desc>
       <modifiedBy></modifiedBy>
+    </component>
+    <component id="Absorption">
+      <name>Absorption</name>
+      <desc>You have learned to manipulate your own body to temporarily increase your health and battle readiness.  Perfect for emergencies.</desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
     </component>
     <component id="Plant">
       <name>Plant</name>
@@ -437,6 +502,16 @@
       <desc>You can create water directly inside the target's lungs, causing them to take drowning damage.</desc>
       <modifiedBy>DAMAGE</modifiedBy>
     </component>
+    <component id="Banish">
+      <name>Banish</name>
+      <desc>You have learned to manipulate the forces of evil, and are now able to cast your enemies into the depths of oblivion.  The forces of evil, however, will not listen to you unless you are perceived as evil by the fractal world itself. </desc>
+      <modifiedBy></modifiedBy>
+    </component>
+    <component id="Curse">
+      <name>Curse</name>
+      <desc>During your study of the visions from fractal worlds, you have uncovered a technique to expose an unknowing enemy to one creature from there for a temporary period of time. </desc>
+      <modifiedBy>DURATION</modifiedBy>
+    </component>
     <component id="WizardsAutumn">
       <desc>You have learned to focus your digging magic into a small radius that directly affects leaves.  This component has a built in AoE that can be modified with Radius modifiers.  You can use it to clear those pesky hard to reach leaves.</desc>
       <name>Wizard's Autumn</name>
@@ -445,6 +520,16 @@
     <component id="Fury">
       <name>Fury</name>
       <desc>You can send yourself into an absolute rage, dealing increased damage, moving extremely fast, passively regenerating, and mining at inhuman speeds.  When the effect ends, you are left exhausted for a few moments and must recover.</desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="Nauseate">
+      <name>Nauseate</name>
+      <desc>You are able to induce nausea in your enemies, temporarily inhibiting their combat potential.</desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="Poison">
+      <name>Poison</name>
+      <desc>You are now able to poison your enemies' inner organs, assuming they are so weak as to be susceptible to this old alchemical trick.</desc>
       <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
     </component>
     <component id="Appropriation">
@@ -551,8 +636,13 @@
     </modifier>
     <modifier id="Homing">
       <name>Homing</name>
-      <desc>You can make your projectiles automatically aim at targets. This only works in a certain radius, though.</desc>
+      <desc>You can make your projectiles automatically aim at targets.  This only works in a certain radius, though.</desc>
       <modifies>HOMING</modifies>
+    </modifier>
+    <modifier id="Lingering">
+      <name>Lingering</name>
+      <desc>You have learned the ability to make your spells linger, applying their effects over a long period of time rather than all-out straight away.</desc>
+      <modifies>LINGERING</modifies>
     </modifier>
     <modifier id="TargetPlayers">
       <name>Target Players</name>
@@ -603,6 +693,10 @@
       <name>Extra Summon</name>
       <desc>Why do things yourself when you can have others do them for you?  You can now have one additional summoned/charmed creature or recruited mage (if you have the #5Mage Posse#0 talent)</desc>
     </talent>
+    <talent id="ExtraGlyphs">
+      <name>Extra Glyphs</name>
+      <desc>You have gained more control over your mind and aura.  You can now keep two additional glyphs suspended for later use.</desc>
+    </talent>
     <talent id="MageBandI">
       <name>Mage Posse I</name>
       <desc>Your talents as a mage have impressed others, and your reputation precedes you.  You can request that a light mage follow and guard you.  This counts against your summon cap.</desc>
@@ -649,9 +743,9 @@
     </talent>
   </talents>
   <items>
-    <item id="ores">
-      <name>AM Ores</name>
-      <desc>Ars Magica adds a few new ores to the game that you will need to collect and refine.</desc>
+    <item id="resources">
+      <name>AM Resources</name>
+      <desc>Ars Magica adds a few new resources to the game that you will need to collect and refine.</desc>
       <subitem id="itemOre@0">
         <name>Vinteum Dust</name>
         <desc>Discovered in a small village where a creeper was knocked down a drained well, Vinteum Ore was quickly realized to be a valuable magical powder once cooked inside a furnace.</desc>
@@ -690,6 +784,86 @@
       <subitem id="itemOre@7">
         <name>Moonstone</name>
         <desc>If one were to look up at the sky at the right time of night, one may see a meteor descending from the sky.  These meteors contain the rare mineral Moonstone.  Where exactly these meteors came from, nobody knows, but the magical properties of Moonstone far excel anything else found in the world.  Studies have shown that the meteors fall more and more often as the moon waxes full, then decreases again as it wanes back to new.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@8">
+        <name>Animal Fat</name>
+        <desc>A relatively common material, usually obtained from pigs (with a near-30% chance to succeed).  Useful in making candles and the like.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@9">
+        <name>Celestial Fish</name>
+        <desc>A magical fish, found swimming the vast oceans of the End.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@10">
+        <name>Cosmic Dust</name>
+        <desc>The End equivalent of space dust.  Perhaps broken off from the main island somehow, or some comet passing by - who knows now?  More importantly, contrary to what one may think, it has a variety of useful magical properties.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@11">
+        <name>Moonstone Fragment</name>
+        <desc>However useful and powerful moonstone is, some spells are simply not capable of harnessing its full raw potential.  By experimentation, mages discovered that fragmenting it into smaller pieces can help with this, similarly to sunstone.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@12">
+        <name>Sunstone Fragment</name>
+        <desc>However useful and powerful sunstone is, some spells are simply not capable of harnessing its full raw potential.  By experimentation, mages discovered that fragmenting it into smaller pieces can help with this, similarly to moonstone.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@13">
+        <name>Hellfish</name>
+        <desc>However improbable that may sound,  due to their unique heat-controlling properties, these fish have adapted to survive and thrive in the lava oceans of the Nether.  This makes them an object of universal interest and attention from both scientists and mages.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@14">
+        <name>Pyrogenic Sediment</name>
+        <desc>A relatively common rock, formed under pressure and heat of the Nether lava lakes and found floating in the latter.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@15">
+        <name>Spatial Star</name>
+        <desc>An extremely rare and valuable resource, half physical and half magical in nature, spatial stars can occasionally be seen traversing the End's infinite expanses.  Legend has it, this only occurs during full moons, when the link between the two worlds is at its strongest.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@16">
+        <name>Temporal Cluster</name>
+        <desc>An object of almost-mythical reputation, said to grant ones wielding it control of time - it is unknown whether anyone in the history of magic ever succeeded in making one.  How much truth or falsity are there to these rumors, is up to you to judge.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@17">
+        <name>Storm Sawtooth</name>
+        <desc>A potent magical plant, its potential only unlocked through growing and harvesting it during storms, hence its name.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@18">
+        <name>Rain Rockrose</name>
+        <desc>Storm Sawtooth's less capricious cousin.  This magical plant can be harvested during any rain and is not as powerful, making it less useful - but also allowing it to reproduce.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@19">
+        <name>Imbued Moonflower</name>
+        <desc>A rare and unique magical flower, only harvestable during full moons.  Its dynamic power, as one could guess, comes from the End, as the link between the two worlds is at its strongest during the latter.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@20">
+        <name>Cognitive Dust</name>
+        <desc>A kind of dust only seen when immersed in psychedelic experiences.  Some propose that it is those experiences, that influence your brain to materialize it.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@21">
+        <name>Nightmare Essence</name>
+        <desc>An inverted essence, its nature being not of our world but the fractal one.  One can be obtained by killing the inhabitants of the latter (no easy task), or trading with select ones by offering them any of the overworld essences.  For this purpose it is important to note that some inhabitants of the fractal world are not native to it, and are materialized by your own imagination - these cannot be traded with.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@22">
+        <name>Fractal Fragment</name>
+        <desc>A fragment of the fractal world itself, only reachable when you are most connected to it.  Can be obtained by killing small, purple manifestations of it, or trading with tall purple elves for Spatial Stars.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="itemOre@23">
+        <name>Soul Fragment</name>
+        <desc>A fragment of a soul of a living being.  Can only be acquired by forcefully separating it from one's soul during psychedelic experiences.  During such an act, one must possess a significant amount of rare items - these will be drained and lost during the process.  In return, one will gain a fragment of a soul - something with a will and agency, capable of making its own decisions and even casting spells.</desc>
         <relatedEntries></relatedEntries>
       </subitem>
       <relatedEntries>calefactor</relatedEntries>
@@ -919,6 +1093,56 @@
       </subitem>
       <relatedEntries>infusion</relatedEntries>
     </item>
+    <item id="armorBound">
+      <name>Bound Armor</name>
+      <desc>Being a unique set of armor attuned to its wearer, it is not particularly strong or durable, and yet it offers a convenient property - once crafted together with a spell, it will auto-cast that spell as a type of contingency once it activates (the contingency type depends on the armor piece).</desc>
+      <subitem id="bound_helmet">
+        <name>Bound Helmet</name>
+        <desc>Auto-cast Contingency - Death</desc>
+        <relatedEntries>infusion,armor_xp_infusion</relatedEntries>
+      </subitem>
+      <subitem id="bound_chest">
+        <name>Bound Chestplate</name>
+        <desc>Auto-cast Contingency - Health</desc>
+        <relatedEntries>infusion,armor_xp_infusion</relatedEntries>
+      </subitem>
+      <subitem id="bound_legs">
+        <name>Bound Leggings</name>
+        <desc>Auto-cast Contingency - Damage</desc>
+        <relatedEntries>infusion,armor_xp_infusion</relatedEntries>
+      </subitem>
+      <subitem id="bound_boots">
+        <name>Bound Boots</name>
+        <desc>Auto-cast Contingency - Fall</desc>
+        <relatedEntries>infusion,armor_xp_infusion</relatedEntries>
+      </subitem>
+      <relatedEntries>infusion</relatedEntries>
+    </item>
+    <item id="armorArchmage">
+      <name>Archmage Armor</name>
+      <desc>The ultimate armor a mage may possess and wear - both strong and durable, and enabling a plethora of magical abilities.  Can likely compete with ultimate armors from other disciplines of magic, including Thaumaturgy and Blood Magic.  When wearing the full set, mana regeneration is accelerated and you are granted the ability to 'Lash' creatures to the sky, reversing their gravity for a short period of time, by hitting them while sneaking.  Individual pieces also grant their own abilities.</desc>
+      <subitem id="helmet_archmage">
+        <name>Archmage Hood</name>
+        <desc>You are granted night vision and are resistant to fire.  Burns any entities attacking you.</desc>
+        <relatedEntries>infusion,armor_xp_infusion</relatedEntries>
+      </subitem>
+      <subitem id="chest_archmage">
+        <name>Archmage Robes</name>
+        <desc>You are resistant to knockback, and apply significant force to your own blows.  You are considerably harder to kill.</desc>
+        <relatedEntries>infusion,armor_xp_infusion</relatedEntries>
+      </subitem>
+      <subitem id="legs_archmage">
+        <name>Archmage Leggings</name>
+        <desc>You can breathe, run, and interact with objects underwater without difficulty.</desc>
+        <relatedEntries>infusion,armor_xp_infusion</relatedEntries>
+      </subitem>
+      <subitem id="boots_archmage">
+        <name>Archmage Boots</name>
+        <desc>Your falls are softened, and binds of slowness no longer affect you.  You may soar through the skies, free at last.</desc>
+        <relatedEntries>infusion,armor_xp_infusion</relatedEntries>
+      </subitem>
+      <relatedEntries>infusion</relatedEntries>
+    </item>
     <item id="affinityTomes">
       <name>Affinity Tomes</name>
       <desc>Affinity tomes contain detailed reports and information gather by magi over the years pertaining to a specific affinitiy.  With the exception of the General affinity tome, they will, when read, give you a 10% boost to that specific affinity, while simultaneously reducing your progress in all other affinities by 10%.</desc>
@@ -1058,8 +1282,8 @@
       <relatedEntries>mana_potion</relatedEntries>
     </item>
     <item id="mana_potion">
-      <name>Mana Potions</name>
-      <desc>Mana potions restore mana instantly when imbibed.  You get an empty bottle back after drinking one.  Mana potions can be bundled by combining 3 of the same type of potion with string.  The bundle can be used 3 times and will also return the empty bottles.  The final potion drank will also return the string.</desc>
+      <name>Mana Potions and Brews</name>
+      <desc>Mana potions restore mana instantly when imbibed.  You get an empty bottle back after drinking one.  Mana potions can be bundled by combining 3 of the same type of potion with string.  The bundle can be used 3 times and will also return the empty bottles.  The final potion drank will also return the string.  Special brews can also be made.</desc>
       <subitem id="mana_potion_lesser">
         <name>Lesser Mana Potion</name>
         <desc>The lesser mana potion is the magical equivalent to a cup of coffee:  a short boost, but it won't get you through an entire day.  One use will restore 100 mana.</desc>
@@ -1095,7 +1319,36 @@
         <desc>In honour of Mithion's final release of AM2, which happens to be #9version 007#0, you can now make a Mana Martini that, when drank, will give you a 25% reduction in burnout gained from casting spells.</desc>
         <relatedEntries></relatedEntries>
       </subitem>
+      <subitem id="casparazoid">
+        <name>Casparazoid</name>
+        <desc>A weak psychedelic substance, magical in nature, enabling hallucinations and tuning oneself to the Lower planes of existence in the Nether.  Warning: Abrupt withdrawals can be dangerous for both your body and soul.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="astrocalis">
+        <name>Astrocalis</name>
+        <desc>A strong psychedelic substance, enabling attunement to the Higher planes of existence in the End as well as the lower.  Helps to establish a powerful connection to the fractal realm.  Warning: Abrupt withdrawals can be dangerous for both your body and soul.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
       <relatedEntries></relatedEntries>
+    </item>
+    <item id="spell_staff">
+      <name>Spell Staffs</name>
+      <desc>Spell staffs enable casting spells without spending one's own mana, instead using the staff's reserves, by embedding (crafting) the spell into the staff.  Because of this, the spells that can be cast are mostly limited in nature.</desc>
+      <subitem id="spell_staff_novice">
+        <name>Novice's Spell Staff</name>
+        <desc>Can cast spells of up to 300 mana total during its lifetime.  Too weak for anything considerable, but a good starting point.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="spell_staff_journeyman">
+        <name>Journeyman's Spell Staff</name>
+        <desc>Can cast spells of up to 900 mana total during its lifetime.  Still not entirely ideal, but perfect for a utility or a last-ditch resource.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
+      <subitem id="spell_staff_master">
+        <name>Master's Spell Staff</name>
+        <desc>Can cast spells of up to 5000 mana total during its lifetime.  The most powerful spell staff available - these can pack a punch and turn the tides of battle in your favor.</desc>
+        <relatedEntries></relatedEntries>
+      </subitem>
     </item>
     <item id="crystal_wrench">
       <name>Crystal Wrench</name>
@@ -1132,6 +1385,16 @@
 			!d
 			The Magitech's Staff can also be used to reclaim a #9Magic Broom#0.  Simply right click the broom with the staff in your hand to reclaim it.</desc>
       <relatedEntries>magitechGoggles,magic_broom</relatedEntries>
+    </item>
+    <item id="arcane_rod">
+      <name>Arcane Fishing Rod</name>
+      <desc>A fishing rod, when imbued with magical substances, allows for fishing in the endless depths of the End and even the Overworld's or the Nether's voids, if one is clever enough to access them, for rare and unique spell recipe components and other miscellaneous items they may offer.</desc>
+      <relatedEntries>infernal_rod</relatedEntries>
+    </item>
+    <item id="infernal_rod">
+      <name>Infernal Fishing Rod</name>
+      <desc>An Arcane fishing rod can be further enhanced to allow it to withstand the heat and pressure of the Nether's lava lakes.  Note, that when this is done, it loses its ability to fish in the voids in return.</desc>
+      <relatedEntries>arcane_rod</relatedEntries>
     </item>
     <item id="spell_book">
       <name>Spell Book</name>
@@ -1215,7 +1478,7 @@
       </subitem>
       <subitem id="bindingCatalyst@5">
         <name>Binding Catalyst: Bow</name>
-        <desc>This one isn't implemented yet - look for it soon!</desc>
+        <desc></desc>
         <relatedEntries>Binding</relatedEntries>
       </subitem>
       <relatedEntries></relatedEntries>
@@ -1327,9 +1590,24 @@
       <desc>Wizard's Chalk is used to create #9Rituals#0 by drawing the correct shapes on the ground.</desc>
       <relatedEntries>corruption,purification,hourglass,rituals_overview</relatedEntries>
     </item>
+    <item id="etheriumExtractor">
+      <name>Etherium Extractor</name>
+      <desc>The preferred (by many mages) way of gathering liquid Etherium.  Using it on witchwood logs will allow it to drain some of their sap, perform a simple magical transformation on it, and pour the resulting Etherium into a bucket.  This leaves the log itself useless for most purposes, as it loses its core magical properties in the process.</desc>
+      <relatedEntries></relatedEntries>
+    </item>
     <item id="playerjournal">
       <name>Journal</name>
       <desc>Journals can be used to #9record your experiences#0 for later use.  These experiences can #9later be recovered by reading the journal#0.</desc>
+      <relatedEntries />
+    </item>
+    <item id="mana_stone">
+      <name>Mana Stone</name>
+      <desc>A mana stone is an incredibly useful little trinket - it allows storing up to 1,000 of your mana for later use and retrieval.  This also increases your mana capacity, as spells that cannot draw from your internal mana reserves attempt to draw from any mana stones you may have present, before failing.</desc>
+      <relatedEntries />
+    </item>
+    <item id="soulspike">
+      <name>Soulspike</name>
+      <desc>A Soulspike is an exceptionally rare and tremendously powerful relic, said to be made from pieces of one's soul.  It has two primary functions, the first of which, similar to a mana stone, being mana storage.  Its mana capacity is manyfold higher than a mana stone, however, you cannot fill it by any normal means: instead, it can only feed on pieces of others' souls - especially Ethereal ones.  As for its second purpose, that is largely shrouded in mystery, however, rumor has it, that with the right preparations, this spike can aid one in temporarily becoming Ethereal.</desc>
       <relatedEntries />
     </item>
 	<item id="deficit_crystal">
@@ -1411,7 +1689,7 @@
 			!l
 			Bricks (+2 Effects)
 			!l
-			Witchwood (+2 Effects)
+			Witchwood (not drained) (+2 Effects)
 			!l
 			Nether Bricks (+3 Effects)
 			!l
@@ -1442,6 +1720,18 @@
 			!l
 			!l
 			These stack cumulatively, so for example wood planks with glass caps would equal a maximum of 2 effects, whereas stone bricks with redstone caps would have a maximum of 4 effects in a spell.  The maximum number of effects you can currently have on a spell is 13.
+        	!l
+        	Instability also affects the spellcrafting capabilities of your altar - no spell or altar is perfect, and occasional errors could and are expected to occur.  As the number of components is increased, the spell's complexity grows, and so does the chance of making an error during its creation.
+        	!l
+        	Stacking multiple modifiers in one spell also increases its intricacy, increasing the chance of things going wrong.  As well as that, having other people around to distract you while creating the spell reduces your concentration - and every mage knows concentration is essential.
+        	!l
+        	Last but not least, having adverse unstable mana sources in your environment may hinder spell creation.  These include Dark mana sources such as the Black Aurem, and even weather conditions such as storms.
+        	!l
+        	Increasing the altar's component capacity also increases its spell correction and retention capabilities, therefore increasing its stability.  On the other hand, encircling the Altar with wizard's chalk and liquid etherium, as well as having well-aligned (Light) mana sources nearby such as the Celestial Prism, increases the Altar's ability to counter environmental instability.
+        	!l
+        	Finally, performing spell creation at night, when the mana of the world is calm, as well as having the Altar be open to the sky, also increases the amount instability it can withstand.
+        	!l
+        	If allowed to venture out of control, instability may cause you to face a multitude of consequences, ranging from being drained of your mana or drawing lightning to yourself, to attracting curious Elementals and only Gods know what else - a reminder that the Arcane arts are not to be taken lightly.
 			</desc>
       <relatedEntries></relatedEntries>
     </structure>
@@ -1766,6 +2056,41 @@
       <desc>Darklings are small dog-like creatures that are found in the nether.  Their body becomes less visible during night, fading to near invsibility at midnight.  As dawn approaches, the Darklings will begin to gradually appear again until they become fully visible again for the day.</desc>
       <relatedEntries></relatedEntries>
     </mob>
+    <mob id="HallucinationMagmacube">
+      <name>Magmacube Hallucination</name>
+      <desc>A hallucination native to the Lower planes of fractal existence.  Highly values all Overworld essences.  Like all Hallucinations, cannot be hurt by ordinary, physical sources of damage.</desc>
+      <relatedEntries></relatedEntries>
+    </mob>
+    <mob id="HallucinationWitherSkeleton">
+      <name>Wither Skeleton Hallucination</name>
+      <desc>A hallucination of a wither skeleton.  Despite its formidable appearance, it does not seem to be any more deadly than the other hallucinations.  Like all Hallucinations, cannot be hurt by ordinary, physical sources of damage.</desc>
+      <relatedEntries></relatedEntries>
+    </mob>
+    <mob id="HallucinationCreeper">
+      <name>Creeper Hallucination</name>
+      <desc>A hallucination of an ordinary creeper, awakened and materialized by you with the aid of psychedelics and perhaps your primal fears.  As you have later observed, they do not seem to behave entirely like creepers, or have all the attributes of one..  Like all Hallucinations, cannot be hurt by ordinary, physical sources of damage.</desc>
+      <relatedEntries></relatedEntries>
+    </mob>
+    <mob id="HallucinationEnderman">
+      <name>Enderman Hallucination</name>
+      <desc>A hallucination native to the Higher planes of fractal existence.  Highly values Spatial Stars.  Like all Hallucinations, cannot be hurt by ordinary, physical sources of damage.</desc>
+      <relatedEntries></relatedEntries>
+    </mob>
+    <mob id="HallucinationEndermite">
+      <name>Endermite Hallucination</name>
+      <desc>A special hallucination only appearing when a strong link to the fractal realm is established, almost a manifestation of its energy.  This makes them quicker and deadlier than most ordinary hallucinations.  Like all Hallucinations, cannot be hurt by ordinary, physical sources of damage.</desc>
+      <relatedEntries></relatedEntries>
+    </mob>
+    <mob id="HallucinationSpider">
+      <name>Spider Hallucination</name>
+      <desc>A hallucination of an ordinary spider, awakened and materialized by you with the aid of psychedelics and perhaps your primal fears.  As you have later observed, they do not seem to behave entirely like spiders, or have all the attributes of one..  Like all Hallucinations, cannot be hurt by ordinary, physical sources of damage.</desc>
+      <relatedEntries></relatedEntries>
+    </mob>
+    <mob id="HallucinationZombie">
+      <name>Zombie Hallucination</name>
+      <desc>A hallucination of an ordinary zombie, awakened and materialized by you with the aid of psychedelics and perhaps your primal fears.  Like all Hallucinations, cannot be hurt by ordinary, physical sources of damage.</desc>
+      <relatedEntries></relatedEntries>
+    </mob>
     <mob id="HellCow">
       <name>Hell Cow</name>
       <desc>Moo? Moo moo moo, moo moo moo moo.  Moo.  Moo moo moo moo moo, moo moo moo?  Moo!  Moo moo moo moo moo - moo moo moo. !d 1.) Moo moo moo moo !d 2.) Moo, moo moo moo moo. !d 3.) Moo! !d Moo, moo moo moo, moo moo moo.  Moo moo moo moo moo moo.  Moo, moo!</desc>
@@ -1855,15 +2180,17 @@
     <boss id="BossWaterGuardian">
       <name>Water Guardian</name>
       <desc>
-				The guardian of water is a unique being. It is always in
-				a state of fluidity, making it able to shrug off attacks
-				occasionally. It is a trickster as well, flowing into
-				copies of itself and attacking from ambush if one is
+        		The guardian of water, while rather weak, is still a unique and
+        		incredible being. It is always in a state of fluidity, making it able
+        		to shrug off attacks occasionally. It is a trickster as well, flowing
+				into copies of itself and attacking from ambush if one is
 				fooled by the decoy. !l Recommended level: 10 !p The
 				water guardian can be summoned by creating a redstone
 				inlay circle in any biome that is predominantly water.
 				Then, while raining, throw a boat and a bucket of water
 				into the circle as homage to the many ships lost at sea.
+        		One should note, that as well as leaving behind their unique bodyparts,
+        		each guardian defeated grants a mage an additional 2,000 mana.
 			</desc>
       <relatedEntries></relatedEntries>
     </boss>
@@ -1980,19 +2307,73 @@
       <desc>
 				The essence refiner takes everyday items and using
 				#5Arcane Ash#0, refines them into a pure representation
-				of their parts, known as #5essences#0. The recipes for
-				specific essences can be found under #9Items -&gt;
-				Essences#0. The essence refiner also requires #2Etherium#0 to function.
-				Neutral Etherium can be obtained from an #9Obelisk#0, which has no specific advantages or
-				drawbacks. Finally, Dark Etherium can be used from a
-				#9Black Aurem#0, which significantly reduces the amount
-				of time it takes to refine the essence. The spinning ring
+				of their parts, known as #5essences#0. The essence refiner
+                also requires #2Etherium#0 to function. Neutral Etherium can be
+                obtained from an #9Obelisk#0, which has no specific advantages or drawbacks.
+                Finally, Dark Etherium can be used from a #9Black Aurem#0, which significantly
+                reduces the amount of time it takes to refine the essence. The spinning ring
 				on the UI will shift from blue to purple as the
 				refinement process progresses and eventually completes.
 				A flashing red ring means there is insufficient Etherium to
 				continue, and the process has been paused.
 			</desc>
       <relatedEntries>essence</relatedEntries>
+    </block>
+    <block id="entropic_enervator">
+      <name>Entropic Enervator</name>
+      <desc>
+        		This contraption allows to, on purpose, controllably break items.
+        		It can reduce stone bricks to cracked stone bricks,
+        		stone to cobblestone to gravel, bones to bonemeal,
+        		cobweb to strings, sandstone to sand, and so on and so forth.
+        		Be wary, though: upon placing any tool with durability inside, it will decrease
+        		the durability of said tool. Some unique magical seeds can also be made by
+        		breaking down diverse ordinary seed varieties. The Enervator, of course,
+        		requires etherium to power this process.
+      		</desc>
+      <relatedEntries></relatedEntries>
+    </block>
+    <block id="spellReplicator">
+      <name>Spell Replicator</name>
+      <desc>
+        		This ingenious apparatus allows for the replication of mana spells,
+        		at the cost of ten times their mana requirements in light Etherium.
+        		This could come in handy if a mage is particularly clumsy and is often worried
+        		about the prospect of losing their spells, or if one wanted to share the
+        		creations of their ingenious creativity with a friend or two.
+      		</desc>
+      <relatedEntries></relatedEntries>
+    </block>
+    <block id="infusedStem">
+      <name>Infused Stem</name>
+      <desc>
+        		This stem, infused with magical essences, serves as the basis for
+        		the creation of multiple other magical flowers by responding to
+        		environmental stimuli. It is capable of growing into an
+        		Effervescent Snowdrop assuming an abundance of breeding or a
+        		Sanguine Amaryllis assuming an abundance of killing.
+      		</desc>
+      <relatedEntries></relatedEntries>
+    </block>
+    <block id="effervescentSnowdrop">
+      <name>Effervescent Snowdrop</name>
+      <desc>
+         		An infused stem grown with an abundance of benevolent life energies
+         		in the environment around it. Passively radiates some of the collected
+         		life energies back into the environment; exhibits healing effects.
+         		Otherwise, serves as a potent spell ingredient.
+       		</desc>
+      <relatedEntries></relatedEntries>
+    </block>
+    <block id="sanguineAmaryllis">
+      <name>Sanguine Amaryllis</name>
+      <desc>
+           		An infused stem grown with an abundance of negative and unstable energies
+           		in the environment around it. Passively radiates some of its fury
+           		and frustration back into the environment; exhibits effects affecting the mind
+           		and possibly the body of passersby. Otherwise, serves as a potent spell ingredient.
+       		</desc>
+      <relatedEntries></relatedEntries>
     </block>
     <block id="essenceconduit">
       <name>Etherium Conduit</name>
@@ -2657,7 +3038,7 @@
     </mechanic>
     <mechanic id="mana" unlocked="true">
       <name>Mana</name>
-      <desc>Mana is your magical energy level.  You gain more mana by increasing your Magic Level. !d Mana regenerates over time, but you can gain boosts to regeneration by eating a #9Mana Cake#0 or standing near an Obelisk, Celestial Prism, or Black Aurem with more than 10% charge.  #9Mana Potions#0 and #9Mana Potion Bundles#0 can be used to give an instant boost to mana.  Mana is represented by a blue bar on your HUD.  You can use "#2/amuicfg#0" to toggle an option to show the actual numeric values of your mana.</desc>
+      <desc>Mana is your magical energy level.  You gain more mana by increasing your Magic Level, defeating bosses, acquiring talents and performing certain rituals. !d Mana regenerates over time, but you can gain boosts to regeneration by eating a #9Mana Cake#0 or standing near an Obelisk, Celestial Prism, or Black Aurem with more than 10% charge.  #9Mana Potions#0 and #9Mana Potion Bundles#0 can be used to give an instant boost to mana.  Mana is represented by a blue bar on your HUD.  You can use "#2/amuicfg#0" to toggle an option to show the actual numeric values of your mana.</desc>
       <relatedEntries></relatedEntries>
     </mechanic>
     <mechanic id="magicLevel" unlocked="true">
@@ -2667,7 +3048,7 @@
     </mechanic>
     <mechanic id="burnout" unlocked="true">
       <name>Burnout</name>
-      <desc>Burnout is your level of strain when casting spells.  The higher your Burnout, the more mana each spell will cost.  Casting more powerful spells will cause more Burnout.  It will decrease over time.  Gaining Magic Levels will give you a higher Burnout cap, allowing you to cast more spells before becoming completely fatigued.  Your Burnout level is displayed as a red bar on the HUD.  You can use "#2/amuicfg#0" to toggle an option to show the actual numeric values of your burnout.</desc>
+      <desc>Burnout is your level of strain when casting spells.  The higher your Burnout, the more mana each spell will cost.  Casting more powerful spells will cause more Burnout.  It will decrease over time.  Gaining Magic Levels will give you a higher Burnout cap, allowing you to cast more spells before becoming completely fatigued.  Depending on one's burnout, there might be adverse side effects.  They range from slight inconveniences like short weakness and slowness effects to more serious ones, like lightning discharges or short-distance arbitrary teleportation, to a total destruction of one's self, but this is rare and only occurs when extremely powerful mages fully overflow their burnout.  Your Burnout level is displayed as a red bar on the HUD.  You can use "#2/amuicfg#0" to toggle an option to show the actual numeric values of your burnout.</desc>
       <relatedEntries></relatedEntries>
     </mechanic>
     <mechanic id="rituals">
@@ -2733,7 +3114,7 @@
     </guide>
     <guide id="gainingMagicLevels" order="6">
       <name>Gaining Magic Levels</name>
-      <desc>You gain magic levels by casting spells.  You don't gain magic XP if the cast isn't successful, and there are diminishing returns on a cooldown, so spamming spells to grind won't get you anywhere.  Casting spells also modifies your affinity.  See #5Mechanics -&gt; Affinity#0 for more information.</desc>
+      <desc>You gain magic levels by casting spells.  The more mana a spell consumes, the more magic XP it gains you.  You don't gain magic XP if the cast isn't successful, and there are diminishing returns on a cooldown, so spamming spells to grind won't get you anywhere.  Casting spells also modifies your affinity.  See #5Mechanics -&gt; Affinity#0 for more information.</desc>
     </guide>
     <guide id="unlockingPowers" order="7">
       <name>Obtaining Skill Points</name>

@@ -49,6 +49,7 @@ public class BuffList implements IBuffHelper{
 	public static ArsMagicaPotion scrambleSynapses;
 	public static ArsMagicaPotion shrink;
 	public static ArsMagicaPotion burnoutReduction;
+	public static ArsMagicaPotion psychedelic;
 
 	public static ArsMagicaPotion greaterManaPotion;
 	public static ArsMagicaPotion epicManaPotion;
@@ -177,7 +178,7 @@ public class BuffList implements IBuffHelper{
 		astralDistortion = createAMPotion(potionDefaultOffset + 19, "Astral Distortion", 0, 4, true, BuffEffectAstralDistortion.class);
 		manaShield = createAMPotion(potionDefaultOffset + 20, "Mana Shield", 0, 7, false, BuffEffectManaShield.class);
 		fury = createAMPotion(potionDefaultOffset + 21, "Fury", 1, 6, false, BuffEffectFury.class);
-		scrambleSynapses = createAMPotion(potionDefaultOffset + 22, "Scramble Synapses", 1, 7, true, BuffEffectScrambleSynapses.class);
+		scrambleSynapses = createAMPotion(potionDefaultOffset + 22, "Scramble Synapses", 2, 1, true, BuffEffectScrambleSynapses.class);
 		illumination = createAMPotion(potionDefaultOffset + 23, "Illuminated", 1, 0, false, BuffEffectIllumination.class);
 		
 		greaterManaPotion = createManaPotion(potionDefaultOffset + 24, "Greater Mana Restoration", 0, 1, false, 0x40c6be);
@@ -201,6 +202,7 @@ public class BuffList implements IBuffHelper{
 		clarity = createAMPotion(potionDefaultOffset + 29, "Clarity", 0, 5, false, BuffEffectClarity.class);
 		shrink = createAMPotion(potionDefaultOffset + 30, "Shrunken", 0, 5, false, BuffEffectShrink.class);
 		burnoutReduction = createAMPotion(potionDefaultOffset + 31, "Burnout Redux", 1, 1, false, BuffEffectBurnoutReduction.class);
+		psychedelic = createAMPotion(potionDefaultOffset + 32, "Psychedelic", 1, 2, false, BuffEffectPsychedelic.class);
 
 		for (int i : classesForBuffID.keySet()){
 			createDummyBuff(classesForBuffID.get(i), i);
@@ -236,9 +238,10 @@ public class BuffList implements IBuffHelper{
 		gravityWell.setTextureSheet(ResourceManager.GetGuiTexturePath("buffs_2.png"));
 		levitation.setTextureSheet(ResourceManager.GetGuiTexturePath("buffs_2.png"));
 		illumination.setTextureSheet(ResourceManager.GetGuiTexturePath("buffs_2.png"));
-		scrambleSynapses.setTextureSheet(ResourceManager.GetGuiTexturePath("buffs_2.png"));
+		scrambleSynapses.setTextureSheet(ResourceManager.GetGuiTexturePath("buffs_1.png"));
 		shrink.setTextureSheet(ResourceManager.GetGuiTexturePath("buffs_2.png"));
 		burnoutReduction.setTextureSheet(ResourceManager.GetGuiTexturePath("buffs_2.png"));
+		psychedelic.setTextureSheet(ResourceManager.GetGuiTexturePath("buffs_2.png"));
 	}
 
 	/*

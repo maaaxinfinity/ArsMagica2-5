@@ -24,6 +24,7 @@ public class Silence implements ISpellComponent{
 		return new Object[]{
 				Blocks.wool,
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_ARCANEASH),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_IMBUEDMOONFLOWER),
 				Blocks.jukebox,
 				Blocks.wool
 		};

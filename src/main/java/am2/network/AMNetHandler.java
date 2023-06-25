@@ -7,7 +7,9 @@ import am2.blocks.tileentities.TileEntityArmorImbuer;
 import am2.blocks.tileentities.TileEntityCalefactor;
 import am2.blocks.tileentities.TileEntityObelisk;
 import am2.bosses.IArsMagicaBoss;
+import am2.buffs.BuffList;
 import am2.entities.EntityHecate;
+import am2.items.ItemsCommonProxy;
 import am2.power.PowerNodeRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEventChannel;
@@ -264,6 +266,12 @@ public class AMNetHandler{
 	}
 
 	public void sendCompendiumUnlockPacket(EntityPlayerMP player, String id, boolean isCategory){
+		// fractals, if psychedelic: 3rd way to obtain
+		if (player.worldObj != null && player.isPotionActive(BuffList.psychedelic)){
+			if (player.worldObj.provider.dimensionId == 1 && player.getActivePotionEffect(BuffList.psychedelic).getAmplifier() == 1) {
+				if (player.ticksExisted > 5000 && (player.getRNG().nextInt(10) == 0)) player.dropPlayerItemWithRandomChoice(new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_FRACTALFRAGMENT), false);
+			}
+		}
 		AMDataWriter writer = new AMDataWriter();
 		writer.add(id);
 		writer.add(isCategory);

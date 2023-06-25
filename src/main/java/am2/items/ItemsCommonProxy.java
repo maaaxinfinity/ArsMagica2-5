@@ -10,29 +10,27 @@ import am2.blocks.BlocksCommonProxy;
 import am2.blocks.tileentities.flickers.FlickerOperatorRegistry;
 import am2.enchantments.AMEnchantmentHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
-import jdk.nashorn.internal.ir.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ChestGenHooks;
+import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public class ItemsCommonProxy{
@@ -87,6 +85,8 @@ public class ItemsCommonProxy{
 	public static ItemManaPotion epicManaPotion;
 	public static ItemManaPotion legendaryManaPotion;
 	public static ItemManaMartini manaMartini;
+	public static ItemAstrocalis astrocalis;
+	public static ItemCasparazoid casparazoid;
 	public static ItemLiquidEssenceBottle liquidEssenceBottle;
 
 	public static ItemManaPotionBundle manaPotionBundle;
@@ -100,6 +100,8 @@ public class ItemsCommonProxy{
 	public static ItemSpellStaff spellStaffMaster;
 
 	public static ItemCrystalWrench crystalWrench;
+	public static ItemArcaneFishingRod itemArcaneFishingRod;
+	public static ItemInfernalFishingRod itemInfernalFishingRod;
 
 	public static ItemSpellPart spell_component;
 
@@ -167,14 +169,20 @@ public class ItemsCommonProxy{
 	public static Item BoundBoots;
 
 	public static ItemManaStone manaStone;
+	public static ItemSoulspike soulspike;
+	public static ItemEtheriumExtractor etheriumExtractor;
 
-	//public static Item boundBow;
+	public static Item BoundBow;
 
 	public static ItemCrystalPhylactery crystalPhylactery;
 	public static ItemMagitechGoggles magitechGoggles;
 	public static ArsMagicaItem deficitCrystal;
 
 	public static AMCreativeTab itemTab;
+
+	public static ItemSeeds stormSawtoothSeeds;
+	public static ItemSeeds rainRockroseSeeds;
+	public static ItemSeeds imbuedMoonflowerSeeds;
 
 	/**
 	 * Indicates what armors have additional protective effects which need to be handled by the AMEventHandler class.
@@ -194,6 +202,8 @@ public class ItemsCommonProxy{
 	public static ItemStack lifeWardEnchanted;
 
 	private final ArrayList<Item> arsMagicaItemsList;
+
+	public static ToolMaterial soulMat = EnumHelper.addToolMaterial("Soul", 0, 1000, 4.0F, 4F, 100);
 
 	public ItemsCommonProxy(){
 		itemTab = new AMCreativeTab("Ars Magica Items");
@@ -238,6 +248,15 @@ public class ItemsCommonProxy{
 				}
 			}
 		}.setUnlocalizedAndTextureName("arsmagica2:chest_archmage").setCreativeTab(itemTab).setMaxDamage(0);
+		stormSawtoothSeeds = (ItemSeeds)(new ItemSeeds(BlocksCommonProxy.stormSawtooth, Blocks.soul_sand) {
+			@Override
+			public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z)
+			{
+				return EnumPlantType.Nether;
+			}
+		}.setUnlocalizedName("arsmagica2:sawtoothseeds").setTextureName("arsmagica2:sawtoothseeds").setPotionEffect(PotionHelper.blazePowderEffect).setCreativeTab(itemTab));
+		imbuedMoonflowerSeeds = (ItemSeeds)((new ItemSeeds(BlocksCommonProxy.imbuedMoonflower, Blocks.farmland)).setUnlocalizedName("arsmagica2:moonflowerseeds").setTextureName("arsmagica2:moonflowerseeds").setCreativeTab(itemTab));
+		rainRockroseSeeds = (ItemSeeds)((new ItemSeeds(BlocksCommonProxy.rainRockrose, Blocks.farmland)).setUnlocalizedName("arsmagica2:rockroseseeds").setTextureName("arsmagica2:rockroseseeds").setCreativeTab(itemTab));
 		archmageLeggings = (new AMArmor( ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 2)).setUnlocalizedAndTextureName("arsmagica2:legs_archmage").setCreativeTab(itemTab).setMaxDamage(0);
 		archmageBoots = (new AMArmor(ArmorMaterial.DIAMOND, ArsMagicaArmorMaterial.ARCHMAGE, ArmorHelper.getArmorRenderIndex("archmage"), 3)).setUnlocalizedAndTextureName("arsmagica2:boots_archmage").setCreativeTab(itemTab).setMaxDamage(0);
 		wizardChalk = new ItemChalk().setUnlocalizedAndTextureName("arsmagica2:wizardChalk").setCreativeTab(itemTab);
@@ -257,6 +276,7 @@ public class ItemsCommonProxy{
 		BoundPickaxe = new ItemBoundPickaxe(ToolMaterial.IRON).setUnlocalizedAndTextureName("arsmagica2:bound_pickaxe");
 		BoundShovel = new ItemBoundShovel(ToolMaterial.IRON).setUnlocalizedAndTextureName("arsmagica2:bound_shovel");
 		BoundSword = new ItemBoundSword(ToolMaterial.IRON).setUnlocalizedAndTextureName("arsmagica2:bound_sword");
+		BoundBow = new ItemBoundBow().setUnlocalizedAndTextureName("arsmagica2:bound_bow");
 		manaCake = (ItemManaCake)new ItemManaCake().setUnlocalizedAndTextureName("arsmagica2:mana_cake").setAlwaysEdible().setCreativeTab(itemTab);
 		lesserManaPotion = (ItemManaPotion)new ItemManaPotion().setUnlocalizedAndTextureName("arsmagica2:mana_potion_lesser").setCreativeTab(itemTab);
 		standardManaPotion = (ItemManaPotion)new ItemManaPotion().setUnlocalizedAndTextureName("arsmagica2:mana_potion_standard").setCreativeTab(itemTab);
@@ -267,6 +287,8 @@ public class ItemsCommonProxy{
 		essenceBag = (ItemEssenceBag)new ItemEssenceBag().setUnlocalizedAndTextureName("arsmagica2:essence_bag").setCreativeTab(itemTab);
 		manaPotionBundle = (ItemManaPotionBundle)new ItemManaPotionBundle().setUnlocalizedAndTextureName("arsmagica2:mana_potion_bundle").setCreativeTab(itemTab);
 		crystalWrench = (ItemCrystalWrench)new ItemCrystalWrench().setUnlocalizedAndTextureName("arsmagica2:crystal_wrench").setCreativeTab(itemTab);
+		itemArcaneFishingRod = (ItemArcaneFishingRod) new ItemArcaneFishingRod().setUnlocalizedAndTextureName("arsmagica2:arcane_rod").setCreativeTab(itemTab);
+		itemInfernalFishingRod = (ItemInfernalFishingRod) new ItemInfernalFishingRod().setUnlocalizedAndTextureName("arsmagica2:infernal_rod").setCreativeTab(itemTab);
 		spawnEgg = (AMSpawnEgg)new AMSpawnEgg().setUnlocalizedAndTextureName("am_spawnegg").setCreativeTab(itemTab);
 		arcaneCompendium = (ItemArcaneCompendium)new ItemArcaneCompendium().setUnlocalizedAndTextureName("arsmagica2:ArcaneCompendium").setCreativeTab(itemTab);
 		spell_component = new ItemSpellPart();
@@ -296,7 +318,6 @@ public class ItemsCommonProxy{
 		fireEars = (ItemFireGuardianEars)new ItemFireGuardianEars(ArmorMaterial.GOLD, ArsMagicaArmorMaterial.UNIQUE, 0, 0).setUnlocalizedName("arsmagica2:fire_ears").setCreativeTab(itemTab);
 		workbenchUpgrade = (ArsMagicaItem)new ArsMagicaItem().setUnlocalizedAndTextureName("arsmagica2:workbenchUpgrade").setCreativeTab(itemTab);
 		bindingCatalyst = (ItemBindingCatalyst)new ItemBindingCatalyst().setUnlocalizedName("arsmagica2:bindingCatalyst").setCreativeTab(itemTab);
-		//boundBow = new ItemBoundBow().setUnlocalizedName("arsmagica2:bound_bow").setCreativeTab(itemTab);
 		itemKeystoneDoor = (ItemKeystoneDoor)new ItemKeystoneDoor().setUnlocalizedName("arsmagica2:keystoneDoor").setCreativeTab(BlocksCommonProxy.blockTab);
 		enderBoots = (ItemEnderBoots)new ItemEnderBoots(ArmorMaterial.GOLD, ArsMagicaArmorMaterial.UNIQUE, ArmorHelper.getArmorRenderIndex("ender"), 3).setUnlocalizedName("arsmagica2:enderBoots").setCreativeTab(itemTab);
 		wardingCandle = (ItemCandle)new ItemCandle().setUnlocalizedAndTextureName("arsmagica2:warding_candle").setCreativeTab(itemTab);
@@ -308,8 +329,12 @@ public class ItemsCommonProxy{
 		flickerFocus = (ItemFlickerFocus)new ItemFlickerFocus().setUnlocalizedAndTextureName("arsmagica2:flickerFocus").setCreativeTab(itemTab);
 		playerjournal = (ItemJournal)new ItemJournal().setUnlocalizedName("arsmagica2:playerjournal").setCreativeTab(itemTab);
 		manaMartini = (ItemManaMartini)new ItemManaMartini().setUnlocalizedAndTextureName("arsmagica2:mana_martini").setCreativeTab(itemTab);
+		astrocalis = (ItemAstrocalis) new ItemAstrocalis().setUnlocalizedAndTextureName("arsmagica2:astrocalis").setCreativeTab(itemTab);
+		casparazoid = (ItemCasparazoid) new ItemCasparazoid().setUnlocalizedAndTextureName("arsmagica2:casparazoid").setCreativeTab(itemTab);
 		inscriptionUpgrade = (InscriptionTableUpgrade)new InscriptionTableUpgrade().setUnlocalizedName("arsmagica2:inscription_upgrade").setCreativeTab(itemTab);
 		manaStone = (ItemManaStone)new ItemManaStone().setUnlocalizedAndTextureName("arsmagica2:mana_stone").setCreativeTab(itemTab);
+		soulspike = (ItemSoulspike) new ItemSoulspike(soulMat).setUnlocalizedAndTextureName("arsmagica2:soulspike").setCreativeTab(itemTab);
+		etheriumExtractor = (ItemEtheriumExtractor) new ItemEtheriumExtractor().setUnlocalizedAndTextureName("arsmagica2:etheriumExtractor").setCreativeTab(itemTab);
 
 		addItemStackToChestGen(new ItemStack(rune, 1, rune.META_INF_ORB_BLUE), 1, 1, 3, ChestGenHooks.DUNGEON_CHEST, ChestGenHooks.MINESHAFT_CORRIDOR, ChestGenHooks.PYRAMID_DESERT_CHEST, ChestGenHooks.PYRAMID_JUNGLE_CHEST, ChestGenHooks.STRONGHOLD_CORRIDOR, ChestGenHooks.STRONGHOLD_CROSSING);
 		addItemStackToChestGen(new ItemStack(rune, 1, rune.META_INF_ORB_BLUE), 1, 1, 5, ChestGenHooks.STRONGHOLD_LIBRARY);
@@ -392,6 +417,12 @@ public class ItemsCommonProxy{
 		registerItem(keystone, "keystone");
 
 		registerItem(manaStone, "manaStone");
+		registerItem(soulspike, "soulspike");
+		registerItem(etheriumExtractor, "etheriumExtractor");
+
+		registerItem(imbuedMoonflowerSeeds, "imbuedMoonflowerSeeds");
+		registerItem(rainRockroseSeeds, "rainRockroseSeeds");
+		registerItem(stormSawtoothSeeds, "stormSawtoothSeeds");
 
 		//affinity books
 		registerItem(bookAffinity, "bookAffinity");
@@ -431,11 +462,14 @@ public class ItemsCommonProxy{
 		registerItem(BoundAxe, "BoundAxeNor");
 		registerItem(BoundPickaxe, "BoundPickaxeNor");
 		registerItem(BoundSword, "BoundSwordNor");
+		registerItem(BoundBow, "BoundBowNor");
 		registerItem(spawnEgg, "AMSpawnEgg");
 
 		registerItem(deficitCrystal, "deficitCrystal");
 
 		registerItem(crystalWrench, "crystal_wrench");
+		registerItem(itemArcaneFishingRod, "arcane_rod");
+		registerItem(itemInfernalFishingRod, "infernal_rod");
 
 		registerItem(arcaneCompendium, "ArcaneCompendium");
 		registerItem(spell_component, "SpellComponent");
@@ -483,6 +517,8 @@ public class ItemsCommonProxy{
 		registerItem(lifeWard, "lifeWard");
 		registerItem(playerjournal, "playerjournal");
 		registerItem(manaMartini, "manaMartini");
+		registerItem(astrocalis, "astrocalis");
+		registerItem(casparazoid, "casparazoid");
 		registerItem(inscriptionUpgrade, "inscriptionUpgrade");
 
 		//registerItem(boundBow, "boundBow");
@@ -624,6 +660,18 @@ public class ItemsCommonProxy{
 								Character.valueOf('G'), "dustGlowstone"
 						}));
 
+		//soulspike
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(soulspike),
+				new Object[]{
+						"FOF",
+						"FOF",
+						"EBE",
+						Character.valueOf('O'), Blocks.obsidian,
+						Character.valueOf('B'), Items.blaze_rod,
+						Character.valueOf('F'), new ItemStack(itemOre, 1, itemOre.META_SOULFRAGMENT),
+						Character.valueOf('E'), liquidEssenceBottle,
+				}));
+
 		//spell crafting
 		GameRegistry.addRecipe(new ShapedOreRecipe(
 				new ItemStack(spellParchment, 1),
@@ -659,6 +707,61 @@ public class ItemsCommonProxy{
 						Character.valueOf('V'), "dustVinteum",
 				}));
 
+		//arcane rod
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemArcaneFishingRod),
+				new Object[]{
+						" V ",
+						"ERE",
+						" V ",
+						Character.valueOf('R'), Items.fishing_rod,
+						Character.valueOf('E'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_ENDER),
+						Character.valueOf('V'), "dustVinteum",
+				}));
+
+		//infernal rod
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemInfernalFishingRod),
+				new Object[]{
+						" V ",
+						"ERE",
+						" V ",
+						Character.valueOf('R'), itemArcaneFishingRod,
+						Character.valueOf('E'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_FIRE),
+						Character.valueOf('V'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_ARCANEASH),
+				}));
+
+		//temporal cluster
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemOre, 1, itemOre.META_TEMPORALCLUSTER),
+				new Object[]{
+						" D ",
+						"FCF",
+						" D ",
+						Character.valueOf('D'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_CHIMERITE),
+						Character.valueOf('C'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SPATIALSTAR),
+						Character.valueOf('F'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_FRACTALFRAGMENT),
+				}));
+
+		//fragments combining & breaking down
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SUNSTONE),
+				new Object[]{
+						"FF",
+						"FF",
+						Character.valueOf('F'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SUNSTONEFRAGMENT),
+				}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONE),
+				new Object[]{
+						"FF",
+						"FF",
+						Character.valueOf('F'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONEFRAGMENT),
+				}));
+		GameRegistry.addShapelessRecipe(
+				new ItemStack(ItemsCommonProxy.itemOre, 4, ItemsCommonProxy.itemOre.META_MOONSTONEFRAGMENT), new Object[]{
+						new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONE)
+				});
+		GameRegistry.addShapelessRecipe(
+				new ItemStack(ItemsCommonProxy.itemOre, 4, ItemsCommonProxy.itemOre.META_SUNSTONEFRAGMENT), new Object[]{
+						new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SUNSTONE)
+				});
+
 		//mana stone
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(manaStone),
 				new Object[]{
@@ -668,6 +771,17 @@ public class ItemsCommonProxy{
 						Character.valueOf('G'), "ingotGold",
 						Character.valueOf('D'), "gemDiamond",
 						Character.valueOf('P'), "dustVinteum",
+				}));
+
+		//extractor
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(etheriumExtractor),
+				new Object[]{
+						" T ",
+						"G G",
+						" I ",
+						Character.valueOf('T'), "gemBlueTopaz",
+						Character.valueOf('G'), "blockGlassColorless",
+						Character.valueOf('I'), "ingotIron",
 				}));
 
 		//spell book colors
@@ -1259,6 +1373,14 @@ public class ItemsCommonProxy{
 				Character.valueOf('S'), "slimeball",
 				Character.valueOf('A'), Items.golden_hoe
 		}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(bindingCatalyst, 1, bindingCatalyst.META_BOW), new Object[]{
+				"SVS",
+				"SAS",
+				"SVS",
+				Character.valueOf('V'), "dustVinteum",
+				Character.valueOf('S'), "slimeball",
+				Character.valueOf('A'), Items.bow
+		}));
 
 		GameRegistry.addRecipe(new ItemStack(itemKeystoneDoor, 1, itemKeystoneDoor.KEYSTONE_DOOR), new Object[]{
 				"PWP",
@@ -1284,6 +1406,28 @@ public class ItemsCommonProxy{
 				"cropPotato",
 				new ItemStack(Items.sugar),
 				"stickWood",
+				new ItemStack(standardManaPotion)
+		}));
+
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(astrocalis), new Object[]{
+				new ItemStack(Blocks.vine),
+				new ItemStack(Blocks.red_flower, 1, 2),
+				new ItemStack(Blocks.red_flower, 1, 3),
+				new ItemStack(Blocks.red_flower, 1, 5),
+				new ItemStack(Blocks.red_flower, 1, 6),
+				new ItemStack(itemOre, 1, itemOre.META_HELLFISH),
+				new ItemStack(itemOre, 1, itemOre.META_NIGHTMAREESSENCE),
+				new ItemStack(BlocksCommonProxy.wakebloom),
+				new ItemStack(casparazoid)
+		}));
+
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(casparazoid), new Object[]{
+				new ItemStack(Blocks.red_flower, 1, 3),
+				new ItemStack(Blocks.tallgrass, 1, 1),
+				new ItemStack(Blocks.tallgrass, 1, 2),
+				new ItemStack(itemOre, 1, itemOre.META_RAINROCKROSE),
+				new ItemStack(itemOre, 1, itemOre.META_STORMSAWTOOTH),
+				new ItemStack(itemOre, 1, itemOre.META_COSMICDUST),
 				new ItemStack(standardManaPotion)
 		}));
 

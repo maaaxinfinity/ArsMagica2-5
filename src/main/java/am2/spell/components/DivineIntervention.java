@@ -108,6 +108,7 @@ public class DivineIntervention implements ISpellComponent{
 	public Object[] getRecipeItems(){
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_PURPLE),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_CELESTIALFISH),
 				Items.bed,
 				Items.ender_pearl
 		};

@@ -72,6 +72,7 @@ public class AMConfig extends Configuration{
 	private final String KEY_AllowCompendiumUpdates = "Allow_Compendium_Updates";
 	private final String KEY_MeteorMinSpawnLevel = "Meteor_Spawn_Min_Level";
 	private final String KEY_HazardousGateways = "Hazardous_Gateways";
+	private final String KEY_GlobalTime = "Global_Time_Manipulation";
 	private final String KEY_CanDryadsDespawn = "Can_Dryads_Despawn";
 
 	private final String KEY_ArmorXPInfusionFactor = "Armor_XP_Infusion_Factor";
@@ -165,6 +166,7 @@ public class AMConfig extends Configuration{
 	private final String KEY_ShowHudMinimally = "ShowHudMinimally";
 	private final String KEY_ShowArmorUI = "ShowArmorUI";
 	private final String KEY_moonstoneMeteorsDestroyTerrain = "MoonstoneMeteorDestroyTerrain";
+	private final String KEY_suggestSpellNames = "SuggestSpellNames";
 
 	private final String KEY_ShowBuffs = "ShowBuffTimers";
 	private final String KEY_ShowNumerics = "ShowNumericValues";
@@ -194,6 +196,7 @@ public class AMConfig extends Configuration{
 	private boolean useDimWhitelist;
 	private boolean DisplayManaInInventory;
 	private boolean IsImbueEnabled;
+	private boolean enableGlobalTime;
 	private boolean RetroWorldGen;
 	private boolean moonstoneMeteorsDestroyTerrain;
 	private boolean suggestSpellNames;
@@ -315,7 +318,8 @@ public class AMConfig extends Configuration{
 		DamageMultiplier = (float)get(CATEGORY_GENERAL, KEY_DamageMultiplier, 1.0, "How much the damage in Ars Magica is scaled.").getDouble(1.0);
 
 		UseSpecialRenderers = get(CATEGORY_GENERAL, KEY_UseSpecialRenderers, true, "Render spell effects on equipped scrolls rather than the scroll itself (only applies to the in-game one, the one on your hotbar remains unchanged)").getBoolean(true);
-		SpawnHugeTrees =  get(CATEGORY_GENERAL, KEY_SpawnHugeTrees, true, "Spawn big witchwood trees. If disabled, will only spawn normal witchwood trees.").getBoolean(true);
+		enableGlobalTime = get(CATEGORY_GENERAL, KEY_GlobalTime, true, "Enable time manipulation spells working globally. If false, only the local parts retain functionality (similar to time-in-a-bottle).").getBoolean(true);
+		SpawnHugeTrees =  get(CATEGORY_GENERAL, KEY_SpawnHugeTrees, false, "Spawn big witchwood trees. If disabled, will only spawn normal witchwood trees. May cause minor lag on chunkloading.").getBoolean(false);
 
 		boolean def = !Loader.isModLoaded("NotEnoughItems");
 		DisplayManaInInventory = get(CATEGORY_GENERAL, KEY_DisplayManaInInventory, def, "This will toggle mana display on and off in your inventory.  Default 'O' key in game.").getBoolean(def);
@@ -357,7 +361,7 @@ public class AMConfig extends Configuration{
 		showXPAlways = get(CATEGORY_UI, KEY_ShowXPAlways, false).getBoolean(false);
 		showHudBars = get(CATEGORY_UI, KEY_ShowHUDBars, true).getBoolean(true);
 
-		EtherMode = get(CATEGORY_GENERAL, KEY_EtheriumSpawnMode, 0, "0 = spawn both large and small pools. 1 = spawn large pools only. 2 = spawn small pools only.").getInt();
+		EtherMode = get(CATEGORY_GENERAL, KEY_EtheriumSpawnMode, 3, "0 = spawn both large and small pools. 1 = spawn large pools only. 2 = spawn small pools only, 3 = no pools (use the new etherium gathering mechanic)").getInt();
 		witchwoodForestID = get(CATEGORY_GENERAL, KEY_WitchwoodForestBiomeID, 100, "The biome ID for Witchwood Forests. Change this if you run into issues with other mods that add biomes.").getInt();
 		mmfBiomeID = get(CATEGORY_GENERAL, KEY_MMFBiomeID, 110, "The biome ID for Moo Moo Farm. Change this if you run into issues with other mods that add biomes.").getInt();
 		mmfDimensionID = get(CATEGORY_GENERAL, KEY_MMFDimensionID, -31, "The dimension ID for Moo Moo Farm. Change this if you run into issues with other mods that add dimensions.").getInt();
@@ -369,7 +373,7 @@ public class AMConfig extends Configuration{
 
 		moonstoneMeteorsDestroyTerrain = get(CATEGORY_GENERAL, KEY_moonstoneMeteorsDestroyTerrain, true, "Should moonstone meteors destroy terrain when landing?  Keep in mind they will never land on anything other than grass.").getBoolean(true);
 
-		suggestSpellNames = get(CATEGORY_GENERAL, KEY_moonstoneMeteorsDestroyTerrain, true, "Set this to true to allow AM2 to get random spell names from Seventh Sanctum, and suggest them when naming spells.  Naturally, an internet connection is required.  Keep in mind, while I try to keep things family friendly, it's possible that not all names generated are so.").getBoolean(true);
+		suggestSpellNames = get(CATEGORY_GENERAL, KEY_suggestSpellNames, true, "Set this to true to allow AM2 to get random spell names from Seventh Sanctum, and suggest them when naming spells.  Naturally, an internet connection is required.  Keep in mind, while I try to keep things family friendly, it's possible that not all names generated are so.").getBoolean(true);
 
 		forgeSmeltsVillagers = get(CATEGORY_GENERAL, KEY_ForgeSmeltsVillagers, true, "Set this to true to have the forge component smelt villagers into emeralds.  This counts as an attack and lowers your reputation.").getBoolean(true);
 
@@ -577,6 +581,10 @@ public class AMConfig extends Configuration{
 
 	public boolean spawnHugeTrees(){
 		return SpawnHugeTrees;
+	}
+
+	public boolean isGlobalTimeManipulationEnabled(){
+		return enableGlobalTime;
 	}
 
 	public boolean displayManaInInventory(){

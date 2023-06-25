@@ -1,29 +1,58 @@
 package net.tclproject.mysteriumlib.asm.fixes;
 
+import am2.AMCore;
+import am2.AMEventHandler;
 import am2.affinity.AffinityHelper;
-import am2.api.spell.ItemSpellBase;
 import am2.armor.BoundArmor;
 import am2.blocks.liquid.BlockLiquidEssence;
 import am2.buffs.BuffList;
-import am2.items.ItemSpellStaff;
-import am2.items.SpellBase;
-import am2.spell.SkillManager;
+import am2.configuration.AMConfig;
+import am2.entities.EntityHallucination;
+import am2.items.*;
+import am2.network.AMNetHandler;
+import am2.network.TickrateMessage;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.model.ModelMagmaCube;
+import net.minecraft.client.model.ModelSkeleton;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.RenderFish;
+import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.play.client.C0EPacketClickWindow;
+import net.minecraft.realms.RealmsBridge;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.tclproject.mysteriumlib.asm.annotations.EnumReturnSetting;
 import net.tclproject.mysteriumlib.asm.annotations.Fix;
+import net.tclproject.mysteriumlib.asm.annotations.ReturnedValue;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static am2.blocks.liquid.BlockLiquidEssence.liquidEssenceMaterial;
@@ -36,10 +65,317 @@ public class MysteriumPatchesFixesMagicka{
 	static int spellSlotFrom = -1, spellSlotColumnFrom = -1;
 	static boolean craftingStaffsPossible = false, craftingSpellsPossible = false, craftingArmorPossible = false;
 
+	public static int countdownToChangeBack = -1;
+
+	public static boolean isPlayerEthereal(EntityPlayer entityPlayer) {
+		if (entityPlayer == null) return false;
+		if (entityPlayer.inventory == null) return false;
+		if (entityPlayer.inventory.armorInventory[0] != null) {
+			if (ItemSoulspike.bootsHaveEtherealTag(entityPlayer.inventory.armorInventory[0])) {return true;}
+		}
+		return false;
+	}
+
+	// IEntitySelector impl. is useless because that'd make it incompatible in this case
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS, insertOnExit = true)
+	public static List selectEntitiesWithinAABB(World wrld, Class p_82733_1_, AxisAlignedBB p_82733_2_, IEntitySelector p_82733_3_, @ReturnedValue List returnedValue)
+	{
+		ArrayList toReturn = new ArrayList();
+		for (int i = 0; i < returnedValue.size(); i++) {
+			if (i >= returnedValue.size()) break; // because we now know how volatile entity lists are.
+			if (!(returnedValue.get(i) instanceof EntityPlayer)) {
+				toReturn.add(returnedValue.get(i));
+			} else { // if player
+				if (!isPlayerEthereal((EntityPlayer)returnedValue.get(i))) toReturn.add(returnedValue.get(i));
+			}
+		}
+		return toReturn;
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS, insertOnExit = true)
+	public static EntityPlayer getClosestPlayer(World world, double p_72977_1_, double p_72977_3_, double p_72977_5_, double p_72977_7_, @ReturnedValue EntityPlayer returnedValue)
+	{
+		return isPlayerEthereal(returnedValue) ? null : returnedValue;
+	}
+
+	// same as last method: prevent ethereal players from being returned
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS, insertOnExit = true)
+	public static List getEntitiesWithinAABBExcludingEntity(Entity p_94576_1_, AxisAlignedBB p_94576_2_, IEntitySelector p_94576_3_, @ReturnedValue List returnedValue)
+	{
+		ArrayList toReturn = new ArrayList();
+		for (int i = 0; i < returnedValue.size(); i++) {
+			if (i >= returnedValue.size()) break; // because we now know how volatile entity lists are.
+			if (!(returnedValue.get(i) instanceof EntityPlayer)) {
+				toReturn.add(returnedValue.get(i));
+			} else { // if player
+				if (!isPlayerEthereal((EntityPlayer)returnedValue.get(i))) toReturn.add(returnedValue.get(i));
+			}
+		}
+		return toReturn;
+	}
+
+	public static boolean updatingRenderWorld = false;
+	public static boolean orientingCamera = false;
+
+	@Fix
+	public static void updateRenderer(WorldRenderer wr, EntityLivingBase p_147892_1_) { updatingRenderWorld = true; }
+
+	@Fix(insertOnExit = true)
+	public static void updateRendererEnd(WorldRenderer wr, EntityLivingBase p_147892_1_) { updatingRenderWorld = false; }
+
+	@Fix
+	public static void orientCamera(EntityRenderer er, float p_78467_1_) { orientingCamera = true; }
+
+	@Fix(insertOnExit = true)
+	public static void orientCameraEnd(EntityRenderer er, float p_78467_1_) { orientingCamera = false; }
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	@SideOnly(Side.CLIENT) // method isn't clientside technically but we only need this patch clientside
+	public static double distanceTo(Vec3 thisVec, Vec3 p_72438_1_)
+	{
+		if (Minecraft.getMinecraft() != null && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().renderViewEntity != null) {
+			if (orientingCamera && isPlayerEthereal(Minecraft.getMinecraft().thePlayer) && Minecraft.getMinecraft().renderViewEntity == Minecraft.getMinecraft().thePlayer)
+				return Double.MAX_VALUE;
+		} // just in case
+		double d0 = p_72438_1_.xCoord - thisVec.xCoord;
+		double d1 = p_72438_1_.yCoord - thisVec.yCoord;
+		double d2 = p_72438_1_.zCoord - thisVec.zCoord;
+		return (double) MathHelper.sqrt_double(d0 * d0 + d1 * d1 + d2 * d2);
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS, insertOnExit = true)
+	public static boolean isEntityInsideOpaqueBlock(Entity thisEntity, @ReturnedValue boolean returnedValue)
+	{
+		if (thisEntity.noClip) return false;
+		return returnedValue;
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	public static boolean canBePushed(EntityLivingBase elb)
+	{
+		if (elb instanceof EntityPlayer) {
+			if (isPlayerEthereal((EntityPlayer) elb)) return false;
+		}
+		return !elb.isDead;
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	public static boolean canBeCollidedWith(EntityLivingBase elb)
+	{
+		if (elb instanceof EntityPlayer) {
+			if (isPlayerEthereal((EntityPlayer) elb)) return false;
+		}
+		return !elb.isDead;
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	public static boolean isOnLadder(EntityLivingBase elb)
+	{
+		if (elb instanceof EntityPlayer) {
+			if (isPlayerEthereal((EntityPlayer) elb)) return false;
+		}
+		return isOnLadderCalc(elb);
+	}
+
+	public static boolean isOnLadderCalc(EntityLivingBase elb)
+	{
+		int i = MathHelper.floor_double(elb.posX);
+		int j = MathHelper.floor_double(elb.boundingBox.minY);
+		int k = MathHelper.floor_double(elb.posZ);
+		Block block = elb.worldObj.getBlock(i, j, k);
+		return ForgeHooks.isLivingOnLadder(block, elb.worldObj, i, j, k, elb);
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "returnFalse")
+	public static boolean handleWaterMovement(Entity thisEntity)
+	{
+		if (thisEntity instanceof EntityPlayer) {
+			if (isPlayerEthereal((EntityPlayer) thisEntity)) return true; // return false from the original method
+		}
+		return false; // continue normal execution
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean processClickWindow(NetHandlerPlayServer nhps, C0EPacketClickWindow p_147351_1_) {
+		if (isPlayerEthereal(nhps.playerEntity)) {
+			nhps.playerEntity.func_143004_u();
+			if (nhps.playerEntity.openContainer.windowId == p_147351_1_.func_149548_c() && nhps.playerEntity.openContainer.isPlayerNotUsingContainer(nhps.playerEntity)) {
+				ArrayList<ItemStack> arraylist = new ArrayList<>();
+				for (int i = 0; i < nhps.playerEntity.openContainer.inventorySlots.size(); ++i)
+				{
+					arraylist.add(((Slot)nhps.playerEntity.openContainer.inventorySlots.get(i)).getStack());
+				}
+				nhps.playerEntity.sendContainerAndContentsToPlayer(nhps.playerEntity.openContainer, arraylist);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean returnFalse(Entity thisEntity) { return false; }
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean applyEntityCollision(Entity thisEntity, Entity argumentPassed)
+	{
+		if (argumentPassed instanceof EntityPlayer) {
+			if (isPlayerEthereal((EntityPlayer) argumentPassed)) return true; // stop execution
+		}
+		return false; // continue execution
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "returnMinusOne")
+	@SideOnly(Side.CLIENT)
+	public static boolean getRenderType(Block block) { // this is alright, we don't want to change overridden classes so allthatextends isn't necessary
+//		if (updatingRenderWorld && isPlayerEthereal(Minecraft.getMinecraft().thePlayer)) return true;
+		return false;
+	}
+
+	public static int returnMinusOne(Block block) { return -1; }
+
 	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
 	@SideOnly(Side.CLIENT)
 	public static boolean isInvisibleToPlayer(Entity e, EntityPlayer p_98034_1_){
-		return p_98034_1_.isPotionActive(BuffList.trueSight.id) ? false : e.isInvisible();
+		return (p_98034_1_.isPotionActive(BuffList.trueSight.id) || isPlayerEthereal(p_98034_1_)) ? false : e.isInvisible();
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean setDamage(Item item, ItemStack stack, int damage)
+	{
+		if (stack != null) {
+			if (stack.getItem() instanceof ItemSoulspike && damage != 66 && damage != 0) return true;
+		}
+		return false;
+	}
+
+	// item handling: etherium (floating up) and cognitive dust (slowly floating up)
+	@Fix
+	public static void onUpdate(EntityItem ei)
+	{
+		if (ei.getEntityItem() != null) {
+			if (ei.getEntityItem().getItem() instanceof ItemOre && ei.getEntityItem().getItemDamage() == ItemsCommonProxy.itemOre.META_COGNITIVEDUST) {
+				ei.moveEntity(ei.motionX, ei.motionY, ei.motionZ);
+				ei.motionY *= 0.0500000011920929D;
+				ei.motionY += 0.025D;
+			}
+			if (ei.worldObj.isMaterialInBB(ei.boundingBox.expand(-0.10000000149011612D, -0.4000000059604645D, -0.10000000149011612D), liquidEssenceMaterial)) {
+				double d0 = ei.posY;
+				ei.moveEntity(ei.motionX, ei.motionY, ei.motionZ);
+				ei.motionX *= 0.500000011920929D;
+				ei.motionY *= 0.0500000011920929D;
+				ei.motionZ *= 0.500000011920929D;
+				ei.motionY += 0.05D;
+
+				if (ei.isCollidedHorizontally && ei.isOffsetPositionInLiquid(ei.motionX, ei.motionY + 0.6000000238418579D - ei.posY + d0, ei.motionZ)) {
+					ei.motionY = 0.30000001192092896D;
+				}
+				ei.fallDistance = 0;
+			}
+		}
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	public static void switchToRealms(RealmsBridge rb, GuiScreen p_switchToRealms_1_)
+	{
+		return; // annoying realms crash disabler
+	}
+
+	private static Map<String, Integer> tileticks = new HashMap<>(); // for keeping track of ticks, not power
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	public static boolean hasWorldObj(TileEntity te) // very roundabout way to slow down tileentity ticks. The TE won't update if hasWorldObj in it returns false. it's only used in rendering chests otherwise, so there's no harm in overwriting this function.
+	{
+		if (te.getWorldObj() != null) {
+			String thistile = te.xCoord + "_" + te.yCoord + "_" + te.zCoord + "_" + te.getWorldObj().provider.dimensionId;
+			if (AMEventHandler.slowedTiles.containsKey(thistile)) {
+				if (!tileticks.containsKey(thistile)) tileticks.put(thistile, 1);
+				else tileticks.put(thistile, tileticks.get(thistile)+1);
+
+				if (tileticks.get(thistile) > 1000) tileticks.put(thistile, 1);
+
+				if (tileticks.get(thistile) % AMEventHandler.slowedTiles.get(thistile) != 0) {
+					return false; // returns false from the original method
+				}
+			}
+		}
+		return te.getWorldObj() != null; // do not overwrite default behavior
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean setLivingAnimations(ModelMagmaCube mmc, EntityLivingBase elb, float p_78086_2_, float p_78086_3_, float p_78086_4_)
+	{
+		if (elb instanceof EntityHallucination) return true;
+		return false;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean setLivingAnimations(ModelSkeleton mmc, EntityLivingBase elb, float p_78086_2_, float p_78086_3_, float p_78086_4_)
+	{
+		if (elb instanceof EntityHallucination) return true;
+		return false;
+	}
+
+	public static long servertickrate = 50L; // changing
+	public static long servertickratedefault = 50L; // default
+
+	public static float clienttickrate = 20; // stored in ticks as opposed to milis
+	public static float clienttickratedefault = 20;
+
+	// a few of the following methods are courtesy of Guichaguri (TickrateChanger mod)
+
+	public static void changeTickrate(float ticksPerSecond) {
+		if (AMCore.config.isGlobalTimeManipulationEnabled()) {
+			changeServerTickrate(ticksPerSecond);
+			changeClientTickratePublic(ticksPerSecond);
+		}
+	}
+
+	public static void changeClientTickratePublic(float ticksPerSecond) {
+		MinecraftServer server = MinecraftServer.getServer();
+		if((server != null) && (server.getConfigurationManager() != null)) { // Is a server or singleplayer
+			for(EntityPlayer p : (List<EntityPlayer>)server.getConfigurationManager().playerEntityList) {
+				changeClientTickratePublic(p, ticksPerSecond);
+			}
+		} else { // Is in menu or a player connected in a server. We can say this is client.
+			changeClientTickratePublic(null, ticksPerSecond);
+		}
+	}
+
+	public static void changeClientTickratePublic(EntityPlayer player, float ticksPerSecond) {
+		if((player == null) || (player.worldObj.isRemote)) { // Client
+			if(FMLCommonHandler.instance().getSide() != Side.CLIENT) return;
+			if((player != null) && (player != Minecraft.getMinecraft().thePlayer)) return;
+			changeClientTickrate(ticksPerSecond);
+		} else { // Server
+			AMCore.NETWORK.sendTo(new TickrateMessage(ticksPerSecond), (EntityPlayerMP)player);
+		}
+	}
+
+	private static Field timerField = null;
+	@SideOnly(Side.CLIENT)
+	public static void changeClientTickrate(float newtickrate) {
+		clienttickrate = newtickrate; // store it in case we need to access it later
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc == null) return;
+		try {
+			if(timerField == null) {
+				for(Field fld : mc.getClass().getDeclaredFields()) {
+					if(fld.getType() == net.minecraft.util.Timer.class) { // have to type out the whole class, otherwise it assumes it's the java.util timer
+						timerField = fld;
+						timerField.setAccessible(true);
+						break;
+					}
+				}
+			}
+			timerField.set(mc, new net.minecraft.util.Timer(clienttickrate));
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public static void changeServerTickrate(float newtickrate) {
+		servertickrate = (long)(1000L / newtickrate); // 1000 milis in a second. 20 ticks a second. = 50 milis per tick.
 	}
 
 	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, booleanAlwaysReturned = true)
@@ -117,6 +453,32 @@ public class MysteriumPatchesFixesMagicka{
 			}
 		}
 		return false;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private static final ResourceLocation field_110792_a = new ResourceLocation("minecraft", "textures/particle/particles.png");
+	@SideOnly(Side.CLIENT)
+	private static final ResourceLocation rodtexture1 = new ResourceLocation("arsmagica2", "textures/items/particles/particleswitharcanerod.png");
+	@SideOnly(Side.CLIENT)
+	private static final ResourceLocation rodtexture2 = new ResourceLocation("arsmagica2", "textures/items/particles/particleswithinfernalrod.png");
+
+	@SideOnly(Side.CLIENT)
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "getEntityTextureResult")
+	public static boolean getEntityTexture(RenderFish r, EntityFishHook e) {
+		Item heldItem = Minecraft.getMinecraft().thePlayer.getHeldItem().getItem();
+		if (heldItem instanceof ItemArcaneFishingRod || heldItem instanceof ItemInfernalFishingRod) {
+			return true;
+		}
+		return false;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static ResourceLocation getEntityTextureResult(RenderFish r, EntityFishHook e) {
+		if (Minecraft.getMinecraft().thePlayer.getHeldItem().getItem() instanceof ItemArcaneFishingRod) {
+			return rodtexture1;
+		} else {
+			return rodtexture2;
+		}
 	}
 
 	public static boolean isInsideWater(Entity e, Material p_70055_1_) {

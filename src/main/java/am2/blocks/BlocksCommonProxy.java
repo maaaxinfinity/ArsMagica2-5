@@ -66,7 +66,11 @@ public class BlocksCommonProxy{
 	public static AMFlower aum;
 	public static BlockWakebloom wakebloom;
 	public static BlockTarmaRoot tarmaRoot;
+	public static BlockInfusedStem infusedStem;
+	public static BlockSanguineAmaryllis sanguineAmaryllis;
+	public static BlockEffervescentSnowdrop effervescentSnowdrop;
 	public static BlockWitchwoodLog witchwoodLog;
+	public static BlockWitchwoodLogDrained witchwoodLogDrained;
 	public static BlockWitchwoodLeaves witchwoodLeaves;
 	public static BlockSummoner summoner;
 	public static BlockLiquidEssence liquidEssence;
@@ -96,6 +100,9 @@ public class BlocksCommonProxy{
 	public static BlockSpellSealedDoor spellSealedDoor;
 	public static BlockEntropicEnervator entropicEnervator;
 	public static BlockSpellReplicator spellReplicator;
+	public static BlockRainRockrose rainRockrose;
+	public static BlockStormSawtooth stormSawtooth;
+	public static BlockImbuedMoonflower imbuedMoonflower;
 
 	//--------------------------------------------------------------
 	// End Blocks
@@ -219,7 +226,11 @@ public class BlocksCommonProxy{
 		aum = (AMFlower)new AMFlower().setUnlocalizedNameAndID("arsmagica2:aum").setCreativeTab(blockTab);
 		wakebloom = (BlockWakebloom)new BlockWakebloom().setUnlocalizedNameAndID("arsmagica2:wakebloom").setCreativeTab(blockTab);
 		tarmaRoot = (BlockTarmaRoot)new BlockTarmaRoot().setUnlocalizedNameAndID("arsmagica2:tarmaroot").setCreativeTab(blockTab);
+		effervescentSnowdrop = (BlockEffervescentSnowdrop) new BlockEffervescentSnowdrop().setUnlocalizedNameAndID("arsmagica2:effervescentSnowdrop").setCreativeTab(blockTab);
+		sanguineAmaryllis = (BlockSanguineAmaryllis) new BlockSanguineAmaryllis().setUnlocalizedNameAndID("arsmagica2:sanguineAmaryllis").setCreativeTab(blockTab);
+		infusedStem = (BlockInfusedStem) new BlockInfusedStem().setUnlocalizedNameAndID("arsmagica2:infusedStem").setCreativeTab(blockTab);
 		witchwoodLog = (BlockWitchwoodLog)new BlockWitchwoodLog().setBlockName("arsmagica2:witchwoodlog").setCreativeTab(blockTab);
+		witchwoodLogDrained = (BlockWitchwoodLogDrained) new BlockWitchwoodLogDrained().setBlockName("arsmagica2:drainedwitchwoodlog").setCreativeTab(blockTab);
 		witchwoodLeaves = (BlockWitchwoodLeaves)new BlockWitchwoodLeaves().setBlockName("arsmagica2:witchwoodleaves").setCreativeTab(blockTab);
 		summoner = (BlockSummoner)new BlockSummoner().setUnlocalizedNameAndID("arsmagica2:summoner").setCreativeTab(blockTab);
 		liquidEssence = (BlockLiquidEssence)new BlockLiquidEssence().setBlockName("arsmagica2:liquidEssence");
@@ -249,6 +260,10 @@ public class BlocksCommonProxy{
 		spellSealedDoor = (BlockSpellSealedDoor)new BlockSpellSealedDoor().setBlockName("arsmagica2:spell_sealed_door");
 		entropicEnervator = (BlockEntropicEnervator)new BlockEntropicEnervator().setBlockName("arsmagica2:entropic_enervator").setCreativeTab(blockTab);
 		spellReplicator = (BlockSpellReplicator)new BlockSpellReplicator().setBlockName("arsmagica2:spellReplicator").setCreativeTab(blockTab);
+
+		rainRockrose = (BlockRainRockrose) new BlockRainRockrose().setUnlocalizedNameAndID("arsmagica2:rainRockrose");
+		stormSawtooth = (BlockStormSawtooth) new BlockStormSawtooth().setUnlocalizedNameAndID("arsmagica2:stormSawtooth");
+		imbuedMoonflower = (BlockImbuedMoonflower) new BlockImbuedMoonflower().setUnlocalizedNameAndID("arsmagica2:imbuedMoonflower");
 
 		blockTab.setIconItemIndex(new ItemBlock(manaBattery));
 	}
@@ -282,18 +297,21 @@ public class BlocksCommonProxy{
 
 		//caster
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(caster, 1), new Object[]{
-				"SSS", "AVA", "SSS",
+				"SRS", "AVA", "SFS",
 				Character.valueOf('A'), "arcaneAsh",
 				Character.valueOf('S'), "stone",
+				Character.valueOf('F'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SOULFRAGMENT),
+				Character.valueOf('R'), "dustRedstone",
 				Character.valueOf('V'), "dustVinteum"}));
 
 		//caster rune
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(casterRune, 1), new Object[]{
-				"RRR", "AVA", "SSS",
+				"RRR", "APA", "SVS",
 				Character.valueOf('A'), "arcaneAsh",
 				Character.valueOf('S'), "stone",
 				Character.valueOf('V'), "dustVinteum",
-				Character.valueOf('R'), ItemsCommonProxy.rune
+				Character.valueOf('R'), ItemsCommonProxy.rune,
+				Character.valueOf('P'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SOULFRAGMENT)
 		}));
 
 		//summoner
@@ -373,12 +391,13 @@ public class BlocksCommonProxy{
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(arcaneDeconstructor), new Object[]{
 				"IGR",
 				"WDW",
-				"WWW",
+				"CWC",
 				Character.valueOf('I'), ItemsCommonProxy.itemFocus,
 				Character.valueOf('G'), "blockGlassColorless",
 				Character.valueOf('R'), new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_PURE),
 				Character.valueOf('W'), witchwoodPlanks,
-				Character.valueOf('D'), ItemsCommonProxy.deficitCrystal
+				Character.valueOf('D'), ItemsCommonProxy.deficitCrystal,
+				Character.valueOf('C'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PYROGENICSEDIMENT),
 		}));
 
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(flickerLure), new Object[]{
@@ -651,7 +670,7 @@ public class BlocksCommonProxy{
 				"VDV",
 				'W', new ItemStack(BlocksCommonProxy.magicWall),
 				'V', "dustVinteum",
-				'D', "gemDiamond",
+				'D', new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_COSMICDUST),
 				'F', new ItemStack(ItemsCommonProxy.flickerJar, 1, Affinity.ARCANE.ordinal())
 		}));
 
@@ -772,7 +791,11 @@ public class BlocksCommonProxy{
 		registerBlock(invisibleUtility, "invisibleUtility");
 		registerBlock(aum, "Aum");
 		registerBlock(tarmaRoot, "TarmaRoot");
+		registerBlock(effervescentSnowdrop, "EffervescentSnowdrop");
+		registerBlock(sanguineAmaryllis, "SanguineAmaryllis");
+		registerBlock(infusedStem, "InfusedStem");
 		registerBlock(witchwoodLog, "WitchwoodLog");
+		registerBlock(witchwoodLogDrained, "DrainedWitchwoodLog");
 		registerBlock(witchwoodLeaves, "WitchwoodLeaves");
 		registerBlock(summoner, "Summoner");
 		registerBlock(liquidEssence, "liquidEssence");
@@ -800,6 +823,10 @@ public class BlocksCommonProxy{
 		registerBlock(spellSealedDoor, "spellSealedDoor");
 		registerBlock(entropicEnervator, "entropicEvervator");
 		registerBlock(spellReplicator, "spellReplicator");
+
+		registerBlock(rainRockrose, "rainRockrose");
+		registerBlock(stormSawtooth, "stormSawtooth");
+		registerBlock(imbuedMoonflower, "imbuedMoonflower");
 
 		//if you need a special item placer for the block, set it here instead of registering the block normally above
 		/*Item.itemsList[BlocksCommonProxy.witchwoodSingleSlab.blockID] = new ItemSlab(BlocksCommonProxy.witchwoodSingleSlab.blockID - 256, BlocksCommonProxy.witchwoodSingleSlab, BlocksCommonProxy.witchwoodDoubleSlab, false);
@@ -892,6 +919,7 @@ public class BlocksCommonProxy{
 		GameRegistry.registerTileEntity(TileEntitySpellSealedDoor.class, "TileEntitySpellSealedDoor");
 		GameRegistry.registerTileEntity(TileEntityEntropicEnervator.class, "TileEntityEntropicEnervator");
 		GameRegistry.registerTileEntity(TileEntitySpellReplicator.class, "TileEntitySpellReplicator");
+		GameRegistry.registerTileEntity(TileEntityInfusedStem.class, "TileEntityInfusedStem");
 	}
 
 	public void registerRenderInformation(){

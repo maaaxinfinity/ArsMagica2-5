@@ -32,7 +32,7 @@ public class ItemManaStone extends ArsMagicaItem {
 	}
 
 	@Override
-	public void addInformation(ItemStack journal, EntityPlayer player, List list, boolean par4){
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4){
 		String[] strings = StatCollector.translateToLocal("am2.tooltip.stoneUse").split(" ");
 		String firstHalf = "";
 		String secondHalf = "";
@@ -40,7 +40,7 @@ public class ItemManaStone extends ArsMagicaItem {
 			if (i < strings.length / 2) firstHalf += strings[i] + " ";
 			else secondHalf += strings[i] + " ";
 		}
-		list.add(String.format(StatCollector.translateToLocal("am2.tooltip.containedMana"), getManaInStone(journal)));
+		list.add(String.format(StatCollector.translateToLocal("am2.tooltip.containedMana"), getManaInStone(stack)));
 		list.add(firstHalf);
 		list.add(secondHalf);
 	}

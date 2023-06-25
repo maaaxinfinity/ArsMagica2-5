@@ -83,7 +83,7 @@ public class BossSpawnHelper{
 		}
 	}
 
-	private int getMoonPhaseProxiedProperly(long worldTime){
+	public int getMoonPhaseProxiedProperly(long worldTime){
 		return (int)(worldTime / 24000L) % 8;
 	}
 

@@ -104,6 +104,7 @@ public class CommonProxy{
 		MinecraftForge.EVENT_BUS.register(new AffinityHelper());
 		MinecraftForge.EVENT_BUS.register(new SpellUnlockManager());
 		MinecraftForge.EVENT_BUS.register(new ArmorEventHandler());
+		FMLCommonHandler.instance().bus().register(new ArmorEventHandler());
 		MinecraftForge.EVENT_BUS.register(EntityManager.instance);
 		MinecraftForge.EVENT_BUS.register(new AMWorldEventHandler());
 
@@ -140,6 +141,8 @@ public class CommonProxy{
 		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Blocks.cobblestone), new ItemStack(Blocks.gravel));
 		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Blocks.sandstone), new ItemStack(Blocks.sand));
 		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Blocks.web), new ItemStack(Items.string));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.nether_wart), new ItemStack(ItemsCommonProxy.stormSawtoothSeeds));
+		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.wheat_seeds), new ItemStack(ItemsCommonProxy.rainRockroseSeeds));
 
 		// broken records
 		EnervatorRecipeHelper.instance.registerRecipe(new ItemStack(Items.record_13), new ItemStack(Items.record_11));

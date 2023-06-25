@@ -13,6 +13,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -123,6 +124,22 @@ public class ItemManaPotion extends ArsMagicaItem{
 			return 3000;
 		}
 		return 600;
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean iHaveNoIdea){
+		super.addInformation(stack, player, lines, iHaveNoIdea);
+		if (this == ItemsCommonProxy.lesserManaPotion){
+			lines.add(StatCollector.translateToLocal("am2.tooltip.potion1"));
+		}else if (this == ItemsCommonProxy.standardManaPotion){
+			lines.add(StatCollector.translateToLocal("am2.tooltip.potion2"));
+		}else if (this == ItemsCommonProxy.greaterManaPotion){
+			lines.add(StatCollector.translateToLocal("am2.tooltip.potion3"));
+		}else if (this == ItemsCommonProxy.epicManaPotion){
+			lines.add(StatCollector.translateToLocal("am2.tooltip.potion4"));
+		}else if (this == ItemsCommonProxy.legendaryManaPotion){
+			lines.add(StatCollector.translateToLocal("am2.tooltip.potion5"));
+		}
 	}
 
 	@Override

@@ -895,7 +895,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 	}
 
 	private void handleBindingShape(){
-		if (currentAddedItems.size() == 7)
+		if (currentAddedItems.size() == 8)
 			addedBindingCatalyst = currentAddedItems.get(currentAddedItems.size() - 1);
 	}
 

@@ -232,7 +232,7 @@ public class AffinityHelper{
 				AMCore.proxy.particleManager.BoltFromEntityToPoint(ent.worldObj, ent, ent.posX - 2 + ent.getRNG().nextDouble() * 4, ent.posY + ent.getEyeHeight() - 2 + ent.getRNG().nextDouble() * 4, ent.posZ - 2 + ent.getRNG().nextDouble() * 4);
 			}else{
 				if (ent.getRNG().nextDouble() < 0.4f)
-					ent.worldObj.playSoundAtEntity(ent, "arsmagica2:misc.event.mana_shield_block", 1.0f, ent.worldObj.rand.nextFloat() + 0.5f);
+					ent.worldObj.playSoundAtEntity(ent, "arsmagica2:spell.cast.arcane", 1.0f, ent.worldObj.rand.nextFloat() + 0.5f);
 			}
 		}
 	}

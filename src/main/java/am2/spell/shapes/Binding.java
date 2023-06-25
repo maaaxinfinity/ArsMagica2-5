@@ -51,7 +51,7 @@ public class Binding implements ISpellShape{
 			heldStack = InventoryUtilities.replaceItem(heldStack, ItemsCommonProxy.BoundHoe);
 			break;
 		case ItemBindingCatalyst.META_BOW:
-			heldStack = InventoryUtilities.replaceItem(heldStack, Items.bow);
+			heldStack = InventoryUtilities.replaceItem(heldStack, ItemsCommonProxy.BoundBow);
 			break;
 		}
 		player.inventory.setInventorySlotContents(player.inventory.currentItem, heldStack);
@@ -67,6 +67,7 @@ public class Binding implements ISpellShape{
 	public Object[] getRecipeItems(){
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_CHIMERITE),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_COGNITIVEDUST),
 				Items.wooden_sword,
 				Items.stone_shovel,
 				Items.iron_hoe,
@@ -105,7 +106,7 @@ public class Binding implements ISpellShape{
 		try{
 			type = Integer.parseInt(SpellUtils.instance.getSpellMetadata(spellStack, "binding_type"));
 		}catch (Throwable t){
-
+			t.printStackTrace();
 		}
 		return type;
 	}

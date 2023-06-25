@@ -2,6 +2,7 @@ package am2.spell.modifiers;
 
 import am2.api.spell.component.interfaces.ISpellModifier;
 import am2.api.spell.enums.SpellModifiers;
+import am2.blocks.BlocksCommonProxy;
 import am2.items.ItemsCommonProxy;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,7 +20,7 @@ public class Healing implements ISpellModifier{
 
 	@Override
 	public float getModifier(SpellModifiers type, EntityLivingBase caster, Entity target, World world, byte[] metadata){
-		return 2;
+		return 2.5f; // increased a bit to justify using instead of solar + new crafting ingredient
 	}
 
 	@Override
@@ -31,6 +32,7 @@ public class Healing implements ISpellModifier{
 	public Object[] getRecipeItems(){
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_LIFE),
+				new ItemStack(BlocksCommonProxy.effervescentSnowdrop),
 				Items.egg,
 				"P:0 & !1 & 2 & !3" //healing potion
 		};

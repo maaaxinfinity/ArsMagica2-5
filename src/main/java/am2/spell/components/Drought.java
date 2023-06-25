@@ -126,6 +126,7 @@ public class Drought implements ISpellComponent{
 	public Object[] getRecipeItems(){
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_ORANGE),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_HELLFISH),
 				Blocks.sand,
 				Blocks.deadbush
 		};

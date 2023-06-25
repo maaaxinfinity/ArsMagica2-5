@@ -29,6 +29,7 @@ public class Contingency_Fire implements ISpellShape{
 				BlocksCommonProxy.tarmaRoot,
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_FIRE),
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SUNSTONE),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_PYROGENICSEDIMENT),
 				"E:*", 5000
 		};
 	}

@@ -5,35 +5,38 @@ import am2.api.ArsMagicaApi;
 import am2.api.events.ManaCostEvent;
 import am2.api.spell.enums.Affinity;
 import am2.api.spell.enums.BuffPowerLevel;
-import am2.api.spell.enums.ContingencyTypes;
 import am2.armor.ArmorHelper;
 import am2.armor.infusions.GenericImbuement;
 import am2.blocks.BlocksCommonProxy;
 import am2.blocks.tileentities.TileEntityAstralBarrier;
+import am2.blocks.tileentities.TileEntityInfusedStem;
 import am2.bosses.BossSpawnHelper;
+import am2.buffs.BuffEffectScrambleSynapses;
 import am2.buffs.BuffEffectTemporalAnchor;
 import am2.buffs.BuffList;
 import am2.buffs.BuffStatModifiers;
 import am2.damage.DamageSourceFire;
 import am2.damage.DamageSources;
 import am2.entities.EntityFlicker;
+import am2.entities.EntityHallucination;
+import am2.entities.EntitySpecificHallucinations;
+import am2.items.ItemSoulspike;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMNetHandler;
-import am2.particles.AMParticle;
-import am2.particles.ParticleFadeOut;
 import am2.playerextensions.AffinityData;
 import am2.playerextensions.ExtendedProperties;
 import am2.playerextensions.RiftStorage;
 import am2.playerextensions.SkillData;
 import am2.utility.*;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityBoat;
@@ -47,15 +50,15 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.*;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.brewing.PotionBrewedEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -63,13 +66,14 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.player.AchievementEvent;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixesMagicka;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -170,8 +174,71 @@ public class AMEventHandler{
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onEntityDeathHighPriority(LivingDeathEvent event){
 		EntityLivingBase soonToBeDead = event.entityLiving;
+
+		if (soonToBeDead instanceof EntityPlayer) { // soul fragments: die with at least 5 rare items
+			if (soonToBeDead.isPotionActive(BuffList.psychedelic)){
+				if (soonToBeDead.worldObj.provider.dimensionId == 1 && soonToBeDead.getActivePotionEffect(BuffList.psychedelic).getAmplifier() == 1) {
+					EntityPlayer player = (EntityPlayer)soonToBeDead;
+					int slotCount = 0;
+					int rareCount = 0;
+					for (ItemStack stack : player.inventory.mainInventory){
+						if (stack != null) {
+							if (stack.getRarity() != EnumRarity.common) {
+								player.inventory.setInventorySlotContents(slotCount, null);
+								rareCount++;
+							}
+						}
+						slotCount++;
+					}
+					slotCount = 0;
+					for (ItemStack stack : player.inventory.armorInventory){
+						if (stack != null) {
+							if (stack.getRarity() != EnumRarity.common) {
+								player.inventory.setInventorySlotContents(slotCount + player.inventory.mainInventory.length, null);
+								rareCount++;
+							}
+						}
+						slotCount++;
+					}
+					if (rareCount >= 5) {
+						EntityItem fragment = new EntityItem(player.worldObj);
+						ItemStack stack = new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SOULFRAGMENT);
+						fragment.setPosition(player.posX+rand.nextInt(5)-2, player.posY + 10, player.posZ+rand.nextInt(5)-2);
+						fragment.setEntityItemStack(stack);
+						player.worldObj.spawnEntityInWorld(fragment);
+						player.worldObj.playSoundAtEntity(player, "ambient.weather.thunder",2F, 2F);
+					}
+				}
+			}
+		}
+
 		if (soonToBeDead instanceof EntityPlayer){
 			storeSoulboundItemsForRespawn((EntityPlayer)soonToBeDead);
+		}
+	}
+
+	@SubscribeEvent
+	public void onAttack(AttackEntityEvent event) {
+		if (event.entityPlayer.getHeldItem() != null) {
+			if (event.entityPlayer.getHeldItem().getItem() instanceof ItemSoulspike) {
+				if (event.target instanceof EntityHallucination) {
+					ItemSoulspike.addManaToSpike(event.entityPlayer.getHeldItem(), 15);
+					event.target.attackEntityFrom(DamageSource.outOfWorld, 15);
+					event.target.attackEntityFrom(DamageSource.magic, 15);
+				} else if (event.target instanceof EntityLivingBase) {
+					if (event.target instanceof EntityPlayer) {
+						EntityPlayer pl = (EntityPlayer) event.target;
+						if (!AMCore.config.getAllowCreativeTargets() && pl.capabilities.isCreativeMode) return;
+						ExtendedProperties properties = ExtendedProperties.For(pl);
+						if (properties.hasExtraVariable("ethereal")) {
+							ItemSoulspike.addManaToSpike(event.entityPlayer.getHeldItem(), (int)(properties.getCurrentMana()/4));
+							properties.deductMana(properties.getCurrentMana()/4);
+						}
+					}
+					ItemSoulspike.addManaToSpike(event.entityPlayer.getHeldItem(), 3);
+					event.target.attackEntityFrom(DamageSource.outOfWorld, 3);
+				}
+			}
 		}
 	}
 
@@ -180,6 +247,13 @@ public class AMEventHandler{
 		EntityLivingBase soonToBeDead = event.entityLiving;
 		if (!(ExtendedProperties.For(soonToBeDead).getContingencyEffect(1).getItem() instanceof ItemSnowball)){
 			ExtendedProperties.For(soonToBeDead).procContingency(1, null);
+		}
+
+		if (soonToBeDead instanceof EntityHallucination && event.source.getSourceOfDamage() != null) {
+			if (event.source.getSourceOfDamage() instanceof EntityPlayer) { // bad karma with the world
+				ExtendedProperties exProps = ExtendedProperties.For((EntityPlayer)event.source.getSourceOfDamage());
+				exProps.addToExtraVariables("karma", "bad");
+			}
 		}
 
 		if (soonToBeDead instanceof EntityPlayer){
@@ -201,6 +275,22 @@ public class AMEventHandler{
 
 		if (soonToBeDead instanceof EntityVillager && ((EntityVillager)soonToBeDead).isChild()){
 			BossSpawnHelper.instance.onVillagerChildKilled((EntityVillager)soonToBeDead);
+		}
+
+		if (soonToBeDead instanceof EntityLiving && !soonToBeDead.worldObj.isRemote) {
+			int x = (int)Math.floor(soonToBeDead.posX);
+			int y = (int)Math.floor(soonToBeDead.posY);
+			int z = (int)Math.floor(soonToBeDead.posZ);
+			for (int newx = x-3; newx <= x+3; newx++) {
+				for (int newy = y-3; newy <= y+3; newy++) {
+					for (int newz = z-3; newz <= z+3; newz++) {
+						if (soonToBeDead.worldObj.getTileEntity(newx, newy, newz) instanceof TileEntityInfusedStem) {
+							((TileEntityInfusedStem)soonToBeDead.worldObj.getTileEntity(newx, newy, newz)).killedEntities.add((EntityLiving)soonToBeDead);
+							return;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -347,10 +437,60 @@ public class AMEventHandler{
 		}
 	}
 
+	public static List<String> forceShielded = new ArrayList<>();
+	public static Map<String, Integer> slowedTiles = new HashMap<>();
+	public static Map<String, Integer> acceleratedEntitiesUUIDs = new HashMap<>();
+	public static Map<String, Integer> slowedEntitiesUUIDs = new HashMap<>();
+
+	@SubscribeEvent
+	public void onBlockBreak(BlockEvent.BreakEvent event) {
+		if (forceShielded.contains(event.x + "_" + event.y + "_" + event.z + "_" + event.world.provider.dimensionId)) {
+			event.setCanceled(true);
+			event.world.playSoundAtEntity(event.getPlayer(), "arsmagica2:spell.cast.arcane", 1F, rand.nextFloat() + 0.5f);
+			event.world.spawnParticle("depthsuspend", event.x+0.5, event.y+0.5, event.z+0.5,0,0,0);
+			event.world.spawnParticle("depthsuspend", event.x+rand.nextFloat(), event.y+rand.nextFloat(), event.z+rand.nextFloat(),0,0,0);
+			event.world.spawnParticle("depthsuspend", event.x+rand.nextFloat(), event.y+rand.nextFloat(), event.z+rand.nextFloat(),0,0,0);
+		}
+	}
+
+	@SubscribeEvent
+	public void disconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) { // fired at the client. this is to reset it to normal after disconnecting
+		MysteriumPatchesFixesMagicka.changeServerTickrate(MysteriumPatchesFixesMagicka.clienttickratedefault); // this is ok because it converts it to the server format anyway
+		MysteriumPatchesFixesMagicka.changeClientTickratePublic(null, MysteriumPatchesFixesMagicka.clienttickratedefault);
+	}
+
+	@SubscribeEvent
+	public void connect(FMLNetworkEvent.ClientConnectedToServerEvent event) { // fired at client when connects to server
+		if(event.isLocal) { // single player game
+			float tickrate = MysteriumPatchesFixesMagicka.clienttickratedefault;
+			MysteriumPatchesFixesMagicka.changeServerTickrate(tickrate); // this is ok because it converts it to the server format anyway
+			MysteriumPatchesFixesMagicka.changeClientTickratePublic(null, tickrate);
+		} else {
+			MysteriumPatchesFixesMagicka.changeClientTickratePublic(null, 20F); // it forces it serverside anyway
+		}
+	}
+
+	@SubscribeEvent
+	public void connect(PlayerEvent.PlayerLoggedInEvent event) {
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+			float tickrate = 1000L / MysteriumPatchesFixesMagicka.servertickrate; // 1000/50 = 20 ticks, etc
+			MysteriumPatchesFixesMagicka.changeClientTickratePublic(event.player, tickrate);
+		}
+	}
+
+	private static int tick = 0;
+
 	@SubscribeEvent
 	public void onEntityLiving(LivingUpdateEvent event){
 
 		EntityLivingBase ent = event.entityLiving;
+
+		if (slowedEntitiesUUIDs.containsKey(ent.getUniqueID().toString())) {
+			if (ent.ticksExisted % slowedEntitiesUUIDs.get(ent.getUniqueID().toString()) != 0) {
+				event.setCanceled(true);
+				return;
+			}
+		}
 
 		World world = ent.worldObj;
 
@@ -385,6 +525,154 @@ public class AMEventHandler{
 								if (!done) player.entityDropItem(soulboundItems.get(i), 0);
 							}
 						}
+					}
+				}
+			}
+		}
+
+		if (ent instanceof EntityPlayer && extendedProperties.hasExtraVariable("ethereal")) { // ethereal form handling
+			int durationLeft = Integer.valueOf(extendedProperties.getExtraVariable("ethereal"));
+			EntityPlayer player = (EntityPlayer) ent;
+			if (durationLeft < 3) {
+				// deactivate form
+				ItemSoulspike.removeTagFromBoots(player.inventory.armorInventory[0]);
+				player.capabilities.disableDamage = false;
+				player.capabilities.allowEdit = true;
+				player.capabilities.isFlying = false;
+				player.setInvisible(false);
+				extendedProperties.removeFromExtraVariables("ethereal");
+			} else {
+				// tick ethereal form
+				// decrease duration
+				extendedProperties.addToExtraVariables("ethereal", String.valueOf(durationLeft-1));
+			}
+		}
+
+		if (ent instanceof EntityPlayer) {
+			// accelerated blocks and entities are done outside of the 5-tick performance optimisation to make them smooth
+			Map<String, String> acceleratedBlocks = extendedProperties.getExtraVariablesContains("accelerated_fast_tile_");
+			for (Map.Entry<String, String> entry : acceleratedBlocks.entrySet()) {
+				if (Integer.valueOf(entry.getValue()) < 3) {
+					extendedProperties.removeFromExtraVariables(entry.getKey());
+				} else {
+					extendedProperties.addToExtraVariables(entry.getKey(), String.valueOf(Integer.valueOf(entry.getValue()) - 1));
+					String[] entryvalues = entry.getKey().split("_");
+					int x = Integer.valueOf(entryvalues[3]);
+					int y = Integer.valueOf(entryvalues[4]);
+					int z = Integer.valueOf(entryvalues[5]);
+					int dim = Integer.valueOf(entryvalues[6]);
+					int power = Integer.valueOf(entryvalues[7]);
+					World wrld = DimensionManager.getWorld(dim);
+					if (wrld != null) {
+						for (int i = 0; i < power; i++) {
+							if (wrld.getTileEntity(x, y, z) != null && wrld.getTileEntity(x, y, z).canUpdate()) {
+								wrld.getTileEntity(x, y, z).updateEntity();
+							}
+							if (wrld.getBlock(x, y, z).getTickRandomly() && wrld.rand.nextInt(100) == 0) {
+								wrld.getBlock(x, y, z).updateTick(wrld, x, y, z, wrld.rand);
+							}
+						}
+					}
+				}
+			}
+			int s1 = DimensionManager.getWorlds().length;
+			try {
+				for (int l = 0; l < s1; l++) { // do this outside of for loop to save performance
+					if (l >= DimensionManager.getWorlds().length) break;
+					int s2 = DimensionManager.getWorlds()[l].loadedEntityList.size();
+					for (int f = 0; f < s2; f++) {
+						if (f >= DimensionManager.getWorlds()[l].loadedEntityList.size())
+							break; // fix for the most obscene bug ever, where it doesn't respect indexes, or arbitrarily chooses to delete entities while I'm iterating over them
+						Object entityobj = DimensionManager.getWorlds()[l].loadedEntityList.get(f);
+						if (entityobj instanceof EntityLivingBase) {
+							if (acceleratedEntitiesUUIDs.containsKey(((EntityLivingBase) entityobj).getUniqueID().toString())) {
+								for (int i = 0; i < acceleratedEntitiesUUIDs.get(((EntityLivingBase) entityobj).getUniqueID().toString()); i++) {
+									((EntityLivingBase) entityobj).onUpdate();
+								}
+							}
+						}
+					}
+				}
+			} catch (IndexOutOfBoundsException e) {
+				; // sometimes it's just unavoidable
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			tick++;
+			if (tick > 100000) tick = 0;
+			if ((tick % ((ent.worldObj.playerEntities.size() + 1) * 5)) == 0) { // only does behavior every 5 player ticks to ease computing load
+				// e.g. if there's 4 players, they tick like 1,2,3,4,1,2,3,4,1,2,3,4, etc (In theory, hopefully), and we pick 25th (1st), 50th (2nd), 75th(3rd), etc. ticks.
+				// there are some free ticks in-between, e.g. with 1 player it ticks every 10 ticks instead of 5. That eases load further (but causes double the duration - not a big deal for these spells).
+				Map<String, String> shieldedBlocks = extendedProperties.getExtraVariablesContains("shielded_tile_");
+				Map<String, String> slowedBlocks = extendedProperties.getExtraVariablesContains("accelerated_slow_tile_");
+				Map<String, String> loadedBlocks = extendedProperties.getExtraVariablesContains("timefortified_tile_");
+
+				Map<String, String> slowedEntities = extendedProperties.getExtraVariablesContains("accelerated_slow_entity_");
+				Map<String, String> acceleratedEntities = extendedProperties.getExtraVariablesContains("accelerated_fast_entity_");
+
+				for (Map.Entry<String, String> entry : acceleratedEntities.entrySet()) {
+					String[] entryvalues = entry.getKey().split("_");
+					if (Integer.valueOf(entry.getValue()) < 3) {
+						extendedProperties.removeFromExtraVariables(entry.getKey());
+						acceleratedEntitiesUUIDs.remove(entryvalues[4]);
+					} else {
+						extendedProperties.addToExtraVariables(entry.getKey(), String.valueOf(Integer.valueOf(entry.getValue()) - 5)); // entryvalue 4 is uuid, 3 is power
+						if (!(acceleratedEntitiesUUIDs.containsKey(entryvalues[4]))) acceleratedEntitiesUUIDs.put(entryvalues[4], Integer.valueOf(entryvalues[3]));
+					}
+				}
+				for (Map.Entry<String, String> entry : slowedEntities.entrySet()) {
+					String[] entryvalues = entry.getKey().split("_");
+					if (Integer.valueOf(entry.getValue()) < 3) {
+						extendedProperties.removeFromExtraVariables(entry.getKey());
+						slowedEntitiesUUIDs.remove(entryvalues[4]);
+					} else {
+						extendedProperties.addToExtraVariables(entry.getKey(), String.valueOf(Integer.valueOf(entry.getValue()) - 5)); // entryvalue 4 is uuid, 3 is power
+						if (!(slowedEntitiesUUIDs.containsKey(entryvalues[4]))) slowedEntitiesUUIDs.put(entryvalues[4], Integer.valueOf(entryvalues[3]));
+					}
+				}
+				for (Map.Entry<String, String> entry : loadedBlocks.entrySet()) {
+					if (Integer.valueOf(entry.getValue()) < 3) {
+						extendedProperties.removeFromExtraVariables(entry.getKey());
+						if (!world.isRemote) {
+							String[] entryvalues = entry.getKey().split("_");
+							int x = Integer.valueOf(entryvalues[2]);
+							int y = Integer.valueOf(entryvalues[3]);
+							int z = Integer.valueOf(entryvalues[4]);
+							int dim = Integer.valueOf(entryvalues[5]);
+							if (DimensionManager.getWorld(dim) != null) AMChunkLoader.INSTANCE.releaseStaticChunkLoad(DimensionManager.getWorld(dim).getTileEntity(x, y, z).getClass(), x, y, z, DimensionManager.getWorld(dim));
+						}
+					} else {
+						extendedProperties.addToExtraVariables(entry.getKey(), String.valueOf(Integer.valueOf(entry.getValue()) - 5));
+					}
+				}
+				for (Map.Entry<String, String> entry : shieldedBlocks.entrySet()) {
+					if (Integer.valueOf(entry.getValue()) < 3) {
+						extendedProperties.removeFromExtraVariables(entry.getKey());
+						if (!world.isRemote) {
+							String[] entryvalues = entry.getKey().split("_");
+							int x = Integer.valueOf(entryvalues[2]);
+							int y = Integer.valueOf(entryvalues[3]);
+							int z = Integer.valueOf(entryvalues[4]);
+							int dim = Integer.valueOf(entryvalues[5]);
+							forceShielded.remove(x + "_" + y + "_" + z + "_" + dim);
+						}
+					} else {
+						String[] entryvalues = entry.getKey().split("_");
+						String represent = Integer.valueOf(entryvalues[2]) + "_" + Integer.valueOf(entryvalues[3]) + "_" + Integer.valueOf(entryvalues[4]) + "_" + Integer.valueOf(entryvalues[5]);
+						if (!(forceShielded.contains(represent))) forceShielded.add(represent);
+						extendedProperties.addToExtraVariables(entry.getKey(), String.valueOf(Integer.valueOf(entry.getValue()) - 5));
+					}
+				}
+				for (Map.Entry<String, String> entry : slowedBlocks.entrySet()) {
+					String[] entryvalues = entry.getKey().split("_");
+					if (Integer.valueOf(entry.getValue()) < 3) {
+						extendedProperties.removeFromExtraVariables(entry.getKey());
+						slowedTiles.remove(entryvalues[3] + "_" + entryvalues[4] + "_" + entryvalues[5] + "_" + entryvalues[6]);
+					} else {
+						String represent = Integer.valueOf(entryvalues[3]) + "_" + Integer.valueOf(entryvalues[4]) + "_" + Integer.valueOf(entryvalues[5]) + "_" + Integer.valueOf(entryvalues[6]);
+						if (!(slowedTiles.containsKey(represent))) slowedTiles.put(represent, Integer.valueOf(entryvalues[7])); // 7 is power
+						extendedProperties.addToExtraVariables(entry.getKey(), String.valueOf(Integer.valueOf(entry.getValue()) - 5));
 					}
 				}
 			}
@@ -599,6 +887,18 @@ public class AMEventHandler{
 			}
 		}
 
+		if (ent instanceof EntityPlayer && !ent.worldObj.isRemote){ // hallucination effects
+			if (ent.isPotionActive(BuffList.psychedelic)){
+				if (ent.worldObj.provider.dimensionId == -1) { // any amplifier can cause lower level hallucinations
+					if (ent.getActivePotionEffect(BuffList.psychedelic).getDuration() > 10) lowerHallucinationTick((EntityPlayer)ent);
+					else cleanupLowerHallucination((EntityPlayer)ent);
+				} else if (ent.worldObj.provider.dimensionId == 1 && ent.getActivePotionEffect(BuffList.psychedelic).getAmplifier() == 1) { // only amplified for higher
+					if (ent.getActivePotionEffect(BuffList.psychedelic).getDuration() > 10) higherHallucinationTick((EntityPlayer)ent);
+					else cleanupHigherHallucination((EntityPlayer)ent);
+				}
+			}
+		}
+
 		//mana link pfx
 		if (ent.worldObj.isRemote)
 			extendedProperties.spawnManaLinkParticles();
@@ -609,6 +909,236 @@ public class AMEventHandler{
 		if (world.isRemote){
 			AMCore.proxy.sendLocalMovementData(ent);
 		}
+	}
+
+	public static Map<EntityPlayer, ArrayList<EntityCreature>> hallucinationMap = new HashMap<EntityPlayer, ArrayList<EntityCreature>>();
+	public static Map<EntityPlayer, ArrayList<EntityItem>> dustMap = new HashMap<EntityPlayer, ArrayList<EntityItem>>();
+	public static Map<EntityCreature, Integer> tempCurseMap = new HashMap<EntityCreature, Integer>();
+
+	private void cleanupLowerHallucination(EntityPlayer player) {
+		player.removePotionEffect(BuffList.scrambleSynapses.id);
+		player.extinguish();
+		player.removePotionEffect(Potion.confusion.id);
+		if (hallucinationMap.get(player) != null) {
+			for (EntityCreature creature : hallucinationMap.get(player)) {
+				if (creature != null) creature.setDead();
+			}
+			hallucinationMap.get(player).clear();
+		}
+		if (dustMap.get(player) != null) {
+			for (EntityItem item : dustMap.get(player)) {
+				if (item != null) item.setDead();
+			}
+			dustMap.get(player).clear();
+		}
+	}
+
+	private void cleanupHigherHallucination(EntityPlayer player) {
+		cleanupLowerHallucination(player);
+		player.curePotionEffects(new ItemStack(Items.milk_bucket));
+	}
+
+	private void lowerHallucinationTick(EntityPlayer player) {
+		if (player.worldObj.rand.nextInt(103) == 0) { // scramble
+			player.addPotionEffect(new BuffEffectScrambleSynapses(50, 0));
+		}
+		if (player.worldObj.rand.nextInt(75) == 0) { // spontaneous combustion
+			player.setFire(7);
+		}
+		if (player.worldObj.rand.nextInt(50) == 0) { // nausea
+			player.addPotionEffect(new PotionEffect(Potion.confusion.id, 100, 0));
+		}
+
+		int x = MathHelper.floor_double(player.posX); // creatures
+		int y = MathHelper.floor_double(player.posY);
+		int z = MathHelper.floor_double(player.posZ);
+		if(player.worldObj.rand.nextInt(550) == 0) {
+			Class halclass = null;
+			switch (player.worldObj.rand.nextInt(5)) {
+				case 0:
+				default:
+					halclass = EntitySpecificHallucinations.EntityHallucinationCreeper.class;
+					break;
+				case 1:
+					halclass = EntitySpecificHallucinations.EntityHallucinationZombie.class;
+					break;
+				case 2:
+					halclass = EntitySpecificHallucinations.EntityHallucinationSpider.class;
+					break;
+				case 3:
+					halclass = EntitySpecificHallucinations.EntityHallucinationWitherSkeleton.class;
+					break;
+				case 4:
+					halclass = EntitySpecificHallucinations.EntityHallucinationMagmacube.class;
+					break;
+			}
+
+			EntityCreature summoned = summonCreature(player.worldObj, halclass, x, y, z, player, 4, 9);
+			if (hallucinationMap.get(player) == null) {
+				hallucinationMap.put(player, new ArrayList<EntityCreature>());
+			}
+			hallucinationMap.get(player).add(summoned);
+		}
+		if(player.worldObj.rand.nextInt(100) == 0) { // dust
+			EntityItem item = new EntityItem(player.worldObj);
+			item.setPosition((x-15) + player.worldObj.rand.nextInt(16), y + player.worldObj.rand.nextInt(6), (z-15) + player.worldObj.rand.nextInt(16));
+			item.setEntityItemStack(new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_COGNITIVEDUST));
+			player.worldObj.spawnEntityInWorld(item);
+			if (dustMap.get(player) == null) {
+				dustMap.put(player, new ArrayList<EntityItem>());
+			}
+			dustMap.get(player).add(item);
+		}
+	}
+
+	private void higherHallucinationTick(EntityPlayer player) {
+		lowerHallucinationTick(player); // all the effects of the lower... and more!
+		if(player.worldObj.rand.nextInt(75) == 0) { // random effects
+			player.addPotionEffect(new PotionEffect(player.worldObj.rand.nextInt(20)+1, 100, 0));
+		}
+		int x = MathHelper.floor_double(player.posX);
+		int y = MathHelper.floor_double(player.posY);
+		int z = MathHelper.floor_double(player.posZ);
+		if(player.worldObj.rand.nextInt(80) == 0) { // random noises
+			String soundString = null;
+			switch (player.worldObj.rand.nextInt(8)) {
+				case 0:
+				default:
+					soundString = "mob.zombie.say";
+					break;
+				case 1:
+					soundString = "mob.skeleton.say";
+					break;
+				case 2:
+					soundString = "game.tnt.primed";
+					break;
+				case 3:
+					soundString = "random.bow";
+					break;
+				case 4:
+					soundString = "random.chestopen";
+					break;
+				case 5:
+					soundString = "random.chestclosed";
+					break;
+				case 6:
+					soundString = "random.door_open";
+					break;
+				case 7:
+					soundString = "random.fuse";
+					break;
+			}
+			player.worldObj.playSoundAtEntity(player, soundString,1F, 1F);
+		}
+		if (player.worldObj.rand.nextInt(150) == 0) { // random floating explosion things
+			int explosionX = (x-30) + player.worldObj.rand.nextInt(31);
+			int explosionY = y + player.worldObj.rand.nextInt(25);
+			int explosionZ = (z-30) + player.worldObj.rand.nextInt(31);
+			player.worldObj.spawnParticle("largeexplode", explosionX, explosionY, explosionZ, 1.0D, 0.0D, 0.0D);
+			player.worldObj.spawnParticle("hugeexplosion", explosionX, explosionY, explosionZ, 0.0D, 0.0D, 0.0D);
+			player.worldObj.playSoundEffect(explosionX, explosionY, explosionZ, "random.explode", 4.0F, (1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F) * 0.7F);
+			player.attackEntityFrom(DamageSource.magic, 1 + player.worldObj.rand.nextInt(10));
+		}
+		if (player.worldObj.rand.nextInt(50) == 0) { // random teleporations and snaps
+			int cx = 0, cy = 0, cz = 0;
+			if (player.worldObj.rand.nextBoolean()) { // teleport
+				cx = rand.nextInt(50);
+				cy = rand.nextInt(7);
+				cz = rand.nextInt(50);
+				if (!player.worldObj.isAirBlock((int)player.posX + cx, (int)player.posY + cy, (int)player.posZ + cz) ||
+						!player.worldObj.isAirBlock((int)player.posX + cx, (int)player.posY + cy - 1, (int)player.posZ + cz)) {
+					cx = 0;
+					cy = 0;
+					cz = 0;
+				}
+			}
+			player.setPositionAndRotation(player.posX + cx, player.posY + cy, player.posZ + cz, player.rotationYaw * (rand.nextFloat() + rand.nextFloat()), player.rotationPitch * (rand.nextFloat() + rand.nextFloat()));
+		}
+		if(player.worldObj.rand.nextInt(750) == 0) { // even more hallucinations + ones specific to end
+			Class halclass = null;
+			switch (player.worldObj.rand.nextInt(8)) {
+				case 0:
+				default:
+					halclass = EntitySpecificHallucinations.EntityHallucinationCreeper.class;
+					break;
+				case 1:
+					halclass = EntitySpecificHallucinations.EntityHallucinationZombie.class;
+					break;
+				case 2:
+					halclass = EntitySpecificHallucinations.EntityHallucinationSpider.class;
+					break;
+				case 3:
+					halclass = EntitySpecificHallucinations.EntityHallucinationWitherSkeleton.class;
+					break;
+				case 4:
+					halclass = EntitySpecificHallucinations.EntityHallucinationEnderman.class;
+					break;
+				case 5:
+				case 6:
+				case 7:
+					halclass = EntitySpecificHallucinations.EntityHallucinationEndermite.class;
+					break;
+			}
+
+			EntityCreature summoned = summonCreature(player.worldObj, halclass, x, y, z, player, 5, 13);
+			if (hallucinationMap.get(player) == null) {
+				hallucinationMap.put(player, new ArrayList<EntityCreature>());
+			}
+			hallucinationMap.get(player).add(summoned);
+		}
+	}
+
+	public static EntityCreature summonCreature(World world, Class creatureClass, int x, int y, int z, EntityLivingBase target, int minRange, int maxRange) {
+		if(!world.isRemote) {
+			int activeRadius = maxRange - minRange;
+			int ax = world.rand.nextInt(activeRadius * 2 + 1);
+			if(ax > activeRadius) {
+				ax += minRange * 2;
+			}
+			int nx = x - maxRange + ax;
+			int az = world.rand.nextInt(activeRadius * 2 + 1);
+			if(az > activeRadius) {
+				az += minRange * 2;
+			}
+			int nz = z - maxRange + az;
+			int ny;
+			for(ny = y; !world.isAirBlock(nx, ny, nz) && ny < y + 8; ++ny) {
+				;
+			}
+			while(world.isAirBlock(nx, ny, nz) && ny > 0) {
+				--ny;
+			}
+			int hy;
+			for(hy = 0; world.isAirBlock(nx, ny + hy + 1, nz) && hy < 6; ++hy) {
+				;
+			}
+			if(hy >= 2) {
+				try {
+					Constructor ex = creatureClass.getConstructor(new Class[]{World.class});
+					EntityCreature creature = (EntityCreature)ex.newInstance(new Object[]{world});
+					if(target instanceof EntityPlayer) {
+						EntityPlayer player = (EntityPlayer)target;
+						if(creature instanceof EntityHallucination) {
+							((EntityHallucination)creature).setTarget(player.getCommandSenderName());
+						}
+					}
+
+					creature.setLocationAndAngles(0.5D + (double)nx, 0.05D + (double)ny + 1.0D, 0.5D + (double)nz, 0.0F, 0.0F);
+					world.spawnEntityInWorld(creature);
+
+					return creature;
+				} catch (NoSuchMethodException var20) {
+					;
+				} catch (InvocationTargetException var21) {
+					;
+				} catch (InstantiationException var22) {
+					;
+				} catch (IllegalAccessException var23) {
+					;
+				}
+			}
+		}
+		return null;
 	}
 
 	private static Random rand = new Random();
@@ -727,7 +1257,7 @@ public class AMEventHandler{
 							event.entityLiving.posX - 1 + event.entityLiving.worldObj.rand.nextFloat() * 2,
 							event.entityLiving.posY - 1 + event.entityLiving.worldObj.rand.nextFloat() * 2,
 							event.entityLiving.posZ - 1 + event.entityLiving.worldObj.rand.nextFloat() * 2, 6, -1);
-				event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "arsmagica2:misc.event.mana_shield_block", 1.0f, event.entityLiving.worldObj.rand.nextFloat() + 0.5f);
+				event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "arsmagica2:spell.cast.arcane", 1.0f, event.entityLiving.worldObj.rand.nextFloat() + 0.5f);
 				event.setCanceled(true);
 				return;
 			}
@@ -784,7 +1314,7 @@ public class AMEventHandler{
 						event.entityLiving.posX - 1 + event.entityLiving.worldObj.rand.nextFloat() * 2,
 						event.entityLiving.posY + event.entityLiving.getEyeHeight() - 1 + event.entityLiving.worldObj.rand.nextFloat() * 2,
 						event.entityLiving.posZ - 1 + event.entityLiving.worldObj.rand.nextFloat() * 2, 6, -1);
-			event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "arsmagica2:misc.event.mana_shield_block", 1.0f, event.entityLiving.worldObj.rand.nextFloat() + 0.5f);
+			event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "arsmagica2:spell.cast.arcane", 1.0f, event.entityLiving.worldObj.rand.nextFloat() + 0.5f);
 			if (event.ammount <= 0){
 				event.setCanceled(true);
 				return;

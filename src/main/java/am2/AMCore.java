@@ -17,6 +17,8 @@ import am2.interop.TC4Interop;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMNetHandler;
 import am2.network.SeventhSanctum;
+import am2.network.TickrateMessage;
+import am2.network.TickrateMessageHandler;
 import am2.playerextensions.AffinityData;
 import am2.playerextensions.ExtendedProperties;
 import am2.playerextensions.RiftStorage;
@@ -36,6 +38,9 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.item.ItemStack;
@@ -54,7 +59,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import java.io.File;
 
-@Mod(modid = "arsmagica2", modLanguage = "java", name = "Ars Magica 2", version = "1.5.0", dependencies = "required-after:AnimationAPI")
+// for production only: the api doesn't declare itself as a mod, so this doesn't run in dev env: @Mod(modid = "arsmagica2", modLanguage = "java", name = "Ars Magica 2", version = "1.6.0", dependencies = "required-after:AnimationAPI;required-after:CoFHCore")
+@Mod(modid = "arsmagica2", modLanguage = "java", name = "Ars Magica 2", version = "1.6.0", dependencies = "required-after:AnimationAPI")
 public class AMCore{
 
 	@Instance(value = "arsmagica2")
@@ -66,6 +72,7 @@ public class AMCore{
 	public static AMConfig config;
 	public static SkillConfiguration skillConfig;
 	public static final int ANY_META = 32767;
+	public static SimpleNetworkWrapper NETWORK;
 
 	private String compendiumBase;
 
@@ -84,6 +91,9 @@ public class AMCore{
 		config = new AMConfig(new File(configBase + File.separatorChar + "AM2.cfg"));
 
 		skillConfig = new SkillConfiguration(new File(configBase + "SkillConf.cfg"));
+
+		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("AM2TickrateChanger");
+		NETWORK.registerMessage(TickrateMessageHandler.class, TickrateMessage.class, 0, Side.CLIENT);
 
 		AMNetHandler.INSTANCE.init();
 
@@ -136,12 +146,21 @@ public class AMCore{
 						FluidContainerRegistry.EMPTY_BUCKET));
 
 		SeventhSanctum.instance.init();
-		/*if (Loader.isModLoaded("BetterDungeons"))
-			BetterDungeons.init();*/
+//		if (Loader.isModLoaded("BetterDungeons"))
+//			BetterDungeons.init();
 		if (Loader.isModLoaded("Thaumcraft"))
 			TC4Interop.initialize();
-		/*if (Loader.isModLoaded("MineFactoryReloaded"))
-			MFRInterop.init();*/
+//		if (Loader.isModLoaded("MineFactoryReloaded"))
+//			MFRInterop.init();
+
+		try {
+			Class.forName("forestry.api.recipes.RecipeManagers", false, getClass().getClassLoader());
+			Class.forName("magicbees.bees.BeeProductHelper", false, getClass().getClassLoader());
+			Class.forName("magicbees.bees.BeeSpecies", false, getClass().getClassLoader());
+			AMBeeCompat.init();
+		} catch (ClassNotFoundException e) {
+			LogHelper.info("A compatible MagicBees version was not found, compat not loading.");
+		}
 
 	}
 

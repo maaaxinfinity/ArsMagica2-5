@@ -12,7 +12,9 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.model.*;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 import net.minecraftforge.common.BiomeDictionary;
@@ -66,6 +68,14 @@ public class EntityManager implements IEntityManager{
 	public String LightningGuardianMobID = "BossLightningGuardian";
 	public String EnderGuardianMobID = "BossEnderGuardian";
 
+	public String HAL1ID = "HallucinationMagmacube";
+	public String HAL2ID = "HallucinationWitherSkeleton";
+	public String HAL3ID = "HallucinationSpider";
+	public String HAL4ID = "HallucinationEndermite";
+	public String HAL5ID = "HallucinationEnderman";
+	public String HAL6ID = "HallucinationZombie";
+	public String HAL7ID = "HallucinationCreeper";
+
 	public String ThrownSickleID = "ThrownSickle";
 	public String ThrownRockID = "ThrownRock";
 	public String ThrownArmID = "ThrownArm";
@@ -78,6 +88,14 @@ public class EntityManager implements IEntityManager{
 		int updateDistance = 64;
 		boolean updateVelocity = true;
 
+		EntityRegistry.registerModEntity(EntitySpecificHallucinations.EntityHallucinationCreeper.class, HAL7ID, 126, AMCore.instance, 75, 3, updateVelocity);
+		EntityRegistry.registerModEntity(EntitySpecificHallucinations.EntityHallucinationZombie.class, HAL6ID, 125, AMCore.instance, 75, 3, updateVelocity);
+		EntityRegistry.registerModEntity(EntitySpecificHallucinations.EntityHallucinationEnderman.class, HAL5ID, 124, AMCore.instance, 75, 3, updateVelocity);
+		EntityRegistry.registerModEntity(EntitySpecificHallucinations.EntityHallucinationEndermite.class, HAL4ID, 123, AMCore.instance, 75, 3, updateVelocity);
+		EntityRegistry.registerModEntity(EntitySpecificHallucinations.EntityHallucinationSpider.class, HAL3ID, 122, AMCore.instance, 75, 3, updateVelocity);
+		EntityRegistry.registerModEntity(EntitySpecificHallucinations.EntityHallucinationWitherSkeleton.class, HAL2ID, 121, AMCore.instance, 75, 3, updateVelocity);
+		EntityRegistry.registerModEntity(EntitySpecificHallucinations.EntityHallucinationMagmacube.class, HAL1ID, 120, AMCore.instance, 75, 3, updateVelocity);
+
 		EntityRegistry.registerModEntity(EntityEarthElemental.class, EarthGolemMobID, 119, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
 		EntityRegistry.registerModEntity(EntityFireElemental.class, FireElementalMobID, 117, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
 		EntityRegistry.registerModEntity(EntityBattleChicken.class, SummonedBattleChickenMobID, 113, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
@@ -86,6 +104,7 @@ public class EntityManager implements IEntityManager{
 		EntityRegistry.registerModEntity(EntityHecate.class, HecateMobID, 110, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
 		EntityRegistry.registerModEntity(EntityManaElemental.class, ManaElemMobID, 109, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
 		EntityRegistry.registerModEntity(EntityManaCreeper.class, ManaCreeperMobID, 108, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
+
 		EntityRegistry.registerModEntity(EntityManaVortex.class, ManaVortexID, 107, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
 		EntityRegistry.registerModEntity(EntityWaterElemental.class, WaterElementalMobID, 106, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
 		EntityRegistry.registerModEntity(EntityLightMage.class, LightMageMobID, 105, AMCore.instance, updateDistance, updateFrequency, updateVelocity);
@@ -135,6 +154,14 @@ public class EntityManager implements IEntityManager{
 		RenderingRegistry.registerEntityRenderingHandler(EntitySpellProjectile.class, new RenderSpellProjectile());
 		RenderingRegistry.registerEntityRenderingHandler(EntitySpellEffect.class, new RenderHidden());
 		RenderingRegistry.registerEntityRenderingHandler(EntityDryad.class, new RenderDryad());
+
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecificHallucinations.EntityHallucinationCreeper.class, new RenderHallucination(new ModelCreeper(), new ResourceLocation("textures/entity/creeper/creeper.png")));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecificHallucinations.EntityHallucinationMagmacube.class, new RenderHallucination(new ModelMagmaCube(), new ResourceLocation("textures/entity/slime/magmacube.png")));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecificHallucinations.EntityHallucinationWitherSkeleton.class, new RenderHallucination(new ModelSkeleton(), new ResourceLocation("textures/entity/skeleton/wither_skeleton.png")));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecificHallucinations.EntityHallucinationSpider.class, new RenderHallucination(new ModelSpider(), new ResourceLocation("textures/entity/spider/spider.png")));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecificHallucinations.EntityHallucinationEndermite.class, new RenderHallucination(new ModelSilverfish(), new ResourceLocation("arsmagica2", "textures/mobs/enderfish.png")));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecificHallucinations.EntityHallucinationEnderman.class, new RenderHallucination(new ModelEnderman(), new ResourceLocation("textures/entity/enderman/enderman.png")));
+		RenderingRegistry.registerEntityRenderingHandler(EntitySpecificHallucinations.EntityHallucinationZombie.class, new RenderHallucination(new ModelZombie(), new ResourceLocation("textures/entity/zombie/zombie.png")));
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityNatureGuardian.class, new RenderPlantGuardian());
 		RenderingRegistry.registerEntityRenderingHandler(EntityArcaneGuardian.class, new RenderArcaneGuardian());

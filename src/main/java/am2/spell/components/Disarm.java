@@ -7,6 +7,7 @@ import am2.enchantments.AMEnchantments;
 import am2.entities.EntityDarkMage;
 import am2.entities.EntityLightMage;
 import am2.items.ItemsCommonProxy;
+import am2.items.SpellBase;
 import am2.particles.AMParticle;
 import am2.particles.ParticleFadeOut;
 import am2.particles.ParticleMoveOnHeading;
@@ -50,6 +51,8 @@ public class Disarm implements ISpellComponent{
 
 		if (target instanceof EntityPlayer && ((EntityPlayer)target).getHeldItem() != null && !target.worldObj.isRemote){
 			if (EnchantmentHelper.getEnchantmentLevel(AMEnchantments.soulbound.effectId, ((EntityPlayer)target).getHeldItem()) > 0)
+				return true;
+			if (((EntityPlayer)target).getHeldItem().getItem() instanceof SpellBase)
 				return true;
 			((EntityPlayer)target).dropOneItem(true);
 			return true;

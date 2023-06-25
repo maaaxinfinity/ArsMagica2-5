@@ -24,6 +24,7 @@ public class Blizzard implements ISpellComponent{
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_ICE),
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_BLUETOPAZ),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONEFRAGMENT),
 				Blocks.ice,
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_ICE)
 		};

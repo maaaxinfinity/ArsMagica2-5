@@ -6,6 +6,7 @@ import am2.api.spell.ItemSpellBase;
 import am2.api.spell.enums.Affinity;
 import am2.api.spell.enums.ContingencyTypes;
 import am2.armor.ArmorHelper;
+import am2.buffs.BuffList;
 import am2.items.IBoundItem;
 import am2.items.ItemSpellBook;
 import am2.items.ItemsCommonProxy;
@@ -40,6 +41,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import static am2.blocks.liquid.BlockLiquidEssence.liquidEssenceMaterial;
+import static net.minecraft.realms.RealmsMth.ceil;
 
 public class AMIngameGUI{
 	private final Minecraft mc;
@@ -56,6 +58,9 @@ public class AMIngameGUI{
 	private static final ResourceLocation items = new ResourceLocation("textures/atlas/items.png");
 	private static final ResourceLocation redTexture = new ResourceLocation("arsmagica2:textures/guis/red.png");
 	private static final ResourceLocation resEth = new ResourceLocation("arsmagica2:textures/misc/underether.png");
+	public static final ResourceLocation[] dmtfog = {new ResourceLocation("arsmagica2:textures/guis/dmtfog1.png"),new ResourceLocation("arsmagica2:textures/guis/dmtfog2.png"),new ResourceLocation("arsmagica2:textures/guis/dmtfog3.png"),new ResourceLocation("arsmagica2:textures/guis/dmtfog4.png"),new ResourceLocation("arsmagica2:textures/guis/dmtfog5.png")};
+	public static final ResourceLocation[] ayafractal = {new ResourceLocation("arsmagica2:textures/guis/ayafractal1.png"),new ResourceLocation("arsmagica2:textures/guis/ayafractal2.png"),new ResourceLocation("arsmagica2:textures/guis/ayafractal3.png"),new ResourceLocation("arsmagica2:textures/guis/ayafractal4.png"),new ResourceLocation("arsmagica2:textures/guis/ayafractal5.png"),new ResourceLocation("arsmagica2:textures/guis/ayafractal6.png"),new ResourceLocation("arsmagica2:textures/guis/ayafractal7.png")};
+	private static int psychoTick = 1;
 
 	public AMIngameGUI(){
 		mc = Minecraft.getMinecraft();
@@ -66,6 +71,9 @@ public class AMIngameGUI{
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		if (this.mc.thePlayer.isInsideOfMaterial(liquidEssenceMaterial)) {
 			renderFluidOverlay();
+		}
+		if (this.mc.thePlayer.isPotionActive(BuffList.psychedelic)) {
+			renderPsychedelicOverlay();
 		}
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 
@@ -113,6 +121,50 @@ public class AMIngameGUI{
 		this.drawTexturedModalRect(0, 0, 0, 0, 1920, 1080);
 		GL11.glDepthMask(true);
 		GL11.glDisable(GL11.GL_BLEND);
+	}
+
+	public void renderPsychedelicOverlay() {
+		psychoTick++;
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDepthMask(false);
+		GL11.glPushMatrix();
+
+		if (this.mc.thePlayer.getActivePotionEffect(BuffList.psychedelic).getAmplifier() == 1) {
+			GL11.glColor4d(1.0, 1.0, 1.0, (((float)psychoTick / 400) % 1) < 0.5f ? (((float)psychoTick / 400) % 1) : 1-(((float)psychoTick / 400) % 1));
+			Minecraft.getMinecraft().renderEngine.bindTexture(ayafractal[(int) Math.ceil(psychoTick / 400)]);
+		} else {
+			GL11.glColor4d(1.0, 1.0, 1.0, (((float)psychoTick / 560) % 1) < 0.5f ? (((float)psychoTick / 560) % 1) : 1-(((float)psychoTick / 560) % 1));
+			Minecraft.getMinecraft().renderEngine.bindTexture(dmtfog[(int) Math.ceil(psychoTick / 560)]);
+		}
+		this.drawTexturedModalRect(0, 0, 0, 0, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2);
+
+//		if (this.mc.thePlayer.getActivePotionEffect(BuffList.psychedelic).getAmplifier() == 1) {
+//			GL11.glColor4d(1.0, 1.0, 1.0, (((float)psychoTick / 100) % 1) < 0.5f ? (((float)psychoTick / 100) % 1) : 1-(((float)psychoTick / 100) % 1));
+//			Minecraft.getMinecraft().renderEngine.bindTexture(ayafractal[(int) Math.ceil((psychoTick+100 > 699 ? psychoTick+100-699 : psychoTick+100) / 100)]);
+//		} else {
+//			GL11.glColor4d(1.0, 1.0, 1.0, (((float)psychoTick / 140) % 1) < 0.5f ? (((float)psychoTick / 140) % 1) : 1-(((float)psychoTick / 140) % 1));
+//			Minecraft.getMinecraft().renderEngine.bindTexture(dmtfog[(int) Math.ceil((psychoTick+140 > 699 ? psychoTick+140-699 : psychoTick+140) / 140)]);
+//		}
+//		this.drawTexturedModalRect(0, 0, 0, 0, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2);
+
+		/*
+		this.drawTexturedModalRect_Classic(0, 0, 0, 0, 1920, 1080, 640, 360); // alternative drawing thing to try w/o scaling
+
+		GL11.glColor4d(1.0, 1.0, 1.0, 0.5);
+		if (this.mc.thePlayer.getActivePotionEffect(BuffList.psychedelic).getAmplifier() == 1) {
+			GL11.glColor4d(1.0, 1.0, 1.0, (1 - ((psychoTick / 100) % 1)) / 2);
+			Minecraft.getMinecraft().renderEngine.bindTexture(ayafractal[(int) Math.ceil((psychoTick+100 > 699 ? psychoTick+100-699 : psychoTick+100) / 100)]);
+		} else {
+			GL11.glColor4d(1.0, 1.0, 1.0, (1 - ((psychoTick / 140) % 1)) / 2);
+			Minecraft.getMinecraft().renderEngine.bindTexture(dmtfog[(int) Math.ceil((psychoTick+140 > 699 ? psychoTick+140-699 : psychoTick+140) / 140)]);
+		}
+		this.drawTexturedModalRect_Classic(0, 0, 0, 0, 1920, 1080, 640, 360);
+		 */
+
+		GL11.glPopMatrix();
+		GL11.glDepthMask(true);
+		GL11.glDisable(GL11.GL_BLEND);
+		if (psychoTick > 2798) psychoTick = 1;
 	}
 
 	private void RenderArsMagicaGUIItems(int i, int j, FontRenderer fontRenderer){

@@ -35,9 +35,12 @@ public class BytecodeTransformers implements IClassTransformer{
 			cn.accept(cw);
 
 			bytes = cw.toByteArray();
-		}else if (transformedName.equals("net.minecraft.client.renderer.EntityRenderer")){
+		}else if (transformedName.equals("net.minecraft.client.renderer.EntityRenderer")) {
 			LogHelper.info("Core: Altering definition of " + transformedName + ", " + (is_obfuscated ? " (obfuscated)" : "(not obfuscated)"));
 			bytes = alterEntityRenderer(bytes, is_obfuscated);
+		}else if(name.equals("net.minecraft.server.MinecraftServer") || transformedName.equals("net.minecraft.server.MinecraftServer")) {
+			LogHelper.info("Core: Altering definition of " + transformedName + ", " + (is_obfuscated ? " (obfuscated)" : "(not obfuscated)"));
+			bytes =  alterServerTickrate(bytes);
 		}else if (transformedName.equals("net.minecraft.client.entity.EntityPlayerSP")){
 			LogHelper.info("Core: Altering definition of " + transformedName + ", " + (is_obfuscated ? " (obfuscated)" : "(not obfuscated)"));
 			bytes = alterEntityPlayerSP(bytes, is_obfuscated);
@@ -86,6 +89,41 @@ public class BytecodeTransformers implements IClassTransformer{
 		}
 
 		return bytes;
+	}
+
+	// this method is courtesy of Guichaguri (TickRateChanger mod)
+	private byte[] alterServerTickrate(byte[] bytes) {
+		ClassNode classNode = new ClassNode();
+		ClassReader classReader = new ClassReader(bytes);
+		classReader.accept(classNode, 0);
+
+		Iterator<MethodNode> methods = classNode.methods.iterator();
+		while(methods.hasNext()) {
+			MethodNode method = methods.next();
+			if((method.name.equals("run")) && (method.desc.equals("()V"))) {
+				InsnList list = new InsnList();
+				intrucLoop: for(AbstractInsnNode node : method.instructions.toArray()) {
+
+					if(node instanceof LdcInsnNode) {
+						LdcInsnNode ldcNode = (LdcInsnNode)node;
+						if((ldcNode.cst instanceof Long) && ((Long)ldcNode.cst == 50L)) {
+							list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/tclproject/mysteriumlib/asm/fixes/MysteriumPatchesFixesMagicka", "servertickrate", "J"));
+							continue intrucLoop;
+						}
+					}
+
+					list.add(node);
+				}
+
+				method.instructions.clear();
+				method.instructions.add(list);
+			}
+
+		}
+
+		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+		classNode.accept(writer);
+		return writer.toByteArray();
 	}
 
 	private byte[] alterRendererLivingEntity(byte[] bytes, boolean is_obfuscated){

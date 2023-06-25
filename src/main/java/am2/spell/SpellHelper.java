@@ -385,7 +385,7 @@ public class SpellHelper{
 
 		boolean success = false;
 		if (target instanceof EntityDragon){
-			success = ((EntityDragon)target).attackEntityFromPart(((EntityDragon)target).dragonPartBody, damagesource, magnitude);
+			success = ((EntityDragon)target).attackEntityFromPart(((EntityDragon)target).dragonPartHead, damagesource, magnitude);
 		}else{
 			success = target.attackEntityFrom(damagesource, magnitude);
 		}

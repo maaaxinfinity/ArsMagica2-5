@@ -1,6 +1,7 @@
 package am2.entities;
 
 import am2.AMCore;
+import am2.LogHelper;
 import am2.entities.ai.EntityAIFireballAttack;
 import am2.particles.AMParticle;
 import am2.particles.ParticleApproachPoint;
@@ -107,17 +108,27 @@ public class EntityFireElemental extends EntityMob{
 			this.attackEntityFrom(DamageSource.drown, 1);
 		}
 		if (!this.worldObj.isRemote){
-			if (this.getAttackTarget() != null && !this.getAttackTarget().isDead){
-				if (this.dataWatcher.getWatchableObjectByte(0) == (byte)0){
-					this.dataWatcher.updateObject(0, (byte)1);
-					burnTimer = 20;
+			try {
+				if (this.getAttackTarget() != null && !this.getAttackTarget().isDead) {
+					if (this.dataWatcher.getWatchableObjectByte(0) == (byte) 0) {
+						this.dataWatcher.updateObject(0, (byte) 1);
+						burnTimer = 20;
+					}
+				} else {
+					if (burnTimer > 0) {
+						burnTimer--;
+					} else if (this.dataWatcher.getWatchableObjectByte(0) == (byte) 1) {
+						this.dataWatcher.updateObject(0, (byte) 0);
+					}
 				}
-			}else{
-				if (burnTimer > 0){
-					burnTimer--;
-				}else if (this.dataWatcher.getWatchableObjectByte(0) == (byte)1){
-					this.dataWatcher.updateObject(0, (byte)0);
-				}
+			} catch (Exception e) {
+				LogHelper.warn("----------------------ATTENTION!!!----------------------");
+				LogHelper.warn("CASTING INT (datawatcher) TO BYTE FAILED.");
+				LogHelper.warn("This means ASJCore is installed. ASJCore is, as of now, a fundamentally broken mod that does what it shouldn't.");
+				LogHelper.warn("This is not the first or the last mod that it will have an incompatibility with due to its datawatcher changes - among other incompatible mods are Witchery, ItemPhysics, and probably a lot more.");
+				LogHelper.warn("'7 datawatcher slots is not enough for me' is not a good excuse, and why not? Because ExtendedEntityProperties exists.");
+				LogHelper.warn("Socol needs to learn to use EEP instead of blindly breaking everything with ASM. So if you're seeing this message, please tell AlexSocol to fix his shit.");
+				LogHelper.warn("----------------------ATTENTION!!!----------------------");
 			}
 		}
 		super.onLivingUpdate();

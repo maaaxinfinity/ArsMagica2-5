@@ -42,15 +42,17 @@ minecraft {
 
 jar {
 	manifest {
-		attributes 'FMLCorePlugin' : 'am2.preloader.AM2PreloaderContainer'
+		attributes 'FMLCorePlugin' : 'net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixLoaderMagicka'
 		attributes 'FMLCorePluginContainsFMLMod' : 'true'
+        attributes 'FMLAT': 'arsmagica2_at.cfg'
 	}
 }
 
 task devJar(type: Jar) {
 	manifest {
-		attributes 'FMLCorePlugin' : 'am2.preloader.AM2PreloaderContainer'
+		attributes 'FMLCorePlugin' : 'net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixLoaderMagicka'
 		attributes 'FMLCorePluginContainsFMLMod' : 'true'
+        attributes 'FMLAT': 'arsmagica2_at.cfg'
 	}
 	classifier = 'dev'
 	from sourceSets.main.output
@@ -116,4 +118,3 @@ uploadArchives {
 		}
 	}
 }
-
