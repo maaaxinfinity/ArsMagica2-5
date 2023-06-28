@@ -256,7 +256,6 @@ public class MysteriumPatchesFixesMagicka{
 	}
 
 	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "returnMinusOne")
-	@SideOnly(Side.CLIENT)
 	public static boolean getRenderType(Block block) { // this is alright, we don't want to change overridden classes so allthatextends isn't necessary
 //		if (updatingRenderWorld && isPlayerEthereal(Minecraft.getMinecraft().thePlayer)) return true;
 		return false;
@@ -507,11 +506,7 @@ public class MysteriumPatchesFixesMagicka{
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
-	private static final ResourceLocation field_110792_a = new ResourceLocation("minecraft", "textures/particle/particles.png");
-	@SideOnly(Side.CLIENT)
 	private static final ResourceLocation rodtexture1 = new ResourceLocation("arsmagica2", "textures/items/particles/particleswitharcanerod.png");
-	@SideOnly(Side.CLIENT)
 	private static final ResourceLocation rodtexture2 = new ResourceLocation("arsmagica2", "textures/items/particles/particleswithinfernalrod.png");
 
 	@SideOnly(Side.CLIENT)
