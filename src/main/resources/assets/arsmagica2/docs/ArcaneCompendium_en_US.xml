@@ -2707,7 +2707,7 @@
     </block>
     <block id="spatialVortex">
       <name>Spatial Vortex</name>
-      <desc>A fracture in the fabric of space, as it is in its nature, remains constantly unstable.  Due to this property, it attempts to even out the level of energy around it by dumping the excess into other Spatial Vortices.  It is also open to the reverse - receiving excess energy from other Vortices.  To utilize this property, one must place magical apparatus or mechanical contrivances in the four spaces inside the chalk runes inside the ritual's shape.  There is only one drawback - not all types of energy are volatile enough to be affected by Vortices.</desc>
+      <desc>A fracture in the fabric of space, as it is in its nature, remains constantly unstable.  Due to this property, it attempts to even out the level of energy around it by dumping the excess into other Spatial Vortices.  It is also open to the reverse - receiving excess energy from other Vortices.  To utilize this property, one must place magical apparatus or mechanical contrivances in the four spaces inside the chalk runes inside the ritual's shape.  There are only two drawbacks - not all types of energy are volatile enough to be affected by Vortices, and minor amounts of energy are dissipated to the environment in the process.  Also note that if there is no way to receive the energy at any one Vortex, energy will be lost there at a rapid rate.  Finally, each Vortex is considered a separate entity, not each contraption around it - if the total energy of two Vortices is the same, even though the amount of it in individual contraptions isn't - nothing will happen.</desc>
     </block>
     <block id="obelisk">
       <name>Obelisk</name>

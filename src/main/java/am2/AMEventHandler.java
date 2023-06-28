@@ -486,6 +486,33 @@ public class AMEventHandler{
 
 	private static int tick = 0;
 
+	private static int[] getMinIndex(int[] array) {
+		int min = array[0];
+		int indexForMin = -1;
+		for (int i = 0; i < array.length; i++) {
+			int score = array[i];
+			if (min > score) {
+				min = score;
+				indexForMin = i;
+			}
+		}
+		return new int[]{indexForMin, min};
+	}
+
+	private static int[] getMaxIndex(int[] array) {
+		int max = array[0];
+		int indexForMax = 0;
+		for (int i = 0; i < array.length; i++) {
+			int score = array[i];
+			if (max < score) {
+				max = score;
+				indexForMax = i;
+			}
+		}
+		return new int[]{indexForMax, max};
+	}
+
+
 	@SubscribeEvent
 	public void onEntityLiving(LivingUpdateEvent event){
 
@@ -618,54 +645,218 @@ public class AMEventHandler{
 				Map<String, String> acceleratedEntities = extendedProperties.getExtraVariablesContains("accelerated_fast_entity_");
 
 				Map<String, String> spatialVortices = extendedProperties.getExtraVariablesContains("spatialvortex_");
-				int totalenergy = 0;
-				int totaletheriumdark = 0;
-				int totaletheriumlight = 0;
+				if (spatialVortices.size() > 0) {
+					int[] totalenergy = new int[spatialVortices.size()];
+					int[] totalenergyExternallyLimited = new int[spatialVortices.size()];
+					int[] totaletheriumdark = new int[spatialVortices.size()];
+					int[] totaletheriumlight = new int[spatialVortices.size()];
 
-				for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
-					String[] entryvalues = entry.getKey().split("_");
-					int x = Integer.valueOf(entryvalues[1]);
-					int y = Integer.valueOf(entryvalues[2]);
-					int z = Integer.valueOf(entryvalues[3]);
-					World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
-					for (int xadd = -1; xadd <= 1; xadd += 2) {
-						for (int zadd = -1; zadd <= 1; zadd += 2) {
-							TileEntity te = thisdim.getTileEntity(x + xadd, y - 1, z + zadd);
-							if (te != null) {
-								if (te instanceof IEnergyHandler) { // 20,000 RF per tick x4 max
-									totalenergy += ((IEnergyHandler) te).extractEnergy(ForgeDirection.UNKNOWN, 100000, false);
-								}
-								if (te instanceof IPowerNode) { // 10,000 dark + 10,000 light per tick x4 max
-									totaletheriumdark += PowerNodeRegistry.For(thisdim).consumePower((IPowerNode)te, PowerTypes.DARK, 50000);
-									totaletheriumlight += PowerNodeRegistry.For(thisdim).consumePower((IPowerNode)te, PowerTypes.LIGHT, 50000);
-								}
-							}
-						}
-					}
-				}
-				if (totalenergy > 0) {
+					int vIndex = 0;
 					for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
-						int totalEnergyForEachVortex = (int)(totalenergy / spatialVortices.size());
-						int totallightethforeach = (int)(totaletheriumlight / spatialVortices.size());
-						int totaldarkethforeach = (int)(totaletheriumdark / spatialVortices.size());
 						String[] entryvalues = entry.getKey().split("_");
 						int x = Integer.valueOf(entryvalues[1]);
 						int y = Integer.valueOf(entryvalues[2]);
 						int z = Integer.valueOf(entryvalues[3]);
 						World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+						totalenergy[vIndex] = 0;
+						totaletheriumdark[vIndex] = 0;
+						totaletheriumlight[vIndex] = 0;
 						for (int xadd = -1; xadd <= 1; xadd += 2) {
 							for (int zadd = -1; zadd <= 1; zadd += 2) {
-								TileEntity te = thisdim.getTileEntity(x + xadd, y - 1, z + zadd);
+								TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
 								if (te != null) {
-									if (te instanceof IEnergyHandler && totalEnergyForEachVortex > 0) {// 20,000 RF per tick x4 max
-										totalEnergyForEachVortex -= ((IEnergyHandler) te).receiveEnergy(ForgeDirection.UNKNOWN, totalEnergyForEachVortex, false);
+									if (te instanceof IEnergyHandler) {
+										totalenergy[vIndex] += ((IEnergyHandler) te).getEnergyStored(ForgeDirection.UNKNOWN);
+										totalenergyExternallyLimited[vIndex] += ((IEnergyHandler) te).extractEnergy(ForgeDirection.UNKNOWN, 50000, true); // sim only
 									}
 									if (te instanceof IPowerNode) {
-										if (totaldarkethforeach > 0) totaldarkethforeach -= PowerNodeRegistry.For(thisdim).insertPower((IPowerNode)te, PowerTypes.DARK, totaldarkethforeach);
-										if (totallightethforeach > 0) totallightethforeach -= PowerNodeRegistry.For(thisdim).insertPower((IPowerNode)te, PowerTypes.LIGHT, totallightethforeach);
+										totaletheriumdark[vIndex] += PowerNodeRegistry.For(thisdim).getPower((IPowerNode) te, PowerTypes.DARK);
+										totaletheriumlight[vIndex] += PowerNodeRegistry.For(thisdim).getPower((IPowerNode) te, PowerTypes.LIGHT);
 									}
 								}
 							}
+						}
+						vIndex++;
+					}
+					int[] maxE = getMaxIndex(totalenergy);
+					int[] maxD = getMaxIndex(totaletheriumdark);
+					int[] maxL = getMaxIndex(totaletheriumlight);
+					int[] minE = getMinIndex(totalenergy);
+					int[] minD = getMinIndex(totaletheriumdark);
+					int[] minL = getMinIndex(totaletheriumlight);
+
+					int halfDiffE = (maxE[1] - minE[1]) / 2;
+					int halfDiffD = (maxD[1] - minD[1]) / 2;
+					int halfDiffL = (maxL[1] - minL[1]) / 2;
+
+					// total energy available to transfer, limited by: 50,000 per 5 ticks, half the diff between max and min, and external factors (such as device's throughput rate)
+					int toTransferE = Math.min(totalenergyExternallyLimited[maxE[0]], halfDiffE); // 50000 is the max externallyLimited can be anyways
+					int toTransferD = Math.min(50000, halfDiffD);
+					int toTransferL = Math.min(50000, halfDiffL);
+
+					int maximumEnergyMinimumVortexCanAccept = 0;
+					if (toTransferE > 0) {
+						// maximum energy we can *accept* right now (RF only)
+						int tIndex = 0;
+						for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+							if (tIndex == minE[0]) {
+								String[] entryvalues = entry.getKey().split("_");
+								int x = Integer.valueOf(entryvalues[1]);
+								int y = Integer.valueOf(entryvalues[2]);
+								int z = Integer.valueOf(entryvalues[3]);
+								World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+								for (int xadd = -1; xadd <= 1; xadd += 2) {
+									for (int zadd = -1; zadd <= 1; zadd += 2) {
+										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
+										if (te != null) {
+											if (te instanceof IEnergyHandler) {
+												maximumEnergyMinimumVortexCanAccept += ((IEnergyHandler) te).receiveEnergy(ForgeDirection.UNKNOWN, 50000, true); // sim only
+											}
+										}
+									}
+								}
+								break;
+							}
+							tIndex++;
+						}
+					}
+
+					int toTransferEActual = Math.min(toTransferE, maximumEnergyMinimumVortexCanAccept);
+					boolean ELeft = toTransferEActual > 0;
+					boolean LLeft = toTransferL > 0;
+					boolean DLeft = toTransferD > 0;
+
+					int localIndex = 0;
+					// energy subtraction. BEWARE: Terrible code to follow!! Prepare bleach for eyes.
+					if (ELeft) {
+						int toSubtractE = toTransferEActual;
+						for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+							if (localIndex == maxE[0]) {
+								String[] entryvalues = entry.getKey().split("_");
+								int x = Integer.valueOf(entryvalues[1]);
+								int y = Integer.valueOf(entryvalues[2]);
+								int z = Integer.valueOf(entryvalues[3]);
+								World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+								for (int xadd = -1; xadd <= 1; xadd += 2) {
+									for (int zadd = -1; zadd <= 1; zadd += 2) {
+										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
+										if (te != null) {
+											if (te instanceof IEnergyHandler) {
+												if (toSubtractE > 0) toSubtractE -= ((IEnergyHandler) te).extractEnergy(ForgeDirection.UNKNOWN, toSubtractE, false); // real
+											}
+										}
+									}
+								}
+							}
+							localIndex++;
+						}
+						localIndex = 0;
+					}
+					if (DLeft) {
+						int toSubtractD = toTransferD;
+						for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+							if (localIndex == maxD[0]) {
+								String[] entryvalues = entry.getKey().split("_");
+								int x = Integer.valueOf(entryvalues[1]);
+								int y = Integer.valueOf(entryvalues[2]);
+								int z = Integer.valueOf(entryvalues[3]);
+								World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+								for (int xadd = -1; xadd <= 1; xadd += 2) {
+									for (int zadd = -1; zadd <= 1; zadd += 2) {
+										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
+										if (te != null) {
+											if (te instanceof IPowerNode) {
+												if (toSubtractD > 0) toSubtractD -= PowerNodeRegistry.For(thisdim).consumePower((IPowerNode)te, PowerTypes.DARK, toSubtractD); // real
+											}
+										}
+									}
+								}
+							}
+							localIndex++;
+						}
+						localIndex = 0;
+					}
+					if (LLeft) {
+						int toSubtractL = toTransferL;
+						for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+							if (localIndex == maxL[0]) {
+								String[] entryvalues = entry.getKey().split("_");
+								int x = Integer.valueOf(entryvalues[1]);
+								int y = Integer.valueOf(entryvalues[2]);
+								int z = Integer.valueOf(entryvalues[3]);
+								World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+								for (int xadd = -1; xadd <= 1; xadd += 2) {
+									for (int zadd = -1; zadd <= 1; zadd += 2) {
+										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
+										if (te != null) {
+											if (te instanceof IPowerNode) {
+												if (toSubtractL > 0) toSubtractL -= PowerNodeRegistry.For(thisdim).consumePower((IPowerNode)te, PowerTypes.DARK, toSubtractL); // real
+											}
+										}
+									}
+								}
+							}
+							localIndex++;
+						}
+					}
+
+					if (ELeft || DLeft || LLeft) {
+						// actually do the energy transfer. Finally. Note: I *know* this whole algo I came up with is badly optimized, and I welcome any PRs to optimize it.
+						int fIndex = 0;
+						for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+							if (fIndex == minE[0] && ELeft) {
+								String[] entryvalues = entry.getKey().split("_");
+								int x = Integer.valueOf(entryvalues[1]);
+								int y = Integer.valueOf(entryvalues[2]);
+								int z = Integer.valueOf(entryvalues[3]);
+								World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+								for (int xadd = -1; xadd <= 1; xadd += 2) {
+									for (int zadd = -1; zadd <= 1; zadd += 2) {
+										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
+										if (te != null) {
+											if (te instanceof IEnergyHandler) {
+												if (toTransferEActual > 0) toTransferEActual -= ((IEnergyHandler) te).receiveEnergy(ForgeDirection.UNKNOWN, toTransferEActual, false); // real
+												else ELeft = false;
+											}
+										}
+									}
+								}
+							} else if (fIndex == minD[0] && DLeft) {
+								String[] entryvalues = entry.getKey().split("_");
+								int x = Integer.valueOf(entryvalues[1]);
+								int y = Integer.valueOf(entryvalues[2]);
+								int z = Integer.valueOf(entryvalues[3]);
+								World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+								for (int xadd = -1; xadd <= 1; xadd += 2) {
+									for (int zadd = -1; zadd <= 1; zadd += 2) {
+										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
+										if (te != null) {
+											if (te instanceof IPowerNode) {
+												if (toTransferD > 0) toTransferD -= PowerNodeRegistry.For(thisdim).insertPower((IPowerNode) te, PowerTypes.DARK, toTransferD);
+												else DLeft = false;
+											}
+										}
+									}
+								}
+							} else if (fIndex == minL[0] && LLeft) {
+								String[] entryvalues = entry.getKey().split("_");
+								int x = Integer.valueOf(entryvalues[1]);
+								int y = Integer.valueOf(entryvalues[2]);
+								int z = Integer.valueOf(entryvalues[3]);
+								World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+								for (int xadd = -1; xadd <= 1; xadd += 2) {
+									for (int zadd = -1; zadd <= 1; zadd += 2) {
+										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
+										if (te != null) {
+											if (te instanceof IPowerNode) {
+												if (toTransferL > 0) toTransferL -= PowerNodeRegistry.For(thisdim).insertPower((IPowerNode) te, PowerTypes.LIGHT, toTransferL);
+												else LLeft = false;
+											}
+										}
+									}
+								}
+							}
+							fIndex++;
 						}
 					}
 				}

@@ -261,15 +261,15 @@ public class MysteriumPatchesFixesMagicka{
 		return false;
 	}
 
-	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
-	@SideOnly(Side.CLIENT)
-	public static boolean playSound(SoundManager sm, ISound p_148611_1_)
-	{
-		if (Minecraft.getMinecraft() != null) {
-			if (Minecraft.getMinecraft().thePlayer != null && (AMPacketProcessorClient.deaf > 0)) return true;
-		}
-		return false; // play the sound
-	}
+//	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+//	@SideOnly(Side.CLIENT)
+//	public static boolean playSound(SoundManager sm, ISound p_148611_1_)
+//	{
+//		if (Minecraft.getMinecraft() != null) {
+//			if (Minecraft.getMinecraft().thePlayer != null && (AMPacketProcessorClient.deaf > 0)) return true;
+//		}
+//		return false; // play the sound
+//	} // doesn't work because forge screwed up mappings
 
 	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
 	@SideOnly(Side.CLIENT)

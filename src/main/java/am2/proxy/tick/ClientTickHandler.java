@@ -49,6 +49,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixesMagicka;
 
 import java.util.ArrayList;
@@ -126,6 +127,13 @@ public class ClientTickHandler{
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) { // you're a ghost, how are you looking inside yourself
 		if (MysteriumPatchesFixesMagicka.isPlayerEthereal(Minecraft.getMinecraft().thePlayer) && event.gui instanceof GuiInventory) event.setCanceled(true);
+	}
+
+	@SubscribeEvent
+	public void onPlaySound(PlaySoundEvent17 event) {
+		if (Minecraft.getMinecraft() != null) {
+			if (Minecraft.getMinecraft().thePlayer != null && (AMPacketProcessorClient.deaf > 0)) event.result = null; // prevent sound playing
+		}
 	}
 
 	private void applyDeferredDimensionTransfers(){

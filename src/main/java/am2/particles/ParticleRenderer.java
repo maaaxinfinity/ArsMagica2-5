@@ -209,7 +209,9 @@ public class ParticleRenderer{
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 
-		for (EntityFX particle : particles){
+		for (int i = 0; i < particles.size(); i++){
+			if (i >= particles.size()) break; // This seems useless. It isn't. It prevents a ConcurrentMod crash, because some threaded nonsense is causing trouble.
+			EntityFX particle = particles.get(i);
 			tessellator.setBrightness(particle.getBrightnessForRender(partialTicks));
 
 			particle.renderParticle(tessellator, partialTicks, rotationX, rotationXZ, rotationZ, rotationYZ, rotationXY);
