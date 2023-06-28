@@ -808,3 +808,10 @@ am2.tooltip.potion5=Restore 10000 Mana
 
 am2.tooltip.drink=Réduit l'épuisement de 25%.
 am2.tooltip.potionEssence=Augmente le Mana maximum de 25%.
+
+item.arsmagica2:boxOfIllusions.name=Boîte à Leurres
+tile.arsmagica2:spatialVortex.name=Vortex Spatial
+am2.spell.absorption=Absorption
+am2.spell.deafen=Sourd
+am2.spell.cloaking=Occultation
+am2.spell.keystonerecognition=Reconnaissance des Pierres Précieuses

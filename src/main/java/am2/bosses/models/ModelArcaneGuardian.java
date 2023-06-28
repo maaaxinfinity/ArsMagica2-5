@@ -1,5 +1,6 @@
 package am2.bosses.models;
 
+import am2.armor.ArmorEventHandler;
 import am2.bosses.EntityArcaneGuardian;
 import am2.entities.renderers.AM2ModelRenderer;
 import net.minecraft.client.model.ModelBase;
@@ -271,7 +272,11 @@ public class ModelArcaneGuardian extends ModelBase{
 			RightUpperArm.render(f5);
 			LeftUpperArm.render(f5);
 			RightForearm.render(f5);
+			GL11.glPushMatrix(); // arm was rendering incorrectly previously. This is still a bit off, but it looks a bit better now
+			GL11.glTranslated(-0.2, 0, -0.17);
+			GL11.glRotated(30, -1.8, 1.5, 1.5);
 			LeftLowerArm.render(f5);
+			GL11.glPopMatrix();
 			LeftHand.render(f5);
 			Book.render(f5);
 			RightHand.render(f5);

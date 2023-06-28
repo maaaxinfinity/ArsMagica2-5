@@ -46,6 +46,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixesMagicka;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,15 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 			switch (packetID){
 			case AMPacketIDs.SPELL_CAST:
 				handleSpellCast(remaining);
+				break;
+			case AMPacketIDs.CLOAKING:
+				handleCloaking(remaining);
+				break;
+			case AMPacketIDs.DEAFEN:
+				handleDeafen(remaining);
+				break;
+			case AMPacketIDs.SYNCMAPTOCLIENTS:
+				handleSyncMap(remaining);
 				break;
 			case AMPacketIDs.MAGIC_LEVEL_UP:
 				handleMagicLevelUpResponse(remaining);
@@ -172,6 +182,31 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 			}
 		}
 	}
+
+	private void handleSyncMap(byte[] remaining) {
+		AMDataReader rdr = new AMDataReader(remaining, false);
+		int size = rdr.getInt();
+		for (int i = 0; i < size; i++) {
+			String key = rdr.getString();
+			String value = rdr.getString();
+			MysteriumPatchesFixesMagicka.playerModelMap.put(key, value);
+		}
+	}
+
+	private void handleCloaking(byte[] remaining) {
+		AMDataReader rdr = new AMDataReader(remaining, false);
+		int duration = rdr.getInt();
+		cloaking = duration;
+	}
+
+	private void handleDeafen(byte[] remaining) {
+		AMDataReader rdr = new AMDataReader(remaining, false);
+		int duration = rdr.getInt();
+		deaf = duration;
+	}
+
+	public static int cloaking = 0;
+	public static int deaf = 0;
 
 	private void handleEnervatorUpdate(byte[] remaining){
 		AMDataReader rdr = new AMDataReader(remaining, false);

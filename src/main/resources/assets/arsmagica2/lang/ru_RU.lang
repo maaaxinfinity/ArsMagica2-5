@@ -817,3 +817,10 @@ am2.tooltip.potion5=Восстанавливает 10000 маны
 
 am2.tooltip.drink=Снижает выгорание на 25%
 am2.tooltip.potionEssence=Увеличивает максимальное количество маны на 25%
+
+item.arsmagica2:boxOfIllusions.name=Шкатулка иллюзий
+tile.arsmagica2:spatialVortex.name=Пространственный вихрь
+am2.spell.absorption=Поглощение
+am2.spell.deafen=Оглушить
+am2.spell.cloaking=Маскировка
+am2.spell.keystonerecognition=Распознавание краеугольных камней

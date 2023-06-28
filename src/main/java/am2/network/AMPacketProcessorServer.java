@@ -56,6 +56,9 @@ public class AMPacketProcessorServer{
 			case AMPacketIDs.MAGIC_LEVEL_UP:
 				handleMagicLevelUp(remaining, (EntityPlayerMP)player);
 				break;
+			case AMPacketIDs.SYNCMAPTOSERVER:
+				handleSyncMapServer(remaining);
+				break;
 			case AMPacketIDs.SYNC_BETA_PARTICLES:
 				handleSyncBetaParticles(remaining, (EntityPlayerMP)player);
 				break;
@@ -126,6 +129,10 @@ public class AMPacketProcessorServer{
 				t.printStackTrace();
 			}
 		}
+	}
+
+	private void handleSyncMapServer(byte[] remaining) {
+		AMNetHandler.INSTANCE.sendPacketToAllClients(AMPacketIDs.SYNCMAPTOCLIENTS, remaining);
 	}
 
 	private void handleCasterUpdate(byte[] data, EntityPlayerMP player){

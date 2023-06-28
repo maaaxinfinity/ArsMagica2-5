@@ -279,7 +279,7 @@ public class RecipesEssenceRefiner extends RecipesArsMagica{
 		AddRecipe(new ItemStack[]{
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_AIR),
 				new ItemStack(BlocksCommonProxy.tarmaRoot),
-				new ItemStack(Blocks.pumpkin_stem),
+				new ItemStack(Items.pumpkin_seeds),
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONEFRAGMENT),
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_NATURE),
 		}, new ItemStack(ItemsCommonProxy.imbuedMoonflowerSeeds));
@@ -287,7 +287,7 @@ public class RecipesEssenceRefiner extends RecipesArsMagica{
 		AddRecipe(new ItemStack[]{
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_NATURE),
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_MOONSTONEFRAGMENT),
-				new ItemStack(Blocks.pumpkin_stem),
+				new ItemStack(Items.pumpkin_seeds),
 				new ItemStack(BlocksCommonProxy.tarmaRoot),
 				new ItemStack(ItemsCommonProxy.essence, 1, ItemsCommonProxy.essence.META_AIR),
 		}, new ItemStack(ItemsCommonProxy.imbuedMoonflowerSeeds));

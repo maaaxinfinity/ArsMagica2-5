@@ -167,6 +167,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("VelocityAdded"), 390, 290, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Fling"));
 		RegisterPart(SkillManager.instance.getSkill("Homing"), 435, 290, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("VelocityAdded"));
 		RegisterPart(SkillManager.instance.getSkill("TargetPlayers"), 435, 335, SkillTrees.Offense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Homing"));
+		RegisterPart(SkillManager.instance.getSkill("KeystoneRecognition"), 480, 335, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("TargetPlayers"));
 		RegisterPart(SkillManager.instance.getSkill("TargetMonsters"), 480, 290, SkillTrees.Offense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Homing"));
 		RegisterPart(SkillManager.instance.getSkill("WateryGrave"), 435, 245, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Drown"));
 
@@ -177,6 +178,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Fury"), 255, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Beam"), SkillManager.instance.getSkill("Storm"));
 		RegisterPart(SkillManager.instance.getSkill("Curse"), 255, 355, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Fury"));
 		RegisterPart(SkillManager.instance.getSkill("Wave"), 367, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Beam"), SkillManager.instance.getSkill("Fling"));
+		RegisterPart(SkillManager.instance.getSkill("Deafen"), 367, 355, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Wave"));
 
 		RegisterPart(SkillManager.instance.getSkill("Blizzard"), 75, 45, SkillTrees.Offense, SkillPointTypes.SILVER);
 		RegisterPart(SkillManager.instance.getSkill("FallingStar"), 75, 90, SkillTrees.Offense, SkillPointTypes.SILVER);
@@ -197,6 +199,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Heal"), 357, 135, SkillTrees.Defense, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Regeneration"));
 		RegisterPart(SkillManager.instance.getSkill("LifeTap"), 312, 135, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Heal"));
 		RegisterPart(SkillManager.instance.getSkill("Healing"), 402, 135, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Heal"));
+		RegisterPart(SkillManager.instance.getSkill("Absorption"), 402, 180, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Healing"));
 
 		RegisterPart(SkillManager.instance.getSkill("Summon"), 267, 135, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("LifeTap"));
 		RegisterPart(SkillManager.instance.getSkill("Contingency_Damage"), 447, 180, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Healing"));
@@ -291,6 +294,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 
 		RegisterPart(SkillManager.instance.getSkill("Rift"), 275, 255, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Binding"));
 		RegisterPart(SkillManager.instance.getSkill("Invisibility"), 185, 255, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("TrueSight"));
+		RegisterPart(SkillManager.instance.getSkill("Cloaking"), 145, 255, SkillTrees.Utility, SkillPointTypes.RED, SkillManager.instance.getSkill("Invisibility"));
 
 		RegisterPart(SkillManager.instance.getSkill("RandomTeleport"), 185, 300, SkillTrees.Utility, SkillPointTypes.BLUE, SkillManager.instance.getSkill("Invisibility"));
 		RegisterPart(SkillManager.instance.getSkill("Attract"), 245, 300, SkillTrees.Utility, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Rift"));

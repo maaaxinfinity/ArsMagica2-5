@@ -808,3 +808,10 @@ am2.tooltip.potion5=Restores 10000 Mana
 
 am2.tooltip.drink=Reduces Burnout by 25%
 am2.tooltip.potionEssence=Increases Max Mana by 25%
+
+item.arsmagica2:boxOfIllusions.name=Box of Illusions
+tile.arsmagica2:spatialVortex.name=Spatial Vortex
+am2.spell.absorption=Absorption
+am2.spell.deafen=Deafen
+am2.spell.cloaking=Cloaking
+am2.spell.keystonerecognition=Keystone Recognition

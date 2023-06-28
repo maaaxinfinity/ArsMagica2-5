@@ -28,6 +28,7 @@ import am2.playerextensions.ExtendedProperties;
 import am2.playerextensions.RiftStorage;
 import am2.playerextensions.SkillData;
 import am2.utility.*;
+import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -55,10 +56,12 @@ import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.brewing.PotionBrewedEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -610,6 +613,45 @@ public class AMEventHandler{
 
 				Map<String, String> slowedEntities = extendedProperties.getExtraVariablesContains("accelerated_slow_entity_");
 				Map<String, String> acceleratedEntities = extendedProperties.getExtraVariablesContains("accelerated_fast_entity_");
+
+				Map<String, String> spatialVortices = extendedProperties.getExtraVariablesContains("spatialvortex_");
+				int totalenergy = 0;
+
+				for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+					String[] entryvalues = entry.getKey().split("_");
+					int x = Integer.valueOf(entryvalues[1]);
+					int y = Integer.valueOf(entryvalues[2]);
+					int z = Integer.valueOf(entryvalues[3]);
+					World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+					for (int xadd = -1; xadd <= 1; xadd += 2) {
+						for (int zadd = -1; zadd <= 1; zadd += 2) {
+							TileEntity te = thisdim.getTileEntity(x + xadd, y - 1, z + zadd);
+							if (te != null && te instanceof IEnergyHandler) { // 20,000 RF per tick x4 max
+								totalenergy += ((IEnergyHandler)te).extractEnergy(ForgeDirection.UNKNOWN, 100000, false);
+							}
+						}
+					}
+				}
+				if (totalenergy > 0) {
+					int totalEnergyForEachVortex = (int)(totalenergy / spatialVortices.size());
+					for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+						String[] entryvalues = entry.getKey().split("_");
+						int x = Integer.valueOf(entryvalues[1]);
+						int y = Integer.valueOf(entryvalues[2]);
+						int z = Integer.valueOf(entryvalues[3]);
+						World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
+						for (int xadd = -1; xadd <= 1; xadd += 2) {
+							if (totalEnergyForEachVortex <= 0) break;
+							for (int zadd = -1; zadd <= 1; zadd += 2) {
+								if (totalEnergyForEachVortex <= 0) break;
+								TileEntity te = thisdim.getTileEntity(x + xadd, y - 1, z + zadd);
+								if (te != null && te instanceof IEnergyHandler) { // 20,000 RF per tick x4 max
+									totalEnergyForEachVortex -= ((IEnergyHandler) te).receiveEnergy(ForgeDirection.UNKNOWN, totalEnergyForEachVortex, false);
+								}
+							}
+						}
+					}
+				}
 
 				for (Map.Entry<String, String> entry : acceleratedEntities.entrySet()) {
 					String[] entryvalues = entry.getKey().split("_");

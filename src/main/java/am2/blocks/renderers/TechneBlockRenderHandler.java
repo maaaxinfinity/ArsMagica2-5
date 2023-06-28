@@ -25,6 +25,8 @@ public class TechneBlockRenderHandler implements ISimpleBlockRenderingHandler{
 			TileEntityRendererDispatcher.instance.renderTileEntityAt(BlocksClientProxy.occulusInventoryRenderer, 0.0D, 0.0D, 0.0D, 0.0F);
 		}else if (block == BlocksCommonProxy.obelisk){
 			TileEntityRendererDispatcher.instance.renderTileEntityAt(BlocksClientProxy.obeliskInventoryRender, 0.0D, 0.0D, 0.0D, 0.0F);
+		}else if (block == BlocksCommonProxy.spatialVortex){
+			TileEntityRendererDispatcher.instance.renderTileEntityAt(BlocksClientProxy.spatialVortexInventoryRenderer, 0.0D, 0.0D, 0.0D, 0.0F);
 		}else if (block == BlocksCommonProxy.celestialPrism){
 			TileEntityRendererDispatcher.instance.renderTileEntityAt(BlocksClientProxy.celestialPrismInventoryRender, 0.0D, 0.0D, 0.0D, 0.0F);
 		}else if (block == BlocksCommonProxy.blackAurem){

@@ -161,6 +161,11 @@
       <desc>The clouds darkened, and rain began to fall.  The wind howled, and a flash of lightning streaked across the sky, leaving bright flashes in my vision.  The thunder was deafening.  Lightning struck all around me at each enemy.  The strain of maintaining the storm was immense. </desc>
       <modifiedBy></modifiedBy>
     </component>
+    <component id="Deafen">
+      <name>Deafen</name>
+      <desc>By producing a concentrated, high frequency, high amplitude burst of sound you are able to temporarily impair the hearing of your enemies. </desc>
+      <modifiedBy></modifiedBy>
+    </component>
     <component id="AstralDistortion">
       <name>Astral Distortion</name>
       <desc>As I tried to step into the void, the warp shimmered and seemed to solidify.  I walked face first into it, much to the amusement of my students.  This effect seemed to prevent my teleportation abilities entirely.  I had to turn this against Endermen as well.</desc>
@@ -564,6 +569,11 @@
       <desc>Causes the projectile spell shape to bounce off surfaces.</desc>
       <modifies>BOUNCE</modifies>
     </modifier>
+    <modifier id="Cloaking">
+      <name>Cloaking</name>
+      <desc>Causes the spell to manifest a deceptive cloaking layer around it, resulting in the inability of targets to perceive this spell or any spells cast immediately after.</desc>
+      <modifies>CLOAKING</modifies>
+    </modifier>
     <modifier id="Damage">
       <name>Damage</name>
       <desc>Amplifies the damage dealt by spells.</desc>
@@ -573,6 +583,11 @@
       <name>Healing</name>
       <desc>Amplifies the healing done by spells, or the damage dealt by healing spells to the undead.</desc>
       <modifies>HEALING</modifies>
+    </modifier>
+    <modifier id="KeystoneRecognition">
+      <name>Keystone Recognition</name>
+      <desc>Imagine the following scenario - an enterprising mage decided to test a new Dig spell near their home, and accidentally, it dug out a part of said home with it, causing the loss of valuable items and contraptions.  Or how about this: A mage has to fight alongside his allies, but all the truly powerful spells available to them are AoE.  For far too long has this been a constant concern, but worry not now - for with this modifier, spells will recognize allied creatures and owned contraptions by the presence of a matching keystone inside.</desc>
+      <modifies>KEYSTONE_REC</modifies>
     </modifier>
     <modifier id="Speed">
       <name>Speed</name>
@@ -863,7 +878,7 @@
       </subitem>
       <subitem id="itemOre@23">
         <name>Soul Fragment</name>
-        <desc>A fragment of a soul of a living being.  Can only be acquired by forcefully separating it from one's soul during psychedelic experiences.  During such an act, one must possess a significant amount of rare items - these will be drained and lost during the process.  In return, one will gain a fragment of a soul - something with a will and agency, capable of making its own decisions and even casting spells.</desc>
+        <desc>A fragment of a soul of a living being.  Can only be acquired by forcefully separating it from one's soul during psychedelic experiences (in other words, attempting to die while in the Higher fractal world).  During such an act, one must possess a significant amount (about a half-dozen should suffice) of rare (for example, enchanted) items - these will be drained and lost during the process.  In return, one will gain a fragment of a soul - something with a will and agency, capable of making its own decisions and even casting spells.</desc>
         <relatedEntries></relatedEntries>
       </subitem>
       <relatedEntries>calefactor</relatedEntries>
@@ -1581,7 +1596,7 @@
       </subitem>
 	  <subitem id="flickerFocus@768">
         <name>Flicker Focus: Fishing</name>
-        <desc>The combination of Water and Nature flickers causes them to be able to find creatures that live in water.  It does require power to maintain the search, however, as the flickers cover a great distance in a short time.  If augmented with adjacent habitats containing lightning flickers, they are able to move even faster, causing them to naturally find fish more often.  Doing so will increase the overall power use. !d The focus requires a 3x3 square of water below it that is also at least 2 blocks deep in order to function.  It will output fish into an adjacent inventory if possible, or drop them as an item if no inventory is present. !d A redstone signal must be provided for the flickers to start working.</desc>
+        <desc>The combination of Water and Nature flickers causes them to be able to find creatures that live in water.  It does require power to maintain the search, however, as the flickers cover a great distance in a short time.  If augmented with adjacent habitats containing lightning flickers, they are able to move even faster, causing them to naturally find fish more often.  Doing so will increase the overall power use.  To enable the flickers to fish in the lakes of the Nether or the void of the End, one must place ender or fire flickers in adjacent habitats, correspondingly. !d The focus requires a 3x3 square of water, lava or void below it that is also at least 2 blocks deep in order to function.  It will output fish into an adjacent inventory if possible, or drop them as an item if no inventory is present. !d A redstone signal must be provided for the flickers to start working.</desc>
         <relatedEntries>flickerFocus</relatedEntries>
       </subitem>
     </item>
@@ -1608,6 +1623,11 @@
     <item id="soulspike">
       <name>Soulspike</name>
       <desc>A Soulspike is an exceptionally rare and tremendously powerful relic, said to be made from pieces of one's soul.  It has two primary functions, the first of which, similar to a mana stone, being mana storage.  Its mana capacity is manyfold higher than a mana stone, however, you cannot fill it by any normal means: instead, it can only feed on pieces of others' souls - especially Ethereal ones.  As for its second purpose, that is largely shrouded in mystery, however, rumor has it, that with the right preparations, this spike can aid one in temporarily becoming Ethereal.</desc>
+      <relatedEntries />
+    </item>
+    <item id="boxOfIllusions">
+      <name>Box of Illusions</name>
+      <desc>Manifesting and maintaining realistic illusions that hold up to scrutiny is one of the most difficult magic skills to master - every mage knows that firsthand.  But what if some kind of artifact were to do the most difficult part for you?  That is precisely what this box is - from the things you have on you, it tries to guess what kind of an illusion you want to form (for example, if you have a rotten flesh, it will try to assume the form of a zombie).  This artifact is more complete than its predecessor (that looked like a box of makeup with some switches and sliders), in the sense that magic crystals and the like cannot easily see through its illusions.  From harmless pranks to disguise to roleplay, the usage possibilities are wide.</desc>
       <relatedEntries />
     </item>
 	<item id="deficit_crystal">
@@ -1939,6 +1959,13 @@
         <relatedEntries>TrueSight,wizardChalk,warding_candle</relatedEntries>
         <ritualName>ringedCross</ritualName>
         <ritualController>Recall</ritualController>
+      </subitem>
+      <subitem id="spatial_fracture">
+        <name>Spatial Fracture</name>
+        <desc>The ringed cross ritual can be used to merge a Black Aurem at its center with a spatial star and an ender pearl, creating a spatial fracture and transforming the Aurem into a Spatial Vortex.</desc>
+        <relatedEntries>wizardChalk</relatedEntries>
+        <ritualName>ringedCross</ritualName>
+        <ritualController>Blink</ritualController>
       </subitem>
 	  <subitem id="otherworldly_ritual">
         <name>Otherworldly Ritual</name>
@@ -2677,6 +2704,10 @@
     <block id="slipstreamGenerator">
       <name>Slipstream Generator</name>
       <desc>You have managed to create a device that can project a cushion of air around you to make you float upwards or gently lower down towards the ground.  The machine only works on mages above it (#5players only#0), but has a large vertical range.  In testing, you note that if you are falling when you enter its effect radius, it takes a little while before it can completely catch you.  You have also managed to make it work #9based on the direction you are looking#0.  Look up, go up.  Look down, go down.  Look forward, hover.  You can also #9sneak to remain vertically stationary#0, regardless of where you are looking.</desc>
+    </block>
+    <block id="spatialVortex">
+      <name>Spatial Vortex</name>
+      <desc>A fracture in the fabric of space, as it is in its nature, remains constantly unstable.  Due to this property, it attempts to even out the level of energy around it by dumping the excess into other Spatial Vortices.  It is also open to the reverse - receiving excess energy from other Vortices.  To utilize this property, one must place magical apparatus or mechanical contrivances in the four spaces inside the chalk runes inside the ritual's shape.  There is only one drawback - not all types of energy are volatile enough to be affected by Vortices.</desc>
     </block>
     <block id="obelisk">
       <name>Obelisk</name>

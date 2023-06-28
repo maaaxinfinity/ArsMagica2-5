@@ -818,3 +818,10 @@ am2.tooltip.potion5=Restaura 10000 Maná
 
 am2.tooltip.drink=Reduce el agotamiento un 25%.
 am2.tooltip.potionEssence=Aumenta el Maná máximo un 25
+
+item.arsmagica2:boxOfIllusions.name=Caja de las Ilusiones
+tile.arsmagica2:spatialVortex.name=Vórtice Espacial
+am2.spell.absorption=Absorción
+am2.spell.deafen=Sordo
+am2.spell.cloaking=Encubrimiento
+am2.spell.keystonerecognition=Reconocimiento de Piedra Clave

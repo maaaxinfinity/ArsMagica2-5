@@ -26,6 +26,7 @@ import am2.guis.GuiSkillTrees;
 import am2.items.ItemSpellBook;
 import am2.items.ItemsCommonProxy;
 import am2.items.renderers.CustomItemRenderer;
+import am2.items.renderers.RenderItemBoxOfIllusions;
 import am2.items.renderers.SpellScrollRenderer;
 import am2.lore.ArcaneCompendium;
 import am2.lore.CompendiumUnlockHandler;
@@ -143,6 +144,8 @@ public class ClientProxy extends CommonProxy{
 		MinecraftForgeClient.registerItemRenderer(ItemsCommonProxy.waterGuardianOrbs, CustomItemRenderer.instance);
 		MinecraftForgeClient.registerItemRenderer(ItemsCommonProxy.earthGuardianArmor, CustomItemRenderer.instance);
 		MinecraftForgeClient.registerItemRenderer(ItemsCommonProxy.wardingCandle, CustomItemRenderer.instance);
+
+		MinecraftForgeClient.registerItemRenderer(ItemsCommonProxy.boxOfIllusions, new RenderItemBoxOfIllusions());
 
 		MinecraftForgeClient.registerItemRenderer(ItemsCommonProxy.spell, SpellScrollRenderer.instance);
 		MinecraftForgeClient.registerItemRenderer(ItemsCommonProxy.spellBook, SpellScrollRenderer.instance);

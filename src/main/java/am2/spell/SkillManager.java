@@ -195,6 +195,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new Wave(), "Wave");
 
 		//Components
+		registerSkillTreeEntry(new Absorption(), "Absorption");
 		registerSkillTreeEntry(new Accelerate(), "Accelerate");
 		registerSkillTreeEntry(new AstralDistortion(), "AstralDistortion");
 		registerSkillTreeEntry(new Attract(), "Attract");
@@ -206,6 +207,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new CreateWater(), "CreateWater");
 		registerSkillTreeEntry(new ConcentrateTime(), "ConcentrateTime");
 		registerSkillTreeEntry(new Curse(), "Curse");
+		registerSkillTreeEntry(new Deafen(), "Deafen");
 		registerSkillTreeEntry(new Dig(), "Dig");
 		registerSkillTreeEntry(new Disarm(), "Disarm");
 		registerSkillTreeEntry(new Dispel(), "Dispel");
@@ -289,12 +291,14 @@ public class SkillManager implements ISpellPartManager{
 
 		//Modifiers
 		registerSkillTreeEntry(new Bounce(), "Bounce");
+		registerSkillTreeEntry(new Cloaking(), "Cloaking");
 		registerSkillTreeEntry(new Speed(), "Speed");
 		registerSkillTreeEntry(new Gravity(), "Gravity");
 		registerSkillTreeEntry(new Damage(), "Damage");
 		registerSkillTreeEntry(new Healing(), "Healing");
 		registerSkillTreeEntry(new VelocityAdded(), "VelocityAdded");
 		registerSkillTreeEntry(new Homing(), "Homing");
+		registerSkillTreeEntry(new KeystoneRecognition(), "KeystoneRecognition");
 		registerSkillTreeEntry(new Radius(), "Radius");
 		registerSkillTreeEntry(new Duration(), "Duration");
 		registerSkillTreeEntry(new Lingering(), "Lingering");

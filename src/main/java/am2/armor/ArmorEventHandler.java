@@ -1,9 +1,15 @@
 package am2.armor;
 
 import am2.AMCore;
+import am2.LogHelper;
 import am2.api.items.armor.ArmorTextureEvent;
 import am2.api.items.armor.IArmorImbuement;
 import am2.api.items.armor.ImbuementApplicationTypes;
+import am2.bosses.EntityAirGuardian;
+import am2.bosses.EntityArcaneGuardian;
+import am2.bosses.EntityEnderGuardian;
+import am2.bosses.EntityNatureGuardian;
+import am2.items.ItemBoxOfIllusions;
 import am2.items.ItemSoulspike;
 import am2.items.ItemsCommonProxy;
 import am2.particles.AMParticle;
@@ -22,10 +28,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -203,12 +216,64 @@ public class ArmorEventHandler{
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onPlayerRenderPre(RenderPlayerEvent.Pre event) { // true invis
 		if (MysteriumPatchesFixesMagicka.isPlayerEthereal(event.entityPlayer)) {event.setCanceled(true); return;}
+		if (MysteriumPatchesFixesMagicka.playerModelMap.get(event.entityPlayer.getCommandSenderName()) != null && !MysteriumPatchesFixesMagicka.playerModelMap.get(event.entityPlayer.getCommandSenderName()).startsWith("maid")) {
+			// custom mobs
+			String toMob = MysteriumPatchesFixesMagicka.playerModelMap.get(event.entityPlayer.getCommandSenderName());
+			EntityLivingBase elb = new EntityZombie(event.entityPlayer.worldObj);
+			if (toMob.equalsIgnoreCase("spider")) {
+				elb = new EntitySpider(event.entityPlayer.worldObj);
+			} else if (toMob.equalsIgnoreCase("witch")) {
+				elb = new EntityWitch(event.entityPlayer.worldObj);
+			} else if (toMob.equalsIgnoreCase("snowman")) {
+				elb = new EntitySnowman(event.entityPlayer.worldObj);
+			} else if (toMob.equalsIgnoreCase("creeper")) {
+				elb = new EntityCreeper(event.entityPlayer.worldObj);
+			} else if (toMob.equalsIgnoreCase("chicken")) {
+				elb = new EntityChicken(event.entityPlayer.worldObj);
+			} else if (toMob.equalsIgnoreCase("cow")) {
+				elb = new EntityCow(event.entityPlayer.worldObj);
+			} else if (toMob.equalsIgnoreCase("ender")) {
+				elb = new EntityArcaneGuardian(event.entityPlayer.worldObj);
+			}
+			ItemBoxOfIllusions.Copy(event.entityPlayer, elb);
+			Render rle = RenderManager.instance.getEntityRenderObject(elb);
+			if (rle instanceof RendererLivingEntity) {
+				if (elb.ticksExisted == 0)
+				{
+					elb.lastTickPosX = elb.posX;
+					elb.lastTickPosY = elb.posY;
+					elb.lastTickPosZ = elb.posZ;
+				}
+
+				double d0 = elb.lastTickPosX + (elb.posX - elb.lastTickPosX) * (double)event.partialRenderTick;
+				double d1 = elb.lastTickPosY + (elb.posY - elb.lastTickPosY) * (double)event.partialRenderTick;
+				double d2 = elb.lastTickPosZ + (elb.posZ - elb.lastTickPosZ) * (double)event.partialRenderTick;
+				float f1 = elb.prevRotationYaw + (elb.rotationYaw - elb.prevRotationYaw) * event.partialRenderTick;
+				int i = elb.getBrightnessForRender(event.partialRenderTick);
+
+				if (elb.isBurning())
+				{
+					i = 15728880;
+				}
+
+				int j = i % 65536;
+				int k = i / 65536;
+				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				((RendererLivingEntity) rle).doRender(elb, d0 - RenderManager.renderPosX, d1 - RenderManager.renderPosY - event.entityPlayer.yOffset, d2 - RenderManager.renderPosZ, f1, event.partialRenderTick);
+				event.setCanceled(true);
+			} else {
+				LogHelper.warn("Renderer not of living entity type! Report this as an error.");
+			}
+			return;
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onPlayerRenderPreSpecial(RenderPlayerEvent.Specials.Pre event) { // true invis
 		if (MysteriumPatchesFixesMagicka.isPlayerEthereal(event.entityPlayer)) {event.setCanceled(true); return;}
+		if (MysteriumPatchesFixesMagicka.playerModelMap.get(event.entityPlayer.getCommandSenderName()) != null && !MysteriumPatchesFixesMagicka.playerModelMap.get(event.entityPlayer.getCommandSenderName()).startsWith("maid")) {event.setCanceled(true); return;}
 	}
 
 	// Sorry Roadhog for borrowing some of your code starting here :D

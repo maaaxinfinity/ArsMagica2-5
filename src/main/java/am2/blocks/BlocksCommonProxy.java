@@ -41,6 +41,7 @@ public class BlocksCommonProxy{
 	public static Block essenceConduit;
 	public static Block obelisk;
 	public static Block blackAurem;
+	public static Block spatialVortex;
 	public static Block celestialPrism;
 	public static Block caster;
 	public static Block calefactor;
@@ -206,6 +207,7 @@ public class BlocksCommonProxy{
 		keystoneRecepticle = (BlockKeystoneReceptacle)new BlockKeystoneReceptacle().setUnlocalizedNameAndID("arsmagica2:blockkeystonerecepticle").setCreativeTab(blockTab);
 		astralBarrier = new BlockAstralBarrier().setUnlocalizedNameAndID("arsmagica2:blockastralbarrier").setCreativeTab(blockTab);
 		blackAurem = new BlockEssenceGenerator(BlockEssenceGenerator.NEXUS_DARK).setUnlocalizedNameAndID("arsmagica2:blackaurem").setCreativeTab(blockTab);
+		spatialVortex = new BlockSpatialVortex().setUnlocalizedNameAndID("arsmagica2:spatialVortex").setCreativeTab(blockTab);
 		seerStone = new BlockSeerStone().setUnlocalizedNameAndID("arsmagica2:blockseerstone").setCreativeTab(blockTab);
 		celestialPrism = new BlockEssenceGenerator(BlockEssenceGenerator.NEXUS_LIGHT).setUnlocalizedNameAndID("arsmagica2:celestialprism").setCreativeTab(blockTab);
 		AMOres = (BlockAMOre)new BlockAMOre().setBlockName("arsmagica2:ores").setHardness(3.0f).setResistance(3.0f).setCreativeTab(blockTab);
@@ -788,6 +790,7 @@ public class BlocksCommonProxy{
 		registerBlock(vinteumTorch, "VinteumTorch");
 		registerBlock(particleEmitter, "ParticleEmitter");
 		registerBlock(inscriptionTable, "InscriptionTable");
+		registerBlock(spatialVortex, "spatialVortex");
 		registerBlock(invisibleUtility, "invisibleUtility");
 		registerBlock(aum, "Aum");
 		registerBlock(tarmaRoot, "TarmaRoot");
@@ -890,6 +893,7 @@ public class BlocksCommonProxy{
 		GameRegistry.registerTileEntity(TileEntityKeystoneRecepticle.class, "TileEntityKeystoneRecepticle");
 		GameRegistry.registerTileEntity(TileEntityAstralBarrier.class, "TileEntityAstralBarrier");
 		GameRegistry.registerTileEntity(TileEntityBlackAurem.class, "TileEntityBlackAurem");
+		GameRegistry.registerTileEntity(TileEntitySpatialVortex.class, "TileEntitySpatialVortex");
 		GameRegistry.registerTileEntity(TileEntitySeerStone.class, "TileEntitySeerStone");
 		GameRegistry.registerTileEntity(TileEntityCelestialPrism.class, "TileEntityCelestialPrism");
 		GameRegistry.registerTileEntity(TileEntityKeystoneChest.class, "TileEntityKeystoneChest");

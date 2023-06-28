@@ -8,6 +8,7 @@ import java.util.Map;
 
 import am2.LogHelper;
 import am2.preloader.BytecodeTransformers;
+import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixLoaderMagicka;
 import org.apache.logging.log4j.Level;
 
 import cpw.mods.fml.common.FMLLog;
@@ -35,18 +36,10 @@ public class CustomLoadingPlugin implements IFMLLoadingPlugin {
     private static MetaReader mcMetaReader;
 
 	public static boolean foundThaumcraft = false;
-	private static boolean foundOptiFine = false;
-	private static boolean confirmedOptiFine = false;
 	public static boolean foundDragonAPI = false;
 	public static boolean isDevEnvironment = false;
     
     public static File debugOutputLocation;
-
-    public static final String[] transformers = 
-    		new String[]{
-    			FirstClassTransformer.class.getName(),
-				BytecodeTransformers.class.getName(),
-   			};
 
     static {
         mcMetaReader = new MinecraftMetaReader();
@@ -171,7 +164,7 @@ public class CustomLoadingPlugin implements IFMLLoadingPlugin {
 						foundThaumcraft = true;
 					}else if (name.contains("optifine")){
 						LogHelper.info("Core: Located OptiFine in " + file.getName() + ". We'll to confirm that...");
-						foundOptiFine = true;
+						MysteriumPatchesFixLoaderMagicka.foundOptiFine = true;
 					}else if (name.contains("dragonapi")){
 						LogHelper.info("Core: Located DragonAPI in " + file.getName());
 						foundDragonAPI = true;
@@ -186,28 +179,4 @@ public class CustomLoadingPlugin implements IFMLLoadingPlugin {
     
     public void registerFixes() {
     }
-
-	public static boolean isOptiFinePresent(){
-		if (!confirmedOptiFine && foundOptiFine){
-			// Check presence of OptiFine core classes
-			try{
-				Class.forName("optifine.OptiFineForgeTweaker");
-			}
-			catch (ClassNotFoundException exception1){
-				try{
-					Class.forName("optifine.OptiFineTweaker");
-				}
-				catch (ClassNotFoundException exception2){
-					foundOptiFine = false;
-				}
-			}
-			if (foundOptiFine){
-				LogHelper.info("Core: OptiFine presence has been confirmed.");
-			} else {
-				LogHelper.info("Core: OptiFine doesn't seem to be there actually.");
-			}
-			confirmedOptiFine = true;
-		}
-		return foundOptiFine;
-	}
 }

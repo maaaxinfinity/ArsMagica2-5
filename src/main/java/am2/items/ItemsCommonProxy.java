@@ -89,6 +89,8 @@ public class ItemsCommonProxy{
 	public static ItemCasparazoid casparazoid;
 	public static ItemLiquidEssenceBottle liquidEssenceBottle;
 
+	public static ItemBoxOfIllusions boxOfIllusions;
+
 	public static ItemManaPotionBundle manaPotionBundle;
 	public static ItemFlickerJar flickerJar;
 	public static ItemJournal playerjournal;
@@ -309,6 +311,7 @@ public class ItemsCommonProxy{
 		boundCatalystBoots =new Item().setUnlocalizedName("arsmagica2:bound_boots_catalyst").setTextureName("arsmagica2:bound_boots_catalyst").setCreativeTab(itemTab);
 		cowHorn = (ItemHellCowHorn)new ItemHellCowHorn().setUnlocalizedName("arsmagica2:cowhorn").setCreativeTab(itemTab);
 		magicBroom = (ItemMagicBroom)new ItemMagicBroom().setUnlocalizedAndTextureName("arsmagica2:magic_broom").setCreativeTab(itemTab);
+		boxOfIllusions = (ItemBoxOfIllusions) new ItemBoxOfIllusions().setUnlocalizedAndTextureName("arsmagica2:boxOfIllusions").setCreativeTab(itemTab);
 		//witchwoodSlab = new ItemSlab(AMCore.config.getConfigurableItemID("witchwood__doubleslab_placer", 20119), BlocksCommonProxy.witchwoodSingleSlab, BlocksCommonProxy.witchwoodDoubleSlab, true);
 		arcaneSpellbook = (ItemArcaneGuardianSpellbook)new ItemArcaneGuardianSpellbook().setUnlocalizedName("arsmagica2:arcane_spellbook").setCreativeTab(itemTab);
 		winterGuardianArm = (ItemWinterGuardianArm)new ItemWinterGuardianArm().setUnlocalizedName("arsmagica2:winter_arm").setCreativeTab(itemTab);
@@ -498,6 +501,7 @@ public class ItemsCommonProxy{
 		registerItem(boundCatalystLeggings, "boundCatalystLeggings");
 
 		registerItem(magicBroom, "magicBroom");
+		registerItem(boxOfIllusions, "boxOfIllusions");
 
 		registerItem(arcaneSpellbook, "arcane_spellbook");
 		registerItem(winterGuardianArm, "winter_arm");
@@ -815,6 +819,17 @@ public class ItemsCommonProxy{
 				Character.valueOf('S'), "stickWood",
 				Character.valueOf('A'), "arcaneAsh",
 				Character.valueOf('H'), Blocks.hay_block
+		}));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(boxOfIllusions, new Object[]{
+				"WBW",
+				"TCT",
+				"WSW",
+				Character.valueOf('S'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SOULFRAGMENT),
+				Character.valueOf('B'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_COGNITIVEDUST),
+				Character.valueOf('T'), new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_BLUETOPAZ),
+				Character.valueOf('C'), Blocks.chest,
+				Character.valueOf('W'), new ItemStack(Blocks.wool, 1, AMCore.ANY_META),
 		}));
 
 		GameRegistry.addRecipe(new ShapedOreRecipe(woodenLeg, new Object[]{

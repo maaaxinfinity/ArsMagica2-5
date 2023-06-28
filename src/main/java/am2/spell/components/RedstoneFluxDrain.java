@@ -11,13 +11,16 @@ import am2.particles.ParticleArcToEntity;
 import am2.playerextensions.ExtendedProperties;
 import am2.spell.SpellUtils;
 import cofh.api.energy.IEnergyContainerItem;
+import cofh.api.energy.IEnergyHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
 import java.util.Random;
@@ -26,7 +29,38 @@ public class RedstoneFluxDrain implements ISpellComponent{
 
 	@Override
 	public boolean applyEffectBlock(ItemStack stack, World world, int blockx, int blocky, int blockz, int blockFace, double impactX, double impactY, double impactZ, EntityLivingBase caster){
+		if (!(caster instanceof EntityPlayer)) return false;
+		TileEntity te = world.getTileEntity(blockx, blocky, blockz);
+		if (te != null && te instanceof IEnergyHandler) {
+			int rfToSteal = SpellUtils.instance.getModifiedInt_Add(1000, stack, caster, caster, world, 0, SpellModifiers.DAMAGE);
+			int rfToGiveBack = ((IEnergyHandler)te).extractEnergy(ForgeDirection.UNKNOWN, rfToSteal, false);
+			giveBackEnergy((EntityPlayer) caster, rfToGiveBack);
+			return true;
+		}
 		return false;
+	}
+
+	private void giveBackEnergy(EntityPlayer caster, int rfToGiveBack) {
+		EntityPlayer cPlayer = caster;
+		for (int i = 0; i < cPlayer.inventory.mainInventory.length; i++) {
+			if (rfToGiveBack <= 0) {
+				return;
+			}
+			if (cPlayer.inventory.mainInventory[i] != null && cPlayer.inventory.mainInventory[i].getItem() instanceof IEnergyContainerItem) {
+				int inserted = ((IEnergyContainerItem)cPlayer.inventory.mainInventory[i].getItem()).receiveEnergy(cPlayer.inventory.mainInventory[i], rfToGiveBack, false);
+				rfToGiveBack -= inserted;
+			}
+		}
+		for (int i = 0; i < cPlayer.inventory.armorInventory.length; i++) {
+			if (rfToGiveBack <= 0) {
+				return;
+			}
+			if (cPlayer.inventory.armorInventory[i] != null && cPlayer.inventory.armorInventory[i].getItem() instanceof IEnergyContainerItem) {
+				int inserted = ((IEnergyContainerItem)cPlayer.inventory.armorInventory[i].getItem()).receiveEnergy(cPlayer.inventory.armorInventory[i], rfToGiveBack, false);
+				rfToGiveBack -= inserted;
+			}
+		}
+		return;
 	}
 
 	@Override
@@ -58,27 +92,7 @@ public class RedstoneFluxDrain implements ISpellComponent{
 
 		if (rfToSteal > 0) rfToGiveBack -= rfToSteal;
 
-		EntityPlayer cPlayer = (EntityPlayer)caster;
-
-		for (int i = 0; i < cPlayer.inventory.mainInventory.length; i++) {
-			if (rfToGiveBack <= 0) {
-				return true;
-			}
-			if (cPlayer.inventory.mainInventory[i] != null && cPlayer.inventory.mainInventory[i].getItem() instanceof IEnergyContainerItem) {
-				int inserted = ((IEnergyContainerItem)cPlayer.inventory.mainInventory[i].getItem()).receiveEnergy(cPlayer.inventory.mainInventory[i], rfToGiveBack, false);
-				rfToGiveBack -= inserted;
-			}
-		}
-		for (int i = 0; i < cPlayer.inventory.armorInventory.length; i++) {
-			if (rfToGiveBack <= 0) {
-				return true;
-			}
-			if (cPlayer.inventory.armorInventory[i] != null && cPlayer.inventory.armorInventory[i].getItem() instanceof IEnergyContainerItem) {
-				int inserted = ((IEnergyContainerItem)cPlayer.inventory.armorInventory[i].getItem()).receiveEnergy(cPlayer.inventory.armorInventory[i], rfToGiveBack, false);
-				rfToGiveBack -= inserted;
-			}
-		}
-
+		giveBackEnergy((EntityPlayer) caster, rfToGiveBack);
 		return true;
 	}
 

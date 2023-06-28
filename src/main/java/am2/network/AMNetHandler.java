@@ -102,6 +102,21 @@ public class AMNetHandler{
 		Channel.sendToAllAround(packet, new TargetPoint(dimension, ox, oy, oz, radius));
 	}
 
+	public void sendPacketToAllClients(byte packetID, byte[] data){
+		//first byte is ID, followed by data
+		byte[] pkt_data = new byte[data.length + 1];
+		pkt_data[0] = packetID;
+
+		//copy the data
+		for (int i = 0; i < data.length; ++i){
+			pkt_data[i + 1] = data[i];
+		}
+
+		FMLProxyPacket packet = new FMLProxyPacket(Unpooled.copiedBuffer(pkt_data), ChannelLabel);
+		packet.setTarget(Side.CLIENT);
+		Channel.sendToAll(packet);
+	}
+
 	public void sendVelocityAddPacket(World world, EntityLivingBase target, double velX, double velY, double velZ){
 		if (world.isRemote){
 			return;

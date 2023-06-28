@@ -11,7 +11,7 @@ Ars Magica 2.5 - Carrying the Torch of True Magic
 - Added an enormous amount of new spell icons
 - Added compat with Not Enough Items and Magic Bees
 - Added recipes for multiple previously uncraftable items
-- Added multiple new items, blocks and contraptions with utility
+- Added multiple new items, blocks, contraptions and rituals with utility
 - Added and changed multiple core mod mechanics
 - Re-added and implemented multiple lost and unfinished features
 - Refined Altar, Burnout, Leveling and Bosses
@@ -48,5 +48,7 @@ Some icons used courtesy of Ails http://www.alteredgamer.com/rpg-maker/100053-vx
 Some textures used have been adapted from the Sanity texturepack by Alvoria
 
 https://www.curseforge.com/minecraft/texture-packs/alvorias-sanity
+
+Parts of models by Staralighto have also been used.
 
 Sounds are courtesy of opengameart.com and freesound.org, and licenses are that of their respective owners.

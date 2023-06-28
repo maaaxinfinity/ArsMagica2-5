@@ -25,6 +25,7 @@ public class BlocksClientProxy extends BlocksCommonProxy{
 	public static TileEntityEverstone everstoneInventoryRenderer;
 	public static TileEntityCrystalMarker crystalMarkerInventoryRenderer;
 	public static TileEntityCandle candleInventoryRenderer;
+	public static TileEntitySpatialVortex spatialVortexInventoryRenderer;
 	public static TileEntityFlickerHabitat elementalAttunerInventoryRenderer;
 	public static TileEntityOtherworldAura otherworldAuraInventoryRenderer;
 
@@ -40,6 +41,7 @@ public class BlocksClientProxy extends BlocksCommonProxy{
 		keystoneChestInventoryRenderer = new TileEntityKeystoneChest();
 		blockLecternInventoryRenderer = new TileEntityLectern();
 		blockReconstructorInventoryRenderer = new TileEntityArcaneReconstructor();
+		spatialVortexInventoryRenderer = new TileEntitySpatialVortex();
 		occulusInventoryRenderer = new TileEntityOcculus();
 		obeliskInventoryRender = new TileEntityObelisk();
 		celestialPrismInventoryRender = new TileEntityCelestialPrism();
@@ -58,6 +60,7 @@ public class BlocksClientProxy extends BlocksCommonProxy{
 	public void registerRenderInformation(){
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEssenceConduit.class, new EssenceConduitRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityObelisk.class, new EssenceGeneratorRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySpatialVortex.class, new SpatialVortexRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCalefactor.class, new CalefactorRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBlockCaster.class, new CasterRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityKeystoneRecepticle.class, new KeystoneReceptacleRenderer());

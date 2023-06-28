@@ -2,6 +2,7 @@ package am2.particles;
 
 import am2.AMCore;
 import am2.api.spell.enums.Affinity;
+import am2.network.AMPacketProcessorClient;
 import am2.texture.ResourceManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
@@ -47,6 +48,7 @@ public class AMParticleIcons{
 		loadAndInitIcon("sparkle2", "sparkle2", IIconRegister);
 		loadAndInitIcon("water_ball", "water_ball", IIconRegister);
 		loadAndInitIcon("wind", "wind", IIconRegister);
+		loadAndInitIcon("empty", "empty", IIconRegister);
 
 		loadAndInitIcon("air_hand", "air_hand", IIconRegister);
 		loadAndInitIcon("arcane_hand", "arcane_hand", IIconRegister);
@@ -103,6 +105,7 @@ public class AMParticleIcons{
 	}
 
 	public IIcon getIconByName(String name){
+		if (AMPacketProcessorClient.cloaking > 0) return icons.get("empty");
 		IIcon icon = null;
 		if (name.equals("symbols")){
 			icon = hiddenIcons.get("Symbols" + (rand.nextInt(28) + 1));
@@ -116,12 +119,14 @@ public class AMParticleIcons{
 	}
 
 	public IIcon getHiddenIconByName(String name){
+		if (AMPacketProcessorClient.cloaking > 0) return icons.get("empty");
 		IIcon icon = hiddenIcons.get(name);
 		if (icon == null) return icons.get("lights");
 		return icon;
 	}
 
 	public String getParticleForAffinity(Affinity aff){
+		if (AMPacketProcessorClient.cloaking > 0) return "empty";
 		switch (aff){
 		case AIR:
 			return "wind";
@@ -151,6 +156,7 @@ public class AMParticleIcons{
 	}
 
 	public String getSecondaryParticleForAffinity(Affinity aff){
+		if (AMPacketProcessorClient.cloaking > 0) return "empty";
 		switch (aff){
 		case AIR:
 			return "air_hand";

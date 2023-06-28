@@ -8,21 +8,32 @@ import am2.blocks.liquid.BlockLiquidEssence;
 import am2.buffs.BuffList;
 import am2.configuration.AMConfig;
 import am2.entities.EntityHallucination;
+import am2.entities.renderers.RenderPlayerSpecial;
 import am2.items.*;
 import am2.network.AMNetHandler;
+import am2.network.AMPacketProcessorClient;
 import am2.network.TickrateMessage;
+import am2.playerextensions.ExtendedProperties;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelMagmaCube;
 import net.minecraft.client.model.ModelSkeleton;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderCaveSpider;
 import net.minecraft.client.renderer.entity.RenderFish;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -51,6 +62,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.tclproject.mysteriumlib.asm.annotations.EnumReturnSetting;
 import net.tclproject.mysteriumlib.asm.annotations.Fix;
 import net.tclproject.mysteriumlib.asm.annotations.ReturnedValue;
+import scala.Int;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -100,7 +112,7 @@ public class MysteriumPatchesFixesMagicka{
 
 	// same as last method: prevent ethereal players from being returned
 	@Fix(returnSetting = EnumReturnSetting.ALWAYS, insertOnExit = true)
-	public static List getEntitiesWithinAABBExcludingEntity(Entity p_94576_1_, AxisAlignedBB p_94576_2_, IEntitySelector p_94576_3_, @ReturnedValue List returnedValue)
+	public static List getEntitiesWithinAABBExcludingEntity(World world, Entity p_94576_1_, AxisAlignedBB p_94576_2_, IEntitySelector p_94576_3_, @ReturnedValue List returnedValue)
 	{
 		ArrayList toReturn = new ArrayList();
 		for (int i = 0; i < returnedValue.size(); i++) {
@@ -120,13 +132,13 @@ public class MysteriumPatchesFixesMagicka{
 	@Fix
 	public static void updateRenderer(WorldRenderer wr, EntityLivingBase p_147892_1_) { updatingRenderWorld = true; }
 
-	@Fix(insertOnExit = true)
+	@Fix(insertOnExit = true, targetMethod = "updateRenderer")
 	public static void updateRendererEnd(WorldRenderer wr, EntityLivingBase p_147892_1_) { updatingRenderWorld = false; }
 
 	@Fix
 	public static void orientCamera(EntityRenderer er, float p_78467_1_) { orientingCamera = true; }
 
-	@Fix(insertOnExit = true)
+	@Fix(insertOnExit = true, targetMethod = "orientCamera")
 	public static void orientCameraEnd(EntityRenderer er, float p_78467_1_) { orientingCamera = false; }
 
 	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
@@ -142,6 +154,26 @@ public class MysteriumPatchesFixesMagicka{
 		double d2 = p_72438_1_.zCoord - thisVec.zCoord;
 		return (double) MathHelper.sqrt_double(d0 * d0 + d1 * d1 + d2 * d2);
 	}
+
+	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	@SideOnly(Side.CLIENT)
+	public static Render getEntityRenderObject(RenderManager rm, Entity ent)
+	{
+		if (ent instanceof EntityPlayer) {
+			if (playerModelMap.get(((EntityPlayer)ent).getCommandSenderName()) != null && playerModelMap.get(((EntityPlayer)ent).getCommandSenderName()).startsWith("maid")) return new RenderPlayerSpecial();
+		}
+		return rm.getEntityClassRenderObject(ent.getClass());
+	}
+
+//	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+//	@SideOnly(Side.CLIENT)
+//	public static boolean renderItemInFirstPerson(ItemRenderer ir, float p_78440_1_)
+//	{
+//		if (shouldNotUseNormalRender) return true;
+//		return false;
+//	}
+
+	public static Map<String, String> playerModelMap = new HashMap<String, String>();
 
 	@Fix(returnSetting = EnumReturnSetting.ALWAYS, insertOnExit = true)
 	public static boolean isEntityInsideOpaqueBlock(Entity thisEntity, @ReturnedValue boolean returnedValue)
@@ -228,6 +260,26 @@ public class MysteriumPatchesFixesMagicka{
 	public static boolean getRenderType(Block block) { // this is alright, we don't want to change overridden classes so allthatextends isn't necessary
 //		if (updatingRenderWorld && isPlayerEthereal(Minecraft.getMinecraft().thePlayer)) return true;
 		return false;
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	@SideOnly(Side.CLIENT)
+	public static boolean playSound(SoundManager sm, ISound p_148611_1_)
+	{
+		if (Minecraft.getMinecraft() != null) {
+			if (Minecraft.getMinecraft().thePlayer != null && (AMPacketProcessorClient.deaf > 0)) return true;
+		}
+		return false; // play the sound
+	}
+
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	@SideOnly(Side.CLIENT)
+	public static boolean renderParticles(EffectRenderer er, Entity p_78874_1_, float p_78874_2_)
+	{
+		if (Minecraft.getMinecraft() != null) {
+			if (AMPacketProcessorClient.cloaking > 0) return true;
+		}
+		return false; // render as usual
 	}
 
 	public static int returnMinusOne(Block block) { return -1; }

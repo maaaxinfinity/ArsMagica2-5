@@ -582,7 +582,7 @@ tile.arsmagica2:crystalMarker.cm_spellExport.name=Spell Export Crystal
 tile.arsmagica2:flickerHabitat.name=Flicker Habitat
 tile.arsmagica2:flicker_lure.name=Flicker Lure
 tile.arsmagica2:inertSpawner.name=Inert Spawner
-tile.arsmagica2:keystoneDoor.name=Keystone Door
+tile.arsmagica2:keystoneDoor.name=Sleutelsteen Deur
 tile.arsmagica2:keystoneTrapdoor.name=Keystone Trapdoor
 tile.arsmagica2:liquidEssence.name=Liquid Etherium
 tile.arsmagica2:magetorch.name=Mage Light
@@ -820,3 +820,10 @@ am2.tooltip.potion5=Herstelt 10000 Mana
 
 am2.tooltip.drink=Vermindert Burnout met 25%
 am2.tooltip.potionEssence=Verhoogt Max Mana met 25%
+
+item.arsmagica2:boxOfIllusions.name=Doos met Illusies
+tile.arsmagica2:spatialVortex.name=Spatialevortex
+am2.spell.absorption=Absorptie
+am2.spell.deafen=Doof Maken
+am2.spell.cloaking=Camoufleren
+am2.spell.keystonerecognition=Sleutelsteen Herkenning

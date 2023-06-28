@@ -816,3 +816,10 @@ am2.tooltip.potion5=恢复10000法力值
 
 am2.tooltip.drink=减少25%的消耗。
 am2.tooltip.potionEssence=增加最大法力值25%。
+
+item.arsmagica2:boxOfIllusions.name=幻觉之盒
+tile.arsmagica2:spatialVortex.name=空间漩涡
+am2.spell.absorption=吸力
+am2.spell.deafen=失聪
+am2.spell.cloaking=隐匿
+am2.spell.keystonerecognition=基石识别

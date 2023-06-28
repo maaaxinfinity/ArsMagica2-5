@@ -1,11 +1,16 @@
 package am2.spell.components;
 
 import am2.AMCore;
+import am2.RitualShapeHelper;
 import am2.api.ArsMagicaApi;
+import am2.api.blocks.MultiblockStructureDefinition;
+import am2.api.spell.component.interfaces.IRitualInteraction;
 import am2.api.spell.component.interfaces.ISpellComponent;
 import am2.api.spell.enums.Affinity;
 import am2.api.spell.enums.SpellModifiers;
+import am2.blocks.BlocksCommonProxy;
 import am2.blocks.tileentities.TileEntityAstralBarrier;
+import am2.blocks.tileentities.TileEntityBlackAurem;
 import am2.buffs.BuffList;
 import am2.items.ItemsCommonProxy;
 import am2.particles.AMParticle;
@@ -30,10 +35,19 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Random;
 
-public class Blink implements ISpellComponent{
+public class Blink implements ISpellComponent, IRitualInteraction {
 
 	@Override
 	public boolean applyEffectBlock(ItemStack stack, World world, int blockx, int blocky, int blockz, int blockFace, double impactX, double impactY, double impactZ, EntityLivingBase caster){
+		if (world.getTileEntity(blockx, blocky, blockz) != null && caster instanceof EntityPlayer) {
+			if (world.getTileEntity(blockx, blocky, blockz) instanceof TileEntityBlackAurem) {
+				if (RitualShapeHelper.instance.checkForRitual(this, world, blockx, blocky, blockz) != null){
+					RitualShapeHelper.instance.consumeRitualReagents(this, world, blockx, blocky, blockz);
+					world.setBlock(blockx, blocky, blockz, BlocksCommonProxy.spatialVortex);
+					ExtendedProperties.For((EntityPlayer)caster).addToExtraVariables("spatialvortex_" + blockx + "_" + blocky + "_" + blockz + "_" + world.provider.dimensionId, "AN"); // AN: Active Normal. Other modes of operation not yet present.
+				}
+			}
+		}
 		return false;
 	}
 
@@ -337,5 +351,23 @@ public class Blink implements ISpellComponent{
 	@Override
 	public float getAffinityShift(Affinity affinity){
 		return 0.05f;
+	}
+
+	@Override
+	public MultiblockStructureDefinition getRitualShape() {
+		return RitualShapeHelper.instance.ringedCross;
+	}
+
+	@Override
+	public ItemStack[] getReagents(){
+		return new ItemStack[]{
+				new ItemStack(Items.ender_pearl),
+				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_SPATIALSTAR)
+		};
+	}
+
+	@Override
+	public int getReagentSearchRadius() {
+		return RitualShapeHelper.instance.ringedCross.getWidth();
 	}
 }

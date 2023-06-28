@@ -1,8 +1,10 @@
 package am2.spell;
 
 import am2.AMCore;
+import am2.api.blocks.IKeystoneLockable;
 import am2.api.events.ManaCostEvent;
 import am2.api.events.SpellCastingEvent;
+import am2.api.items.KeystoneAccessType;
 import am2.api.spell.ItemSpellBase;
 import am2.api.spell.component.interfaces.ISpellComponent;
 import am2.api.spell.component.interfaces.ISpellModifier;
@@ -16,6 +18,7 @@ import am2.buffs.BuffList;
 import am2.entities.EntityDarkMage;
 import am2.entities.EntityLightMage;
 import am2.entities.EntitySpellEffect;
+import am2.items.ItemKeystone;
 import am2.items.ItemsCommonProxy;
 import am2.network.AMDataWriter;
 import am2.network.AMNetHandler;
@@ -24,6 +27,7 @@ import am2.playerextensions.ExtendedProperties;
 import am2.spell.SpellUtils.SpellRequirements;
 import am2.spell.modifiers.Colour;
 import am2.utility.EntityUtilities;
+import am2.utility.KeystoneUtilities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,20 +37,19 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class SpellHelper{
 
@@ -74,7 +77,7 @@ public class SpellHelper{
 			if (BlocksCommonProxy.spellSealedDoor.applyComponentToDoor(world, component, blockX, blockY, blockZ))
 				continue;
 
-			if (canApplyToBlock(stack, caster, world)){
+			if (canApplyToBlock(stack, caster, world, blockX, blockY, blockZ)){
 				if (component.applyEffectBlock(stack, world, blockX, blockY, blockZ, blockFace, impactX, impactY, impactZ, caster)){
 					if (world.isRemote){
 						int color = -1;
@@ -167,12 +170,29 @@ public class SpellHelper{
 	}
 
 	private boolean canApplyToEntity(ItemStack stack, EntityLivingBase caster, World world, Entity target){
-		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_PLAYERS, stack, caster, target, world, 0) != 0 && target instanceof EntityPlayer) {
-			return true;
-		} else if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_MONSTERS, stack, caster, target, world, 0) != 0 && target instanceof EntityMob) {
-			return true;
-		} else if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_CREATURES, stack, caster, target, world, 0) != 0 && target instanceof EntityAgeable) {
-			return true;
+		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.KEYSTONE_REC, stack, caster, target, world, 0) != 0 && target instanceof EntityPlayer && caster instanceof EntityPlayer) {
+			long casterKey = -1;
+			long targetKey = -1;
+			for (int i = 0; i < ((EntityPlayer)caster).inventory.mainInventory.length; ++i) {
+				ItemStack stack1 = ((EntityPlayer)caster).inventory.getStackInSlot(i);
+				if (stack1 == null || stack1.getItem() != ItemsCommonProxy.keystone) continue;
+				casterKey = ((ItemKeystone) stack1.getItem()).getKey(stack1);
+				break;
+			}
+			for (int i = 0; i < ((EntityPlayer)target).inventory.mainInventory.length; ++i) {
+				ItemStack stack1 = ((EntityPlayer)target).inventory.getStackInSlot(i);
+				if (stack1 == null || stack1.getItem() != ItemsCommonProxy.keystone) continue;
+				targetKey = ((ItemKeystone) stack1.getItem()).getKey(stack1);
+				break;
+			}
+			if (casterKey != -1 && (casterKey == targetKey)) return false;
+		}
+		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_PLAYERS, stack, caster, target, world, 0) != 0 && !(target instanceof EntityPlayer)) {
+			return false;
+		} else if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_MONSTERS, stack, caster, target, world, 0) != 0 && !(target instanceof EntityMob)) {
+			return false;
+		} else if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_CREATURES, stack, caster, target, world, 0) != 0 && !(target instanceof EntityAgeable)) {
+			return false;
 		}
 		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_BLOCKS, stack, caster, target, world, 0) != 0) {
 			return false;
@@ -180,7 +200,33 @@ public class SpellHelper{
 		return true;
 	}
 
-	private boolean canApplyToBlock(ItemStack stack, EntityLivingBase caster, World world){
+	private boolean canApplyToBlock(ItemStack stack, EntityLivingBase caster, World world, int x, int y, int z){
+		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.KEYSTONE_REC, stack, caster, caster, world, 0) != 0 && caster instanceof EntityPlayer) {
+			TileEntity te = world.getTileEntity(x, y, z);
+			if (te != null) {
+				if (te instanceof IKeystoneLockable) {
+					if (KeystoneUtilities.instance.canPlayerAccess((IKeystoneLockable)te, (EntityPlayer)caster, KeystoneAccessType.NONE)) {
+						return false; // don't want to break keystone blocks you are the owner of
+					}
+				} else if (te instanceof IInventory) {
+					long casterKey = -1;
+					for (int i = 0; i < ((EntityPlayer)caster).inventory.mainInventory.length; ++i) {
+						ItemStack stack1 = ((EntityPlayer)caster).inventory.getStackInSlot(i);
+						if (stack1 == null || stack1.getItem() != ItemsCommonProxy.keystone) continue;
+						casterKey = ((ItemKeystone) stack1.getItem()).getKey(stack1);
+						break;
+					}
+					long blockKey = -1;
+					for (int i = 0; i < ((IInventory)te).getSizeInventory(); ++i) {
+						ItemStack stack1 = ((IInventory)te).getStackInSlot(i);
+						if (stack1 == null || stack1.getItem() != ItemsCommonProxy.keystone) continue;
+						blockKey = ((ItemKeystone) stack1.getItem()).getKey(stack1);
+						break;
+					}
+					if (casterKey != -1 && (casterKey == blockKey)) return false; // if matching keystone in inventory of TE, don't want to break
+				}
+			}
+		}
 		if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_BLOCKS, stack, caster, caster, world, 0) == 0){
 			if (SpellUtils.instance.getModifiedInt_Add(SpellModifiers.TARGET_PLAYERS, stack, caster, caster, world, 0) != 0){
 				return false;
@@ -262,6 +308,15 @@ public class SpellHelper{
 		SpellCastResult result = SpellCastResult.MALFORMED_SPELL_STACK;
 
 		if (shape != null){
+			int cloaking = SpellUtils.instance.countModifiers(SpellModifiers.CLOAKING, stack, 0);
+			if (cloaking > 0){
+				double radius = SpellUtils.instance.getModifiedDouble_Add(10, stack, caster, target, world, 0, SpellModifiers.RADIUS);
+				int duration = SpellUtils.instance.getModifiedInt_Mul(BuffList.default_buff_duration, stack, caster, target, world, 0, SpellModifiers.DURATION);
+				duration = SpellUtils.instance.modifyDurationBasedOnArmor(caster, duration);
+				AMDataWriter writer1 = new AMDataWriter();
+				writer1.add(duration);
+				if (!world.isRemote) AMNetHandler.INSTANCE.sendPacketToAllClientsNear(world.provider.dimensionId, x, y, z, radius, AMPacketIDs.CLOAKING, writer1.generate());
+			}
 			result = shape.beginStackStage(item, parsedStack, caster, target, world, x, y, z, side, giveXP, ticksUsed);
 
 			if (!world.isRemote){
@@ -550,7 +605,7 @@ public class SpellHelper{
 			for (ISpellComponent component : components){
 				if (BlocksCommonProxy.spellSealedDoor.applyComponentToDoor(world, component, blockX, blockY, blockZ))
 					continue;
-				if (SpellHelper.instance.canApplyToBlock(stack, caster, world)){
+				if (SpellHelper.instance.canApplyToBlock(stack, caster, world, blockX, blockY, blockZ)){
 					if (component.applyEffectBlock(stack, world, blockX, blockY, blockZ, blockFace, impactX, impactY, impactZ, caster)){
 						if (world.isRemote){
 							int color = -1;

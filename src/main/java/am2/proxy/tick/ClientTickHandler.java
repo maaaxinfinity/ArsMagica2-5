@@ -23,6 +23,7 @@ import am2.lore.CompendiumEntryTypes;
 import am2.network.AMDataWriter;
 import am2.network.AMNetHandler;
 import am2.network.AMPacketIDs;
+import am2.network.AMPacketProcessorClient;
 import am2.particles.AMLineArc;
 import am2.particles.AMParticle;
 import am2.particles.ParticleFadeOut;
@@ -42,7 +43,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -331,6 +331,10 @@ public class ClientTickHandler{
 		}
 
 		if (Minecraft.getMinecraft().thePlayer != null){
+			if (AMPacketProcessorClient.cloaking > 0) AMPacketProcessorClient.cloaking--;
+			if (AMPacketProcessorClient.cloaking < 0) AMPacketProcessorClient.cloaking = 0;
+			if (AMPacketProcessorClient.deaf > 0) AMPacketProcessorClient.deaf--;
+			if (AMPacketProcessorClient.deaf < 0) AMPacketProcessorClient.deaf = 0;
 			if (Minecraft.getMinecraft().thePlayer.inventory.armorInventory[3] != null && Minecraft.getMinecraft().thePlayer.inventory.armorInventory[3].getItem() == ItemsCommonProxy.archmageHood){
 				if (!Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.nightVision)){
 					Minecraft.getMinecraft().thePlayer.addPotionEffect(new PotionEffect(Potion.nightVision.id, Integer.MAX_VALUE));
