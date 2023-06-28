@@ -3,6 +3,8 @@ package am2;
 import am2.affinity.AffinityHelper;
 import am2.api.ArsMagicaApi;
 import am2.api.events.ManaCostEvent;
+import am2.api.power.IPowerNode;
+import am2.api.power.PowerTypes;
 import am2.api.spell.enums.Affinity;
 import am2.api.spell.enums.BuffPowerLevel;
 import am2.armor.ArmorHelper;
@@ -27,6 +29,7 @@ import am2.playerextensions.AffinityData;
 import am2.playerextensions.ExtendedProperties;
 import am2.playerextensions.RiftStorage;
 import am2.playerextensions.SkillData;
+import am2.power.PowerNodeRegistry;
 import am2.utility.*;
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -616,6 +619,8 @@ public class AMEventHandler{
 
 				Map<String, String> spatialVortices = extendedProperties.getExtraVariablesContains("spatialvortex_");
 				int totalenergy = 0;
+				int totaletheriumdark = 0;
+				int totaletheriumlight = 0;
 
 				for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
 					String[] entryvalues = entry.getKey().split("_");
@@ -626,27 +631,39 @@ public class AMEventHandler{
 					for (int xadd = -1; xadd <= 1; xadd += 2) {
 						for (int zadd = -1; zadd <= 1; zadd += 2) {
 							TileEntity te = thisdim.getTileEntity(x + xadd, y - 1, z + zadd);
-							if (te != null && te instanceof IEnergyHandler) { // 20,000 RF per tick x4 max
-								totalenergy += ((IEnergyHandler)te).extractEnergy(ForgeDirection.UNKNOWN, 100000, false);
+							if (te != null) {
+								if (te instanceof IEnergyHandler) { // 20,000 RF per tick x4 max
+									totalenergy += ((IEnergyHandler) te).extractEnergy(ForgeDirection.UNKNOWN, 100000, false);
+								}
+								if (te instanceof IPowerNode) { // 10,000 dark + 10,000 light per tick x4 max
+									totaletheriumdark += PowerNodeRegistry.For(thisdim).consumePower((IPowerNode)te, PowerTypes.DARK, 50000);
+									totaletheriumlight += PowerNodeRegistry.For(thisdim).consumePower((IPowerNode)te, PowerTypes.LIGHT, 50000);
+								}
 							}
 						}
 					}
 				}
 				if (totalenergy > 0) {
-					int totalEnergyForEachVortex = (int)(totalenergy / spatialVortices.size());
 					for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+						int totalEnergyForEachVortex = (int)(totalenergy / spatialVortices.size());
+						int totallightethforeach = (int)(totaletheriumlight / spatialVortices.size());
+						int totaldarkethforeach = (int)(totaletheriumdark / spatialVortices.size());
 						String[] entryvalues = entry.getKey().split("_");
 						int x = Integer.valueOf(entryvalues[1]);
 						int y = Integer.valueOf(entryvalues[2]);
 						int z = Integer.valueOf(entryvalues[3]);
 						World thisdim = DimensionManager.getWorld(Integer.valueOf(entryvalues[4]));
 						for (int xadd = -1; xadd <= 1; xadd += 2) {
-							if (totalEnergyForEachVortex <= 0) break;
 							for (int zadd = -1; zadd <= 1; zadd += 2) {
-								if (totalEnergyForEachVortex <= 0) break;
 								TileEntity te = thisdim.getTileEntity(x + xadd, y - 1, z + zadd);
-								if (te != null && te instanceof IEnergyHandler) { // 20,000 RF per tick x4 max
-									totalEnergyForEachVortex -= ((IEnergyHandler) te).receiveEnergy(ForgeDirection.UNKNOWN, totalEnergyForEachVortex, false);
+								if (te != null) {
+									if (te instanceof IEnergyHandler && totalEnergyForEachVortex > 0) {// 20,000 RF per tick x4 max
+										totalEnergyForEachVortex -= ((IEnergyHandler) te).receiveEnergy(ForgeDirection.UNKNOWN, totalEnergyForEachVortex, false);
+									}
+									if (te instanceof IPowerNode) {
+										if (totaldarkethforeach > 0) totaldarkethforeach -= PowerNodeRegistry.For(thisdim).insertPower((IPowerNode)te, PowerTypes.DARK, totaldarkethforeach);
+										if (totallightethforeach > 0) totallightethforeach -= PowerNodeRegistry.For(thisdim).insertPower((IPowerNode)te, PowerTypes.LIGHT, totallightethforeach);
+									}
 								}
 							}
 						}
