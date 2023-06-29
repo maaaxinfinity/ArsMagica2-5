@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.function.Consumer;
 
 public class BytecodeTransformers implements IClassTransformer{
 	
@@ -319,7 +320,7 @@ public class BytecodeTransformers implements IClassTransformer{
 				}
 
 				if (target != null){
-					int iRegister = MysteriumPatchesFixLoaderMagicka.isOptiFinePresent() ? 3 : 2;
+					int iRegister = (MysteriumPatchesFixLoaderMagicka.isOptiFinePresent() || checkIsOptifineFilePresent()) ? 3 : 2;
 
 					VarInsnNode aLoad = new VarInsnNode(Opcodes.ALOAD, 0);
 					VarInsnNode fLoad = new VarInsnNode(Opcodes.FLOAD, 1);
@@ -341,6 +342,31 @@ public class BytecodeTransformers implements IClassTransformer{
 		cn.accept(cw);
 
 		return cw.toByteArray();
+	}
+
+	private boolean checkIsOptifineFilePresent() {
+		File file = new File(".");
+		fetchFiles(file, f -> checkForOpt(f.getAbsolutePath()));
+		return isOptifineFilePresent;
+	}
+
+	private void checkForOpt(String path) {
+		if ((path.contains("optifine") && path.endsWith(".jar")) || (path.contains("OptiFine") && path.endsWith(".jar")) || (path.contains("Optifine") && path.endsWith(".jar"))) {
+			System.out.println("Optifine detected! Attempting compatibility. If you do not have optifine, this is an error; report it.");
+			isOptifineFilePresent = true;
+		}
+	}
+
+	public boolean isOptifineFilePresent = false;
+
+	public static void fetchFiles(File dir, Consumer<File> fileConsumer) {
+		if (dir.isDirectory()) {
+			for (File file1 : dir.listFiles()) {
+				fetchFiles(file1, fileConsumer);
+			}
+		} else {
+			fileConsumer.accept(dir);
+		}
 	}
 
 	private byte[] alterEntityPlayerSP(byte[] bytes, boolean is_obfuscated){
