@@ -124,10 +124,10 @@ public class EntityFireElemental extends EntityMob{
 			} catch (Exception e) {
 				LogHelper.warn("----------------------ATTENTION!!!----------------------");
 				LogHelper.warn("CASTING INT (datawatcher) TO BYTE FAILED.");
-				LogHelper.warn("This means ASJCore is installed. ASJCore is, as of now, a fundamentally broken mod that does what it shouldn't.");
-				LogHelper.warn("This is not the first or the last mod that it will have an incompatibility with due to its datawatcher changes - among other incompatible mods are Witchery, ItemPhysics, and probably a lot more.");
-				LogHelper.warn("'7 datawatcher slots is not enough for me' is not a good excuse, and why not? Because ExtendedEntityProperties exists.");
-				LogHelper.warn("Socol needs to learn to use EEP instead of blindly breaking everything with ASM. So if you're seeing this message, please tell AlexSocol to fix his shit.");
+				LogHelper.warn("This means that a fundamentally broken mod that modifies datawatcher IDs is present in your instance.");
+				LogHelper.warn("Find it and remove it - it will cause issues with multiple mods, not just this one. Up until recently this");
+				LogHelper.warn("was caused by ASJCore, however the new versions of it no longer cause this issue: well done Socol.");
+				LogHelper.warn("In conclusion, see if you need to update ASJCore.");
 				LogHelper.warn("----------------------ATTENTION!!!----------------------");
 			}
 		}
