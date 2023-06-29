@@ -17,6 +17,7 @@ import am2.buffs.BuffEffectScrambleSynapses;
 import am2.buffs.BuffEffectTemporalAnchor;
 import am2.buffs.BuffList;
 import am2.buffs.BuffStatModifiers;
+import am2.configuration.AMConfig;
 import am2.damage.DamageSourceFire;
 import am2.damage.DamageSources;
 import am2.entities.EntityFlicker;
@@ -488,7 +489,7 @@ public class AMEventHandler{
 
 	private static int[] getMinIndex(int[] array) {
 		int min = array[0];
-		int indexForMin = -1;
+		int indexForMin = 0;
 		for (int i = 0; i < array.length; i++) {
 			int score = array[i];
 			if (min > score) {
@@ -678,6 +679,12 @@ public class AMEventHandler{
 						}
 						vIndex++;
 					}
+					if (AMCore.config.getDebugVortex()) {
+						System.out.println(Arrays.toString(totalenergy));
+						System.out.println(Arrays.toString(totalenergyExternallyLimited));
+						System.out.println(Arrays.toString(totaletheriumdark));
+						System.out.println(Arrays.toString(totaletheriumlight));
+					}
 					int[] maxE = getMaxIndex(totalenergy);
 					int[] maxD = getMaxIndex(totaletheriumdark);
 					int[] maxL = getMaxIndex(totaletheriumlight);
@@ -685,20 +692,40 @@ public class AMEventHandler{
 					int[] minD = getMinIndex(totaletheriumdark);
 					int[] minL = getMinIndex(totaletheriumlight);
 
+					if (AMCore.config.getDebugVortex()) {
+						System.out.println("E" + Arrays.toString(minE));
+						System.out.println(Arrays.toString(maxE));
+						System.out.println("D" + Arrays.toString(minD));
+						System.out.println(Arrays.toString(maxD));
+						System.out.println("L" + Arrays.toString(minL));
+						System.out.println(Arrays.toString(maxL));
+					}
+
 					int halfDiffE = (maxE[1] - minE[1]) / 2;
 					int halfDiffD = (maxD[1] - minD[1]) / 2;
 					int halfDiffL = (maxL[1] - minL[1]) / 2;
+
+					if (AMCore.config.getDebugVortex()) {
+						System.out.println(halfDiffD + "," + halfDiffE + "," + halfDiffL + " half diff");
+					}
 
 					// total energy available to transfer, limited by: 50,000 per 5 ticks, half the diff between max and min, and external factors (such as device's throughput rate)
 					int toTransferE = Math.min(totalenergyExternallyLimited[maxE[0]], halfDiffE); // 50000 is the max externallyLimited can be anyways
 					int toTransferD = Math.min(50000, halfDiffD);
 					int toTransferL = Math.min(50000, halfDiffL);
 
+					if (AMCore.config.getDebugVortex()) {
+						System.out.println(toTransferD + "," + toTransferE+ "," + toTransferL +" to transfer");
+					}
+
 					int maximumEnergyMinimumVortexCanAccept = 0;
 					if (toTransferE > 0) {
 						// maximum energy we can *accept* right now (RF only)
 						int tIndex = 0;
 						for (Map.Entry<String, String> entry : spatialVortices.entrySet()) {
+							if (AMCore.config.getDebugVortex()) {
+								System.out.println(minE[0]);
+							}
 							if (tIndex == minE[0]) {
 								String[] entryvalues = entry.getKey().split("_");
 								int x = Integer.valueOf(entryvalues[1]);
@@ -710,6 +737,9 @@ public class AMEventHandler{
 										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
 										if (te != null) {
 											if (te instanceof IEnergyHandler) {
+												if (AMCore.config.getDebugVortex()) {
+													System.out.println("got here!");
+												}
 												maximumEnergyMinimumVortexCanAccept += ((IEnergyHandler) te).receiveEnergy(ForgeDirection.UNKNOWN, 50000, true); // sim only
 											}
 										}
@@ -719,6 +749,10 @@ public class AMEventHandler{
 							}
 							tIndex++;
 						}
+					}
+
+					if (AMCore.config.getDebugVortex()) {
+						System.out.println(maximumEnergyMinimumVortexCanAccept + " max can accept");
 					}
 
 					int toTransferEActual = Math.min(toTransferE, maximumEnergyMinimumVortexCanAccept);
@@ -790,7 +824,7 @@ public class AMEventHandler{
 										TileEntity te = thisdim.getTileEntity(x + xadd, y, z + zadd);
 										if (te != null) {
 											if (te instanceof IPowerNode) {
-												if (toSubtractL > 0) toSubtractL -= PowerNodeRegistry.For(thisdim).consumePower((IPowerNode)te, PowerTypes.DARK, toSubtractL); // real
+												if (toSubtractL > 0) toSubtractL -= PowerNodeRegistry.For(thisdim).consumePower((IPowerNode)te, PowerTypes.LIGHT, toSubtractL); // real
 											}
 										}
 									}
@@ -821,7 +855,11 @@ public class AMEventHandler{
 										}
 									}
 								}
-							} else if (fIndex == minD[0] && DLeft) {
+							}
+							if (fIndex == minD[0] && DLeft) {
+								if (AMCore.config.getDebugVortex()) {
+									System.out.println(fIndex + " fIndex when minD");
+								}
 								String[] entryvalues = entry.getKey().split("_");
 								int x = Integer.valueOf(entryvalues[1]);
 								int y = Integer.valueOf(entryvalues[2]);
@@ -838,7 +876,11 @@ public class AMEventHandler{
 										}
 									}
 								}
-							} else if (fIndex == minL[0] && LLeft) {
+							}
+							if (fIndex == minL[0] && LLeft) {
+								if (AMCore.config.getDebugVortex()) {
+									System.out.println(fIndex + " fIndex when minL");
+								}
 								String[] entryvalues = entry.getKey().split("_");
 								int x = Integer.valueOf(entryvalues[1]);
 								int y = Integer.valueOf(entryvalues[2]);
