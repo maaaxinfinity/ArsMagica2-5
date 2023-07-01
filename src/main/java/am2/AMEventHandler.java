@@ -573,6 +573,7 @@ public class AMEventHandler{
 				player.capabilities.disableDamage = false;
 				player.capabilities.allowEdit = true;
 				player.capabilities.isFlying = false;
+				player.noClip = false;
 				player.setInvisible(false);
 				extendedProperties.removeFromExtraVariables("ethereal");
 			} else {
