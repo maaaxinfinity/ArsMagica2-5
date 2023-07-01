@@ -111,7 +111,8 @@ public class ServerTickHandler{
 			ec.setDead();
 		}
 
-		if (!event.world.isRemote || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) {
+		MinecraftServer server = MinecraftServer.getServer();
+		if((server != null) && (server.getConfigurationManager() != null)) {
 			if (MysteriumPatchesFixesMagicka.countdownToChangeBack >= 3) {
 				MysteriumPatchesFixesMagicka.countdownToChangeBack--;
 			} else if (MysteriumPatchesFixesMagicka.countdownToChangeBack != -1) {

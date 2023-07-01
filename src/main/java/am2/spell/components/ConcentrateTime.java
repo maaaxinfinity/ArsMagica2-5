@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixesMagicka;
 
@@ -37,7 +38,8 @@ public class ConcentrateTime implements ISpellComponent {
                 ExtendedProperties ep = ExtendedProperties.For(caster);
                 if (SpellUtils.instance.casterHasMana(caster, 200000)) { // above normal max. mana, but there are multiple possible ways to achieve it.
                     ep.deductMana(200000);
-                    if (!world.isRemote || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) { // server side, or client side singleplayer
+                    MinecraftServer server = MinecraftServer.getServer();
+                    if((server != null) && (server.getConfigurationManager() != null)) { // server side, or client side singleplayer
                         MysteriumPatchesFixesMagicka.changeTickrate((int) (20 * ((SpellUtils.instance.countModifiers(SpellModifiers.BUFF_POWER, stack, 0) + 1) * 1.5)));
                         int duration = (int)(SpellUtils.instance.getModifiedInt_Mul(BuffList.default_buff_duration, stack, caster, caster, world, 0, SpellModifiers.DURATION) / 2);
                         duration = SpellUtils.instance.modifyDurationBasedOnArmor(caster, duration);
