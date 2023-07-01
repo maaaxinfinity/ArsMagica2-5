@@ -397,11 +397,11 @@ public class ArmorEventHandler{
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if(event.phase == TickEvent.Phase.START) {
-			event.player.noClip = MysteriumPatchesFixesMagicka.isPlayerEthereal(event.player);
 			if(MysteriumPatchesFixesMagicka.isPlayerEthereal(event.player)) {
+				event.player.noClip = true;
 				event.player.onGround = false;
 				event.player.setInvisible(true);
 			}

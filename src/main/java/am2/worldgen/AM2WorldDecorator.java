@@ -155,8 +155,10 @@ public class AM2WorldDecorator implements IWorldGenerator{
 			generateTree(random.nextInt(AMCore.config.spawnHugeTrees() ? 6 : 1) == 0 ? new WitchwoodTreeHuge(true) : new WitchwoodTreeEvenMoreHuge(true), world, random, chunkX, chunkZ);
 		}
 
-		if (random.nextInt(poolChance) == 0){
-			generatePools(world, random, chunkX, chunkZ);
+		if (poolChance > 0) {
+			if (random.nextInt(poolChance) == 0) {
+				generatePools(world, random, chunkX, chunkZ);
+			}
 		}
 
 		if ((BiomeDictionary.isBiomeOfType(biome, Type.MAGICAL) || BiomeDictionary.isBiomeOfType(biome, Type.FOREST)) && random.nextInt(4) == 0 && TerrainGen.populate(chunkProvider, world, random, chunkX, chunkZ, true, LAKE) && (AMCore.config.spawnEtherMode() == 0 || AMCore.config.spawnEtherMode() == 1)){

@@ -174,7 +174,7 @@ public class AMConfig extends Configuration{
 	private final String KEY_ShowHUDBars = "ShowHUDBars";
 	private final String KEY_ColourblindMode = "ColourblindMode";
 
-	private final String KEY_EtheriumSpawnMode = "ColourblindMode";
+	private final String KEY_EtheriumSpawnMode = "EtheriumSpawnMode";
 	private final String KEY_MobBlacklist = "EntityBlacklist";
 
 	private final String KEY_DebugVortex = "DebugSpatialVortex";
@@ -407,7 +407,7 @@ public class AMConfig extends Configuration{
 		canDryadsDespawn = get(CATEGORY_MOBS, KEY_CanDryadsDespawn, true, "Set this to false if you don't want dryads to despawn.").getBoolean(true);
 		
 		witchwoodFrequency = get(CATEGORY_GENERAL, KEY_WitchwoodFrequency, 35, "The chance of a witchwood tree generating. Lower numbers give more trees.").getInt(35);
-		poolFrequency = get(CATEGORY_GENERAL, KEY_EssenceLakeFrequency, 25, "The chance of an etherium pool generating. Lower numbers give more pools.").getInt(25);
+		poolFrequency = get(CATEGORY_GENERAL, KEY_EssenceLakeFrequency, 25, "The chance of an etherium pool generating. Lower numbers give more pools. Any number lower than, or equals to 0 will disable this particular pool type as a compatibility feature with the LE fork.").getInt(25);
 		wakebloomFrequency = get(CATEGORY_GENERAL, KEY_WakebloomFrequency, 10, "The chance of a wakebloom generating. Lower numbers give more wakeblooms, and anything less than 7 will attempt to generate in every ocean chunk.").getInt(10);
 		flowerGenAttempts = get(CATEGORY_GENERAL, KEY_FlowerGenAttempts, 8, "The number of flower generation attempts made per chunk. Higher numbers give more flowers, but can slow worldgen.").getInt(8);
 		

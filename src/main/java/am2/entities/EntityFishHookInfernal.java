@@ -1,6 +1,8 @@
 package am2.entities;
 
 import am2.items.ItemsCommonProxy;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -24,6 +26,23 @@ public class EntityFishHookInfernal extends EntityFishHook {
     public EntityFishHookInfernal(World p_i1766_1_, EntityPlayer p_i1766_2_) {
         super(p_i1766_1_, p_i1766_2_);
         this.isImmuneToFire = true;
+        this.fireResistance = 1000;
+    }
+
+    public void setFire(int p_70015_1_)
+    {
+        this.extinguish();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean canRenderOnFire()
+    {
+        return false;
+    }
+
+    public boolean isBurning()
+    {
+        return false;
     }
 
     /**

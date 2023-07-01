@@ -33,13 +33,13 @@ public class GuiCaster extends GuiContainer {
 
    protected void drawGuiContainerForegroundLayer(int par1, int par2) {
       int l = (this.width - this.xSize) / 2;
-      int i1 = (this.height - this.ySize) / 2;
+      int i1 = 165;
       String essenceString = StatCollector.translateToLocal("am2.gui.castCost") + ":";
       float cost = this.casterInventory.getCastCost();
       String essenceCostString = cost >= 0.0F ? String.format("%.2f", cost) : "N/A";
       int color = cost >= 0.0F ? (cost <= this.casterInventory.getCharge() ? 30464 : 7798784) : 3355443;
-      this.fontRendererObj.drawString(essenceString, this.xSize / 2 - this.fontRendererObj.getStringWidth(essenceString) / 2, i1 + 100, 3355443);
-      this.fontRendererObj.drawString(essenceCostString, this.xSize / 2 - this.fontRendererObj.getStringWidth(essenceCostString) / 2, i1 + 110, color);
+      this.fontRendererObj.drawString(essenceString, this.xSize / 4 - this.fontRendererObj.getStringWidth(essenceString) / 2, i1-9, 3355443);
+      this.fontRendererObj.drawString(essenceCostString, this.xSize / 4 - this.fontRendererObj.getStringWidth(essenceCostString) / 2, i1, color);
    }
 
    private void drawCostString(String tip, int x, int y) {

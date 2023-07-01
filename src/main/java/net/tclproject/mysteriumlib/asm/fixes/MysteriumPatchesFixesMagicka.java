@@ -7,6 +7,7 @@ import am2.armor.BoundArmor;
 import am2.blocks.liquid.BlockLiquidEssence;
 import am2.buffs.BuffList;
 import am2.configuration.AMConfig;
+import am2.entities.EntityFishHookInfernal;
 import am2.entities.EntityHallucination;
 import am2.entities.renderers.RenderPlayerSpecial;
 import am2.items.*;
@@ -142,17 +143,25 @@ public class MysteriumPatchesFixesMagicka{
 	public static void orientCameraEnd(EntityRenderer er, float p_78467_1_) { orientingCamera = false; }
 
 	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
-	@SideOnly(Side.CLIENT) // method isn't clientside technically but we only need this patch clientside
 	public static double distanceTo(Vec3 thisVec, Vec3 p_72438_1_)
 	{
-		if (Minecraft.getMinecraft() != null && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().renderViewEntity != null) {
-			if (orientingCamera && isPlayerEthereal(Minecraft.getMinecraft().thePlayer) && Minecraft.getMinecraft().renderViewEntity == Minecraft.getMinecraft().thePlayer)
-				return Double.MAX_VALUE;
+		if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) {
+			if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+				if (isEtherealMinecraft()) return Double.MAX_VALUE;
+			}
 		} // just in case
 		double d0 = p_72438_1_.xCoord - thisVec.xCoord;
 		double d1 = p_72438_1_.yCoord - thisVec.yCoord;
 		double d2 = p_72438_1_.zCoord - thisVec.zCoord;
 		return (double) MathHelper.sqrt_double(d0 * d0 + d1 * d1 + d2 * d2);
+	}
+
+	@SideOnly(Side.CLIENT) // method isn't clientside technically but we only need this patch clientside
+	public static boolean isEtherealMinecraft() {
+		if (Minecraft.getMinecraft() != null && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().renderViewEntity != null) {
+			if (orientingCamera && isPlayerEthereal(Minecraft.getMinecraft().thePlayer) && Minecraft.getMinecraft().renderViewEntity == Minecraft.getMinecraft().thePlayer) return true;
+		}
+		return false;
 	}
 
 	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
@@ -512,10 +521,22 @@ public class MysteriumPatchesFixesMagicka{
 	@SideOnly(Side.CLIENT)
 	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "getEntityTextureResult")
 	public static boolean getEntityTexture(RenderFish r, EntityFishHook e) {
-		Item heldItem = Minecraft.getMinecraft().thePlayer.getHeldItem().getItem();
-		if (heldItem instanceof ItemArcaneFishingRod || heldItem instanceof ItemInfernalFishingRod) {
-			return true;
+		if (Minecraft.getMinecraft().thePlayer != null) {
+			if (Minecraft.getMinecraft().thePlayer.getHeldItem() != null) {
+				Item heldItem = Minecraft.getMinecraft().thePlayer.getHeldItem().getItem();
+				if (heldItem instanceof ItemArcaneFishingRod || heldItem instanceof ItemInfernalFishingRod) {
+					return true;
+				}
+			}
 		}
+		return false;
+	}
+
+	@SideOnly(Side.CLIENT) // other methods of preventing flickering don't work
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean doRenderShadowAndFire(Render r, Entity ent, double p_76979_2_, double p_76979_4_, double p_76979_6_, float p_76979_8_, float p_76979_9_)
+	{
+		if (ent instanceof EntityFishHook) return true;
 		return false;
 	}
 
