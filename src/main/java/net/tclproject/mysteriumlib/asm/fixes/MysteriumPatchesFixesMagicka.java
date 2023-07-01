@@ -145,11 +145,13 @@ public class MysteriumPatchesFixesMagicka{
 	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
 	public static double distanceTo(Vec3 thisVec, Vec3 p_72438_1_)
 	{
-		if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) {
-			if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-				if (isEtherealMinecraft()) return Double.MAX_VALUE;
-			}
-		} // just in case
+		if (FMLCommonHandler.instance() != null && FMLCommonHandler.instance().getMinecraftServerInstance() != null) {
+			if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) {
+				if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+					if (isEtherealMinecraft()) return Double.MAX_VALUE;
+				}
+			} // just in case
+		}
 		double d0 = p_72438_1_.xCoord - thisVec.xCoord;
 		double d1 = p_72438_1_.yCoord - thisVec.yCoord;
 		double d2 = p_72438_1_.zCoord - thisVec.zCoord;
