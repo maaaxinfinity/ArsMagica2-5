@@ -11,6 +11,7 @@ import am2.bosses.BossActions;
 import am2.bosses.IArsMagicaBoss;
 import am2.buffs.BuffList;
 import am2.containers.ContainerMagiciansWorkbench;
+import am2.customdata.CustomWorldData;
 import am2.guis.AMGuiHelper;
 import am2.guis.ArsMagicaGuiIdList;
 import am2.guis.GuiHudCustomization;
@@ -46,6 +47,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixesMagicka;
 
 import java.io.File;
@@ -80,6 +82,9 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 				break;
 			case AMPacketIDs.SYNCMAPTOCLIENTS:
 				handleSyncMap(remaining);
+				break;
+			case AMPacketIDs.SYNCWORLDDATATOCLIENTS:
+				handleSyncWorldData(remaining);
 				break;
 			case AMPacketIDs.MAGIC_LEVEL_UP:
 				handleMagicLevelUpResponse(remaining);
@@ -180,6 +185,15 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 			}catch (Throwable t){
 				t.printStackTrace();
 			}
+		}
+	}
+
+	private void handleSyncWorldData(byte[] remaining) {
+		AMDataReader rdr = new AMDataReader(remaining, false);
+		NBTTagCompound data = rdr.getNBTTagCompound();
+		World world = DimensionManager.getWorld(data.getInteger("dimensionid"));
+		for (int j = 0; j < data.getInteger("datasize"); j++) {
+			CustomWorldData.setWorldVarNoSync(world, data.getString("dataentryname" + j), data.getString("dataentry" + j));
 		}
 	}
 

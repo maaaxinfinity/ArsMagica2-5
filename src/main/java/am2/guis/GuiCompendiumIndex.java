@@ -97,9 +97,9 @@ public class GuiCompendiumIndex extends GuiScreen implements GuiYesNoCallback{
 		backToIndex.setActive(true);
 		backToIndex.visible = false;
 
-		updateButton = new GuiSpellImageButton(idCount++, l - 5, i1 + 10, ArcaneCompendium.instance.isModUpdateAvailable() ? AMGuiIcons.warning : AMGuiIcons.checkmark, 0, 0);
+		updateButton = new GuiSpellImageButton(idCount++, l - 5, i1 + 10, AMGuiIcons.checkmark, 0, 0);
 		updateButton.setDimensions(10, 10);
-		updateButton.setPopupText(ArcaneCompendium.instance.isModUpdateAvailable() ? StatCollector.translateToLocal("am2.tooltip.updateAvailable") : StatCollector.translateToLocal("am2.tooltip.upToDate"));
+		updateButton.setPopupText(StatCollector.translateToLocal("am2.tooltip.upToDate"));
 
 		this.buttonList.add(nextPage);
 		this.buttonList.add(prevPage);
@@ -142,11 +142,6 @@ public class GuiCompendiumIndex extends GuiScreen implements GuiYesNoCallback{
 			if (guibutton.mousePressed(Minecraft.getMinecraft(), par1, par2)){
 				if (guibutton.id == updateButton.id){
 					this.storeBreadcrumb();
-					if (par3 == 0){ //left click
-						this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, ArcaneCompendium.instance.getModDownloadLink(), 0, false));
-					}else if (par3 == 1){ //right click
-						this.mc.displayGuiScreen(new GuiConfirmOpenLink(this, ArcaneCompendium.instance.getPatchNotesLink(), 1, false));
-					}
 				}
 				if (par3 == 0){
 					this.actionPerformed(guibutton);
@@ -158,16 +153,6 @@ public class GuiCompendiumIndex extends GuiScreen implements GuiYesNoCallback{
 
 	@Override
 	public void confirmClicked(boolean par1, int par2){
-		if (par1){
-			switch (par2){
-			case 0:
-				openLink(URI.create(ArcaneCompendium.instance.getModDownloadLink()));
-				break;
-			case 1:
-				openLink(URI.create(ArcaneCompendium.instance.getPatchNotesLink()));
-				break;
-			}
-		}
 		this.mc.displayGuiScreen(this);
 	}
 

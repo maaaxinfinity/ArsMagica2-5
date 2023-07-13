@@ -8,6 +8,7 @@ import am2.api.power.PowerTypes;
 import am2.blocks.tileentities.*;
 import am2.containers.ContainerMagiciansWorkbench;
 import am2.containers.ContainerSpellCustomization;
+import am2.customdata.CustomWorldData;
 import am2.guis.ArsMagicaGuiIdList;
 import am2.items.ContainerKeystone;
 import am2.items.ItemSpellBook;
@@ -30,6 +31,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
 public class AMPacketProcessorServer{
 
@@ -58,6 +60,12 @@ public class AMPacketProcessorServer{
 				break;
 			case AMPacketIDs.SYNCMAPTOSERVER:
 				handleSyncMapServer(remaining);
+				break;
+			case AMPacketIDs.SYNCCOMPENDIUM:
+				handleSyncCompendium(remaining, (EntityPlayerMP)player);
+				break;
+			case AMPacketIDs.REQUESTWORLDDATACHANGE:
+				handleRequestWorldDataChange(remaining, (EntityPlayerMP)player);
 				break;
 			case AMPacketIDs.SYNC_BETA_PARTICLES:
 				handleSyncBetaParticles(remaining, (EntityPlayerMP)player);
@@ -129,6 +137,18 @@ public class AMPacketProcessorServer{
 				t.printStackTrace();
 			}
 		}
+	}
+
+	private void handleRequestWorldDataChange(byte[] remaining, EntityPlayerMP player) {
+		AMDataReader rdr = new AMDataReader(remaining, false);
+		World world = DimensionManager.getWorld(rdr.getInt());
+		String name = rdr.getString();
+		String value = rdr.getString();
+		CustomWorldData.processRequest(world, name, value, player);
+	}
+
+	private void handleSyncCompendium(byte[] remaining, EntityPlayerMP entity) {
+		ExtendedProperties.For(entity).onSyncCompendiumDataPacket(remaining);
 	}
 
 	private void handleSyncMapServer(byte[] remaining) {

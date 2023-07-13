@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 import java.util.EnumSet;
 import java.util.Random;
 
-public class FortifyTime implements ISpellComponent {
+public class Permanence implements ISpellComponent {
 
         @Override
         public boolean applyEffectBlock(ItemStack stack, World world, int blockx, int blocky, int blockz, int blockFace, double impactX, double impactY, double impactZ, EntityLivingBase caster){
@@ -36,36 +36,27 @@ public class FortifyTime implements ISpellComponent {
             if (te == null) {
                 return false;
             }
-            int duration = SpellUtils.instance.getModifiedInt_Mul(BuffList.default_buff_duration, stack, caster, caster, world, 0, SpellModifiers.DURATION) * 2;
-            duration = SpellUtils.instance.modifyDurationBasedOnArmor(caster, duration);
-            ExtendedProperties ep = ExtendedProperties.For(caster);
-            if (ep != null) {
-                ep.addToExtraVariables("timefortified_tile_" + blockx + "_" + blocky + "_" + blockz + "_" + world.provider.dimensionId, String.valueOf(duration));
-            }
-            if (!world.isRemote){
-                AMChunkLoader.INSTANCE.requestStaticChunkLoad(te.getClass(), te.xCoord, te.yCoord, te.zCoord, world);
-            }
+            // TODO
             return true;
         }
 
         @Override
         public boolean applyEffectEntity(ItemStack stack, World world, EntityLivingBase caster, Entity target){
-            if (!(target instanceof EntityLiving)){
+            if (!(target instanceof EntityLivingBase)){
                 return true;
             }
-            EntityLiving targetLiving = (EntityLiving) target;
-            targetLiving.func_110163_bv();
+            // TODO
             return true;
         }
 
         @Override
         public float manaCost(EntityLivingBase caster){
-            return 20;
+            return 200;
         }
 
         @Override
         public float burnout(EntityLivingBase caster){
-            return 10;
+            return 100;
         }
 
         @Override
@@ -93,17 +84,17 @@ public class FortifyTime implements ISpellComponent {
 
         @Override
         public int getID(){
-            return 96;
+            return 101;
         }
 
         @Override
         public Object[] getRecipeItems(){
             return new Object[]{
-                    new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_YELLOW),
-                    new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_CYAN),
-                    new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_TEMPORALCLUSTER),
+                    new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_WHITE),
+                    new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_BLACK),
+                    new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_FRACTALFRAGMENT),
                     new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_COGNITIVEDUST),
-                    Items.clock,
+                    Blocks.obsidian,
             };
         }
 

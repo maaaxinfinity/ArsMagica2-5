@@ -201,6 +201,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new Attract(), "Attract");
 		registerSkillTreeEntry(new BanishRain(), "BanishRain");
 		registerSkillTreeEntry(new Banish(), "Banish");
+		registerSkillTreeEntry(new Bless(), "Bless");
 		registerSkillTreeEntry(new Blind(), "Blind");
 		registerSkillTreeEntry(new Blink(), "Blink");
 		registerSkillTreeEntry(new ChronoAnchor(), "ChronoAnchor");
@@ -238,6 +239,7 @@ public class SkillManager implements ISpellPartManager{
 		registerSkillTreeEntry(new LifeTap(), "LifeTap");
 		registerSkillTreeEntry(new Light(), "Light");
 		registerSkillTreeEntry(new LightningDamage(), "LightningDamage");
+		registerSkillTreeEntry(new LightningStrike(), "LightningStrike");
 		registerSkillTreeEntry(new MagicDamage(), "MagicDamage");
 		registerSkillTreeEntry(new ManaDrain(), "ManaDrain");
 		registerSkillTreeEntry(new Mark(), "Mark");

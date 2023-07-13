@@ -9,6 +9,7 @@ import am2.api.spell.component.interfaces.ISpellComponent;
 import am2.api.spell.enums.Affinity;
 import am2.api.spell.enums.SpellModifiers;
 import am2.blocks.BlocksCommonProxy;
+import am2.buffs.BuffEffect;
 import am2.buffs.BuffList;
 import am2.entities.EntitySpecificHallucinations;
 import am2.items.ItemsCommonProxy;
@@ -20,18 +21,22 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.EnumSet;
-import java.util.Random;
+import java.util.*;
 
 import static am2.AMEventHandler.summonCreature;
 import static am2.AMEventHandler.tempCurseMap;
+import static am2.buffs.BuffList.buffEffectFromPotionID;
+import static am2.spell.components.Bless.magnifyPotions;
 
 public class Curse implements ISpellComponent, IRitualInteraction{
     @Override
@@ -59,6 +64,48 @@ public class Curse implements ISpellComponent, IRitualInteraction{
 
     @Override
     public boolean applyEffectEntity(ItemStack stack, World world, EntityLivingBase caster, Entity target){
+
+        // EFFECT REMOVING AND AMPLIFYING
+        if (target instanceof EntityLivingBase && !(target instanceof IBossDisplayData)) {
+            List<Integer> effectsToRemove = new ArrayList<Integer>();
+            HashMap<Integer, String> effectsToMagnify = new HashMap<Integer, String>();
+
+            Iterator iter = ((EntityLivingBase) target).getActivePotionEffects().iterator();
+
+            int magnitudeLeft = 6 + (SpellUtils.instance.countModifiers(SpellModifiers.BUFF_POWER, stack) * 2);
+            int targetAmplifier = 1 + SpellUtils.instance.countModifiers(SpellModifiers.BUFF_POWER, stack);
+            int targetDuration = SpellUtils.instance.getModifiedInt_Mul(BuffList.default_buff_duration / 2, stack, caster, target, world, 0, SpellModifiers.DURATION);
+
+            while (iter.hasNext()) {
+                Integer potionID = ((PotionEffect) iter.next()).getPotionID();
+                PotionEffect pe = ((EntityLivingBase) target).getActivePotionEffect(Potion.potionTypes[potionID]);
+                if (!Potion.potionTypes[potionID].isBadEffect) { // method is clientside only; we need the field
+                    int magnitudeCost = pe.getAmplifier();
+                    if (magnitudeLeft >= magnitudeCost) {
+                        magnitudeLeft -= magnitudeCost;
+                        effectsToRemove.add(potionID);
+                        if (pe instanceof BuffEffect && !world.isRemote) {
+                            ((BuffEffect) pe).stopEffect((EntityLivingBase) target);
+                        }
+                    }
+                } else { // bad effect
+                    effectsToRemove.add(potionID);
+                    if (pe instanceof BuffEffect && !world.isRemote) {
+                        ((BuffEffect) pe).stopEffect((EntityLivingBase) target);
+                    }
+                    effectsToMagnify.put(potionID, pe.getDuration() + ":" + pe.getAmplifier() + ":" + (pe instanceof BuffEffect));
+                }
+            }
+
+            if (!world.isRemote) {
+                removePotionEffects((EntityLivingBase) target, effectsToRemove);
+                for (Integer potionID : effectsToMagnify.keySet()) {
+                    magnifyPotions(world, (EntityLivingBase) target, magnitudeLeft, targetAmplifier, targetDuration, potionID, Integer.valueOf(effectsToMagnify.get(potionID).split(":")[0]), Integer.valueOf(effectsToMagnify.get(potionID).split(":")[1]), Boolean.valueOf(effectsToMagnify.get(potionID).split(":")[2]));
+                }
+            }
+        }
+
+        // CREATURE SUMMONING
         if (world.isRemote || !(target instanceof EntityPlayer)){
             return true;
         }
@@ -94,6 +141,12 @@ public class Curse implements ISpellComponent, IRitualInteraction{
 
         tempCurseMap.put(summonCreature(player.worldObj, halclass, x, y, z, player, 4, 9), duration);
         return true;
+    }
+
+    private void removePotionEffects(EntityLivingBase target, List<Integer> effectsToRemove){
+        for (Integer i : effectsToRemove){
+            target.removePotionEffect(i);
+        }
     }
 
     @Override

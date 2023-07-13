@@ -4,12 +4,14 @@ import am2.AMCore;
 import am2.api.ArsMagicaApi;
 import am2.api.spell.component.interfaces.ISpellComponent;
 import am2.api.spell.enums.Affinity;
+import am2.api.spell.enums.SpellModifiers;
 import am2.buffs.BuffEffect;
 import am2.buffs.BuffList;
 import am2.items.ItemsCommonProxy;
 import am2.particles.AMParticle;
 import am2.particles.ParticleOrbitEntity;
 import am2.playerextensions.ExtendedProperties;
+import am2.spell.SpellUtils;
 import am2.utility.EntityUtilities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,6 +26,8 @@ import net.minecraft.world.World;
 
 import java.util.*;
 
+import static am2.buffs.BuffList.buffEffectFromPotionID;
+
 public class Bless implements ISpellComponent{
 
 	@Override
@@ -36,77 +40,72 @@ public class Bless implements ISpellComponent{
 
 		if (!(target instanceof EntityLivingBase) || target instanceof IBossDisplayData) return false;
 
-		if (EntityUtilities.isSummon((EntityLivingBase)target)){
-			if (EntityUtilities.getOwner((EntityLivingBase)target) == caster.getEntityId()){
-				target.attackEntityFrom(DamageSource.magic, 50000);
-				return true;
-			}
-		}
-
 		List<Integer> effectsToRemove = new ArrayList<Integer>();
+		HashMap<Integer, String> effectsToMagnify = new HashMap<Integer, String>();
 
 		Iterator iter = ((EntityLivingBase)target).getActivePotionEffects().iterator();
 
-		int magnitudeLeft = 6;
+		int magnitudeLeft = 6 + (SpellUtils.instance.countModifiers(SpellModifiers.BUFF_POWER, stack) * 2);
+		int targetAmplifier = 1 + SpellUtils.instance.countModifiers(SpellModifiers.BUFF_POWER, stack);
+		int targetDuration = SpellUtils.instance.getModifiedInt_Mul(BuffList.default_buff_duration / 2, stack, caster, target, world, 0, SpellModifiers.DURATION);
 
 		while (iter.hasNext()){
 			Integer potionID = ((PotionEffect)iter.next()).getPotionID();
-			if (BuffList.instance.isDispelBlacklisted(potionID)){
-				continue;
-			}
 			PotionEffect pe = ((EntityLivingBase)target).getActivePotionEffect(Potion.potionTypes[potionID]);
-
-			int magnitudeCost = pe.getAmplifier();
-
-			if (magnitudeLeft >= magnitudeCost){
-				magnitudeLeft -= magnitudeCost;
-				effectsToRemove.add(potionID);
-
-				if (pe instanceof BuffEffect && !world.isRemote){
-					((BuffEffect)pe).stopEffect((EntityLivingBase)target);
+			if (Potion.potionTypes[potionID].isBadEffect) { // method is clientside only; we need the field
+				int magnitudeCost = pe.getAmplifier();
+				if (magnitudeLeft >= magnitudeCost) {
+					magnitudeLeft -= magnitudeCost;
+					effectsToRemove.add(potionID);
+					if (pe instanceof BuffEffect && !world.isRemote) {
+						((BuffEffect) pe).stopEffect((EntityLivingBase) target);
+					}
 				}
+			} else { // good effect
+				effectsToRemove.add(potionID);
+				if (pe instanceof BuffEffect && !world.isRemote) {
+					((BuffEffect) pe).stopEffect((EntityLivingBase) target);
+				}
+				effectsToMagnify.put(potionID, pe.getDuration() + ":" + pe.getAmplifier() + ":" + (pe instanceof BuffEffect));
 			}
-		}
-
-		if (effectsToRemove.size() == 0 && ExtendedProperties.For((EntityLivingBase)target).getNumSummons() == 0){
-			return false;
 		}
 
 		if (!world.isRemote){
 			removePotionEffects((EntityLivingBase)target, effectsToRemove);
+			for (Integer potionID : effectsToMagnify.keySet()) {
+				magnifyPotions(world, (EntityLivingBase) target, magnitudeLeft, targetAmplifier, targetDuration, potionID, Integer.valueOf(effectsToMagnify.get(potionID).split(":")[0]), Integer.valueOf(effectsToMagnify.get(potionID).split(":")[1]), Boolean.valueOf(effectsToMagnify.get(potionID).split(":")[2]));
+			}
 		}
+		return true;
+	}
 
-		//TODO:
-		/*if (ExtendedProperties.For((EntityLivingBase)target).getNumSummons() > 0){
-			if (!world.isRemote){
-				Iterator it = world.loadedEntityList.iterator();
-				while (it.hasNext()){
-					Entity ent = (Entity)it.next();
-					if (ent instanceof EntitySummonedCreature && ((EntitySummonedCreature)ent).GetOwningEntity() == target){
-						ent.attackEntityFrom(DamageSource.outOfWorld, 5000);
-						break;
+	public static int magnifyPotions(World world, EntityLivingBase target, int magnitudeLeft, int targetAmplifier, int targetDuration, Integer potionID, int lastDuration, int lastAmplifier, boolean lastBuffEffect) {
+		int magnitudeCost = lastAmplifier;
+		if (targetAmplifier > magnitudeCost || targetDuration > lastDuration) {
+			if (magnitudeLeft >= magnitudeCost) {
+				magnitudeLeft -= magnitudeCost;
+				if (!world.isRemote) {
+					// re-add
+					if (lastBuffEffect) {
+						target.addPotionEffect(buffEffectFromPotionID(potionID, Math.max(targetDuration, lastDuration), Math.max(targetAmplifier, magnitudeCost)));
+					} else {
+						target.addPotionEffect(new PotionEffect(potionID, Math.max(targetDuration, lastDuration), Math.max(targetAmplifier, magnitudeCost)));
 					}
 				}
 			}
-		}*/
-		return true;
+		}
+		return magnitudeLeft;
 	}
 
 	private void removePotionEffects(EntityLivingBase target, List<Integer> effectsToRemove){
 		for (Integer i : effectsToRemove){
-			if (i == BuffList.flight.id || i == BuffList.levitation.id){
-				if (target instanceof EntityPlayer && target.isPotionActive(BuffList.flight.id)){
-					((EntityPlayer)target).capabilities.isFlying = false;
-					((EntityPlayer)target).capabilities.allowFlying = false;
-				}
-			}
 			target.removePotionEffect(i);
 		}
 	}
 
 	@Override
 	public float manaCost(EntityLivingBase caster){
-		return 200;
+		return 450;
 	}
 
 	@Override
@@ -127,7 +126,7 @@ public class Bless implements ISpellComponent{
 				particle.addRandomOffset(1, 2, 1);
 				particle.AddParticleController(new ParticleOrbitEntity(particle, target, 0.1f + rand.nextFloat() * 0.1f, 1, false));
 				if (rand.nextBoolean())
-					particle.setRGBColorF(0.7f, 0.1f, 0.7f);
+					particle.setRGBColorF(0.1f, 0.9f, 0.1f);
 				particle.setMaxAge(20);
 				particle.setParticleScale(0.1f);
 				if (colorModifier > -1){
@@ -139,21 +138,21 @@ public class Bless implements ISpellComponent{
 
 	@Override
 	public EnumSet<Affinity> getAffinity(){
-		return EnumSet.of(Affinity.NONE);
+		return EnumSet.of(Affinity.LIFE);
 	}
 
 	@Override
 	public int getID(){
-		return 10;
+		return 99;
 	}
 
 	@Override
 	public Object[] getRecipeItems(){
 		return new Object[]{
-				new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_PURPLE),
+				new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_PINK),
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_ARCANEASH),
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_BLUETOPAZ),
-				Items.milk_bucket
+				Items.golden_apple
 		};
 	}
 

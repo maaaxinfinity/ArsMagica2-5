@@ -28,6 +28,8 @@ public class AMPacketIDs{
 	public static final byte CLOAKING = 62;
 	public static final byte DEAFEN = 63;
 	public static final byte SYNCMAPTOSERVER = 64;
+	public static final byte SYNCCOMPENDIUM = 66;
+	public static final byte REQUESTWORLDDATACHANGE = 68;
 	//No longer needed
 	//public static final byte SHOW_UI_CUSTOMIZATION = 37;
 	public static final byte ENTITY_ACTION_UPDATE = 38;
@@ -53,4 +55,5 @@ public class AMPacketIDs{
 	public static final byte OBELISK_DATA = 58;
 	public static final byte AFFINITY_ACTIVATE = 59;
 	public static final byte SYNCMAPTOCLIENTS = 65;
+	public static final byte SYNCWORLDDATATOCLIENTS = 67;
 }

@@ -2,6 +2,7 @@ package am2;
 
 import am2.armor.ArmorHelper;
 import am2.armor.infusions.GenericImbuement;
+import am2.customdata.CustomWorldData;
 import am2.enchantments.AMEnchantments;
 import am2.network.AMDataWriter;
 import am2.network.AMNetHandler;
@@ -78,6 +79,8 @@ public class PlayerTracker{
 		writer.add(AMCore.config.getSkillTreeSecondaryTierCap()).add(disabledSkills);
 		writer.add(AMCore.config.getManaCap());
 		byte[] data = writer.generate();
+
+		CustomWorldData.syncAllWorldVarsToClients(event.player);
 
 		AMNetHandler.INSTANCE.syncLoginData((EntityPlayerMP)event.player, data);
 		if (ServerTickHandler.lastWorldName != null)

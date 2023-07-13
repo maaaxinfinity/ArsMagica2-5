@@ -11,6 +11,8 @@ import am2.spell.SpellHelper;
 import am2.spell.SpellUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -18,24 +20,23 @@ import net.minecraft.world.World;
 import java.util.EnumSet;
 import java.util.Random;
 
-public class LightningDamage implements ISpellComponent{
+public class LightningStrike implements ISpellComponent{
 
 	@Override
 	public boolean applyEffectBlock(ItemStack stack, World world, int blockx, int blocky, int blockz, int blockFace, double impactX, double impactY, double impactZ, EntityLivingBase caster){
-		return false;
+		world.addWeatherEffect(new EntityLightningBolt(world, blockx, blocky, blockz));
+		return true;
 	}
 
 	@Override
 	public boolean applyEffectEntity(ItemStack stack, World world, EntityLivingBase caster, Entity target){
-		if (!(target instanceof EntityLivingBase)) return false;
-		float baseDamage = 12;
-		double damage = SpellUtils.instance.getModifiedDouble_Add(baseDamage, stack, caster, target, world, 0, SpellModifiers.DAMAGE);
-		return SpellHelper.instance.attackTargetSpecial(stack, target, DamageSources.causeEntityLightningDamage(caster), SpellUtils.instance.modifyDamage(caster, (float)damage));
+		world.addWeatherEffect(new EntityLightningBolt(world, target.posX, target.posY, target.posZ));
+		return true;
 	}
 
 	@Override
 	public float manaCost(EntityLivingBase caster){
-		return 180;
+		return 250;
 	}
 
 	@Override
@@ -73,21 +74,21 @@ public class LightningDamage implements ISpellComponent{
 
 	@Override
 	public int getID(){
-		return 34;
+		return 100;
 	}
 
 	@Override
 	public Object[] getRecipeItems(){
 		return new Object[]{
 				new ItemStack(ItemsCommonProxy.rune, 1, ItemsCommonProxy.rune.META_YELLOW),
-				Items.iron_ingot,
-				Items.stick,
+				Blocks.iron_block,
+				Blocks.iron_bars,
 				new ItemStack(ItemsCommonProxy.itemOre, 1, ItemsCommonProxy.itemOre.META_VINTEUMDUST)
 		};
 	}
 
 	@Override
 	public float getAffinityShift(Affinity affinity){
-		return 0.01f;
+		return 0.05f;
 	}
 }

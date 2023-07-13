@@ -159,7 +159,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Wither"), 165, 270, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Poison"));
 		RegisterPart(SkillManager.instance.getSkill("Solar"), 210, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("ScrambleSynapses"));
 
-		RegisterPart(SkillManager.instance.getSkill("Storm"), 255, 225, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("LightningDamage"));
+		RegisterPart(SkillManager.instance.getSkill("LightningStrike"), 255, 225, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("LightningDamage"));
 		RegisterPart(SkillManager.instance.getSkill("AstralDistortion"), 367, 215, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("MagicDamage"), SkillManager.instance.getSkill("FrostDamage"));
 		RegisterPart(SkillManager.instance.getSkill("Silence"), 345, 245, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("AstralDistortion"));
 
@@ -174,8 +174,9 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("Piercing"), 323, 215, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Freeze"));
 
 		RegisterPart(SkillManager.instance.getSkill("Beam"), 300, 270, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("AoE"));
+		RegisterPart(SkillManager.instance.getSkill("Storm"), 255, 270, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("LightningStrike"), SkillManager.instance.getSkill("Beam"));
 		RegisterPart(SkillManager.instance.getSkill("Damage"), 300, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Beam"));
-		RegisterPart(SkillManager.instance.getSkill("Fury"), 255, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Beam"), SkillManager.instance.getSkill("Storm"));
+		RegisterPart(SkillManager.instance.getSkill("Fury"), 255, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Storm"));
 		RegisterPart(SkillManager.instance.getSkill("Curse"), 255, 355, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Fury"));
 		RegisterPart(SkillManager.instance.getSkill("Wave"), 367, 315, SkillTrees.Offense, SkillPointTypes.RED, SkillManager.instance.getSkill("Beam"), SkillManager.instance.getSkill("Fling"));
 		RegisterPart(SkillManager.instance.getSkill("Deafen"), 367, 355, SkillTrees.Offense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Wave"));
@@ -200,6 +201,7 @@ public class SkillTreeManager implements ISkillTreeManager{
 		RegisterPart(SkillManager.instance.getSkill("LifeTap"), 312, 135, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Heal"));
 		RegisterPart(SkillManager.instance.getSkill("Healing"), 402, 135, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Heal"));
 		RegisterPart(SkillManager.instance.getSkill("Absorption"), 402, 180, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Healing"));
+		RegisterPart(SkillManager.instance.getSkill("Bless"), 402, 225, SkillTrees.Defense, SkillPointTypes.RED, SkillManager.instance.getSkill("Absorption"));
 
 		RegisterPart(SkillManager.instance.getSkill("Summon"), 267, 135, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("LifeTap"));
 		RegisterPart(SkillManager.instance.getSkill("Contingency_Damage"), 447, 180, SkillTrees.Defense, SkillPointTypes.GREEN, SkillManager.instance.getSkill("Healing"));

@@ -2,6 +2,7 @@ package am2.power;
 
 import am2.AMCore;
 import am2.LogHelper;
+import am2.customdata.CustomWorldData;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;

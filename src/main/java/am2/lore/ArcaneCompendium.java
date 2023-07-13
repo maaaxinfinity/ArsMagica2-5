@@ -51,42 +51,15 @@ public class ArcaneCompendium implements ILoreHelper{
 	private final TreeMap<String, String> aliases;
 	private final TreeMap<String, String> zeroItemTexts;
 
-	private String saveFileLocation;
-	private String updatesFolderLocation;
 	private boolean hasLoaded = false;
-	private boolean forcePackagedCompendium = false;
 
 	private String languageCode = "";
 	private String MCVersion = "";
-	private String modVersion = "";
-	private String compendiumVersion = "";
-
-	private String latestModVersion = "";
-	private String latestDownloadLink = "";
-	private String latestPatchNotesLink = "";
-	private boolean modUpdateAvailable = false;
 
 	private ArcaneCompendium(){
 		compendium = new TreeMap<String, CompendiumEntry>();
 		aliases = new TreeMap<String, String>();
 		zeroItemTexts = new TreeMap<String, String>();
-	}
-
-	public void setSaveLocation(String saveFileLocation){
-		this.saveFileLocation = saveFileLocation + File.separatorChar + "compendiumunlocks";
-		this.updatesFolderLocation = saveFileLocation + File.separatorChar + "compendiumUpdates";
-		try{
-			File file = new File(this.saveFileLocation);
-			if (!file.exists())
-				file.mkdirs();
-
-			file = new File(updatesFolderLocation);
-			if (!file.exists())
-				file.mkdirs();
-		}catch (Throwable t){
-			LogHelper.error("Could not create save location!");
-			t.printStackTrace();
-		}
 	}
 
 	private String getWorldName(){
@@ -99,33 +72,24 @@ public class ArcaneCompendium implements ILoreHelper{
 		if (!hasLoaded)
 			return;
 
-		if (saveFileLocation != null && getWorldName() != null){
-			try{
-				File file = new File(saveFileLocation + File.separatorChar + getWorldName() + ".txt");
-				if (!file.exists())
-					file.createNewFile();
-				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-
+		try{
+			if (Minecraft.getMinecraft().thePlayer != null && ExtendedProperties.For(Minecraft.getMinecraft().thePlayer) != null) {
 				for (CompendiumEntry entry : compendium.values()){
-					String id = entry.getID() + "|U";
+					String id = "U";
 					if (entry.isLocked)
 						id += "L";
 					if (entry.isNew)
 						id += "N";
-					writer.write(id + "\n");
+					ExtendedProperties.For(Minecraft.getMinecraft().thePlayer).setCompendiumEntry(entry.getID(), id);
 				}
-
-				writer.close();
-			}catch (IOException e){
-				LogHelper.error("Compendium unlock state failed to save!");
-				e.printStackTrace();
 			}
-
+		}catch (Exception e){
+			LogHelper.error("Compendium unlock state failed to save! Please report this error!");
+			e.printStackTrace();
 		}
 	}
 
 	public void loadUnlockData(){
-
 		if (!AMCore.config.stagedCompendium()){
 			for (CompendiumEntry entry : compendium.values()){
 				entry.isLocked = false;
@@ -134,34 +98,22 @@ public class ArcaneCompendium implements ILoreHelper{
 			return;
 		}
 
-		if (saveFileLocation != null && getWorldName() != null){
-			try{
+		try{
+			if (Minecraft.getMinecraft().thePlayer != null && ExtendedProperties.For(Minecraft.getMinecraft().thePlayer) != null) {
 				hasLoaded = true;
 
-				File file = new File(saveFileLocation + File.separatorChar + getWorldName() + ".txt");
-				if (!file.exists()){
-					LogHelper.info("Compendium unlock state not found to load.  Assuming it hasn't been created yet.");
-					return;
-				}
-				BufferedReader reader = new BufferedReader(new FileReader(file));
-
-				String s;
-				while ((s = reader.readLine()) != null){
-					String[] split = s.trim().replace("\n", "").replace("\r", "").split("\\|");
-					if (split.length != 2)
-						continue;
-					CompendiumEntry entry = this.getEntryAbsolute(split[0]);
+				Iterator it = ExtendedProperties.For(Minecraft.getMinecraft().thePlayer).getCompendiumIterator();
+				while (it.hasNext()) {
+					Map.Entry<String, String> pair = (Map.Entry<String, String>) it.next();
+					CompendiumEntry entry = this.getEntryAbsolute(pair.getKey());
 					if (entry == null) continue;
-
-					entry.isLocked = split[1].contains("L");
-					entry.isNew = split[1].contains("N");
+					entry.isLocked = pair.getValue().contains("L");
+					entry.isNew = pair.getValue().contains("N");
 				}
-
-				reader.close();
-			}catch (IOException e){
-				LogHelper.error("Compendium unlock state failed to load!");
-				e.printStackTrace();
 			}
+		}catch (Exception e){
+			LogHelper.error("Compendium unlock state failed to load! Please report this error!");
+			e.printStackTrace();
 		}
 	}
 
@@ -176,14 +128,10 @@ public class ArcaneCompendium implements ILoreHelper{
 		}
 		MCVersion = (String)ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), "field_110447_Z", "launchedVersion");
 		languageCode = lang.getLanguageCode().trim();
-		modVersion = AMCore.instance.getVersion();
 
 		compendium.clear();
 		aliases.clear();
 		zeroItemTexts.clear();
-
-		//load the version of the compendium only
-		loadDocumentVersion(lang);
 
 		//get the compendium stream again, either from an updated version or the default packaged one
 		InputStream stream = getCompendium(lang);
@@ -244,11 +192,6 @@ public class ArcaneCompendium implements ILoreHelper{
 			for (int i = 0; i < categories.getLength(); ++i){
 				Node category = categories.item(i);
 
-				if (category.getNodeName().equals("version")){
-					this.compendiumVersion = category.getTextContent();
-					continue;
-				}
-
 				if (category.getAttributes() != null){
 					Node zeroItemText = category.getAttributes().getNamedItem("zeroItemText");
 					if (zeroItemText != null){
@@ -272,63 +215,7 @@ public class ArcaneCompendium implements ILoreHelper{
 		}
 	}
 
-	private void loadDocumentVersion(Language lang){
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		try{
-			//get the packaged compendium version
-			InputStream stream = getPackagedCompendium(lang);
-			//standard XML parsing stuff
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document document = db.parse(stream);
-
-			Node parentNode = document.getChildNodes().item(0);
-
-			NodeList categories = parentNode.getChildNodes();
-
-			//look for the version node
-			for (int i = 0; i < categories.getLength(); ++i){
-				Node category = categories.item(i);
-
-				//got it!
-				if (category.getNodeName().equals("version")){
-					this.compendiumVersion = category.getTextContent();
-					break;
-				}
-			}
-			stream.close();
-
-			//get the downloaded version (or re-get the packaged version if there is no downloaded one)
-			stream = getCompendium(lang);
-			//standard parsing
-			db = dbf.newDocumentBuilder();
-			document = db.parse(stream);
-
-			parentNode = document.getChildNodes().item(0);
-
-			categories = parentNode.getChildNodes();
-
-			//find version node
-			for (int i = 0; i < categories.getLength(); ++i){
-				Node category = categories.item(i);
-
-				//got it!
-				if (category.getNodeName().equals("version")){
-					//get this one's version
-					String altVersion = category.getTextContent();
-					//compare versions - is the packaged compendium actually newer?
-					if (versionCompare(altVersion, this.compendiumVersion) > 0)
-						this.compendiumVersion = altVersion; //nope
-					else
-						this.forcePackagedCompendium = true; //yep
-					break;
-				}
-			}
-			stream.close();
-		}catch (Throwable t){
-			t.printStackTrace();
-		}
-	}
-
+	// utility function, might come in handy later
 	public Integer versionCompare(String str1, String str2){
 		String[] vals1 = str1.split("\\.");
 		String[] vals2 = str2.split("\\.");
@@ -349,25 +236,7 @@ public class ArcaneCompendium implements ILoreHelper{
 		}
 	}
 
-	private String getUpdatedPath(){
-		String compendiumFileName = "ArcaneCompendium_" + languageCode + ".xml";
-		return updatesFolderLocation + File.separatorChar + MCVersion + File.separatorChar + AMCore.instance.getVersion() + File.separatorChar + compendiumFileName;
-	}
-
 	private InputStream getCompendium(Language lang){
-
-		if (!forcePackagedCompendium){
-			String path = getUpdatedPath();
-
-			try{
-				File f = new File(path);
-				if (f.exists())
-					return new FileInputStream(f);
-			}catch (Throwable t){
-				LogHelper.trace("An error occurred when trying to create an inputstream from the updated compendium.  Reverting to default.");
-			}
-			LogHelper.info("No updated compendium found.  Using packaged compendium.");
-		}
 		return getPackagedCompendium(lang);
 	}
 
@@ -448,6 +317,7 @@ public class ArcaneCompendium implements ILoreHelper{
 			for (CompendiumEntry entry : compendium.values()){
 				entry.setIsLocked(false);
 			}
+			saveUnlockData();
 			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("am2.tooltip.unlockSuccess")));
 			return;
 		}
@@ -522,6 +392,7 @@ public class ArcaneCompendium implements ILoreHelper{
 	public void setLockedState(boolean b){
 		for (CompendiumEntry entry : this.compendium.values())
 			entry.setIsLocked(b);
+		saveUnlockData();
 	}
 
 	public boolean isCategory(String id){
@@ -530,19 +401,6 @@ public class ArcaneCompendium implements ILoreHelper{
 				return true;
 		return false;
 	}
-
-	public boolean isModUpdateAvailable(){
-		return this.modUpdateAvailable;
-	}
-
-	public String getModDownloadLink(){
-		return this.latestDownloadLink;
-	}
-
-	public String getPatchNotesLink(){
-		return this.latestPatchNotesLink;
-	}
-
 
 	@Override
 	public void AddCompenidumEntry(Object entryItem, String entryKey, String entryName, String entryDesc, String parent, boolean allowReplace, String... relatedKeys){
@@ -593,6 +451,17 @@ public class ArcaneCompendium implements ILoreHelper{
 		}
 
 		this.compendium.put(entryKey, newEntry);
+		try { // this method doesn't *actually* get used, but it can be used for overwriting entries, as a result, this part needs to be included
+			if (Minecraft.getMinecraft().thePlayer != null && ExtendedProperties.For(Minecraft.getMinecraft().thePlayer) != null) {
+				String state = "U";
+				if (newEntry.isLocked)
+					state += "L";
+				if (newEntry.isNew)
+					state += "N";
+				ExtendedProperties.For(Minecraft.getMinecraft().thePlayer).setCompendiumEntry(entryKey, state);
+			}
+		} catch (Exception e) {e.printStackTrace();}
+
 		LogHelper.debug("Successfully added compendium entry %s", entryKey);
 	}
 }

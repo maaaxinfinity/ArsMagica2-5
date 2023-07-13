@@ -10,6 +10,7 @@ import am2.buffs.BuffList;
 import am2.commands.*;
 import am2.configuration.AMConfig;
 import am2.configuration.SkillConfiguration;
+import am2.customdata.CustomWorldData;
 import am2.enchantments.AMEnchantmentHelper;
 import am2.entities.EntityManager;
 import am2.entities.SpawnBlacklists;
@@ -59,8 +60,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import java.io.File;
 
-//@Mod(modid = "arsmagica2", modLanguage = "java", name = "Ars Magica 2", version = "1.6.3", dependencies = "required-after:AnimationAPI;required-after:CoFHCore")
-@Mod(modid = "arsmagica2", modLanguage = "java", name = "Ars Magica 2", version = "1.6.3", dependencies = "required-after:AnimationAPI")
+//@Mod(modid = "arsmagica2", modLanguage = "java", name = "Ars Magica 2", version = "1.6.4", dependencies = "required-after:AnimationAPI")
+@Mod(modid = "arsmagica2", modLanguage = "java", name = "Ars Magica 2", version = "1.6.4", dependencies = "required-after:AnimationAPI;required-after:CoFHCore")
 public class AMCore{
 
 	@Instance(value = "arsmagica2")
@@ -241,10 +242,18 @@ public class AMCore{
 	}
 
 	@EventHandler
+	public void serverStarted(FMLServerStartedEvent event){
+		// custom data
+		CustomWorldData.loadAllWorldData();
+	}
+
+	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event){
 		for (WorldServer ws : MinecraftServer.getServer().worldServers){
 			PowerNodeCache.instance.saveWorldToFile(ws);
 		}
+		// custom data
+		CustomWorldData.saveAllWorldData();
 	}
 
 	@EventHandler

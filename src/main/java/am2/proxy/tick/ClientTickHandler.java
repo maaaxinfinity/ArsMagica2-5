@@ -359,7 +359,7 @@ public class ClientTickHandler{
 			}
 			if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(0) != null){
 				if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(0).getItem() == ItemsCommonProxy.archmageBoots){
-					if (Minecraft.getMinecraft().thePlayer.worldObj.isAirBlock((int)Minecraft.getMinecraft().thePlayer.posX, (int)Minecraft.getMinecraft().thePlayer.posY - 2, (int)Minecraft.getMinecraft().thePlayer.posZ)){
+					if (Minecraft.getMinecraft().thePlayer.worldObj.isAirBlock((int)Minecraft.getMinecraft().thePlayer.posX, (int)Minecraft.getMinecraft().thePlayer.posY - 2, (int)Minecraft.getMinecraft().thePlayer.posZ) && !Minecraft.getMinecraft().thePlayer.noClip){
 						for (int i = 0; i < AMCore.config.getGFXLevel(); ++i){
 							AMParticle cloud = (AMParticle)AMCore.proxy.particleManager.spawn(Minecraft.getMinecraft().thePlayer.worldObj, "sparkle2", Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY - 1.7, Minecraft.getMinecraft().thePlayer.posZ);
 							if (cloud != null){

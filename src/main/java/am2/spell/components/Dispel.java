@@ -4,21 +4,26 @@ import am2.AMCore;
 import am2.api.ArsMagicaApi;
 import am2.api.spell.component.interfaces.ISpellComponent;
 import am2.api.spell.enums.Affinity;
+import am2.api.spell.enums.SpellModifiers;
 import am2.buffs.BuffEffect;
 import am2.buffs.BuffList;
 import am2.items.ItemsCommonProxy;
 import am2.particles.AMParticle;
 import am2.particles.ParticleOrbitEntity;
 import am2.playerextensions.ExtendedProperties;
+import am2.spell.SpellUtils;
 import am2.utility.EntityUtilities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
@@ -28,6 +33,13 @@ public class Dispel implements ISpellComponent{
 
 	@Override
 	public boolean applyEffectBlock(ItemStack stack, World world, int blockx, int blocky, int blockz, int blockFace, double impactX, double impactY, double impactZ, EntityLivingBase caster){
+		ArrayList<EntityItem> items = (ArrayList<EntityItem>)world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(blockx - 2, blocky - 2, blockz - 2, blockx + 2, blocky + 2, blockz + 2));
+		if (items.size() > 0) {
+			for (EntityItem item : items) {
+				removeEnchants(item);
+			}
+			return true;
+		}
 		return false;
 	}
 
@@ -47,7 +59,7 @@ public class Dispel implements ISpellComponent{
 
 		Iterator iter = ((EntityLivingBase)target).getActivePotionEffects().iterator();
 
-		int magnitudeLeft = 6;
+		int magnitudeLeft = 6 + (SpellUtils.instance.countModifiers(SpellModifiers.BUFF_POWER, stack) * 2);
 
 		while (iter.hasNext()){
 			Integer potionID = ((PotionEffect)iter.next()).getPotionID();
@@ -90,6 +102,14 @@ public class Dispel implements ISpellComponent{
 			}
 		}*/
 		return true;
+	}
+
+	private void removeEnchants(EntityItem target) {
+		if (target.getEntityItem().stackTagCompound != null) {
+			if (target.getEntityItem().stackTagCompound.getTagList("ench", 10).tagCount() > 0) {
+				target.getEntityItem().stackTagCompound.removeTag("ench");
+			}
+		}
 	}
 
 	private void removePotionEffects(EntityLivingBase target, List<Integer> effectsToRemove){

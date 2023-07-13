@@ -1,7 +1,9 @@
 package am2.blocks;
 
+import am2.AMCore;
 import am2.texture.ResourceManager;
 import am2.worldgen.AM2FlowerGen;
+import am2.worldgen.WitchwoodTreeEvenMoreHuge;
 import am2.worldgen.WitchwoodTreeHuge;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
@@ -12,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.WorldGenerator;
 
 import java.util.List;
 import java.util.Random;
@@ -37,14 +40,14 @@ public class WitchwoodSapling extends BlockFlower{
 		if (rand.nextInt(7) == 0){
 			int meta = world.getBlockMetadata(x, y, z) + numNearbyPools;
 			if (meta > 15)
-				growTree(world, x, y, z, rand);
+				growTree(world, x, y, z, rand, numNearbyPools);
 			else
 				world.setBlockMetadataWithNotify(x, y, z, meta, 2);
 		}
 	}
 
-	private void growTree(World world, int x, int y, int z, Random rand){
-		WitchwoodTreeHuge generator = new WitchwoodTreeHuge(true);
+	private void growTree(World world, int x, int y, int z, Random rand, int pools){
+		WorldGenerator generator = rand.nextInt(AMCore.config.spawnHugeTrees() ? 10-Math.min(pools, 5) : 1) == 0 ? new WitchwoodTreeHuge(true) : new WitchwoodTreeEvenMoreHuge(true);
 
 		world.setBlock(x, y, z, Blocks.air, 0, 4);
 		if (!generator.generate(world, rand, x, y, z))

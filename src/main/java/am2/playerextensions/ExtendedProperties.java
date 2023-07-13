@@ -8,14 +8,12 @@ import am2.api.math.AMVector2;
 import am2.api.math.AMVector3;
 import am2.api.spell.enums.ContingencyTypes;
 import am2.api.spell.enums.SkillPointTypes;
-import am2.api.spell.enums.SpellModifiers;
 import am2.armor.ArmorHelper;
 import am2.armor.ArsMagicaArmorMaterial;
 import am2.armor.infusions.GenericImbuement;
 import am2.armor.infusions.ImbuementRegistry;
 import am2.bosses.EntityLifeGuardian;
 import am2.buffs.BuffList;
-import am2.damage.DamageSources;
 import am2.guis.AMGuiHelper;
 import am2.items.ItemManaStone;
 import am2.items.ItemSoulspike;
@@ -28,7 +26,6 @@ import am2.particles.AMLineArc;
 import am2.spell.SkillManager;
 import am2.spell.SkillTreeManager;
 import am2.spell.SpellHelper;
-import am2.spell.SpellUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -37,7 +34,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -70,6 +66,8 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	// I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!
 	/** I AM SO BLOODY TIRED OF MAKING NEW VARIABLES FOR EEEP!!!!!!!*/
 	private Map<String, String> extra_properties = new HashMap<String, String>();
+
+	private Map<String, String> compendium_entries = new HashMap<String, String>();
 
 	private double markX;
 	private double markY;
@@ -354,11 +352,17 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		if (hasRitual) {
 			max += 23000; // changed from 25000
 		}
-		if (this.entity instanceof EntityPlayer) {
-			if (this.entity.isPotionActive(BuffList.manaBoost))
-			max *= 1 + (0.25 * (this.entity.getActivePotionEffect(BuffList.manaBoost).getAmplifier() + 1));
+		try {
+			if (this.entity instanceof EntityPlayer) {
+				if (this.entity.isPotionActive(BuffList.manaBoost))
+					max *= 1 + (0.25 * (this.entity.getActivePotionEffect(BuffList.manaBoost).getAmplifier() + 1));
+			}
+		} catch (NullPointerException npe) {;} // just in case
+		try {
+			return (float) (max + this.entity.getAttributeMap().getAttributeInstance(ArsMagicaApi.maxManaBonus).getAttributeValue());
+		} catch (NullPointerException npe) { // fix for entities which crash with the above code
+			return max;
 		}
-		return (float)(max + this.entity.getAttributeMap().getAttributeInstance(ArsMagicaApi.maxManaBonus).getAttributeValue());
 	}
 
 	public void setMaxMana(float maxMana){
@@ -1161,6 +1165,15 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 			c++;
 		}
 		compound.setInteger("persistentobjsize", extra_properties.size());
+
+		for (Object o : compendium_entries.keySet()) {
+			String iS = (String)o;
+			String iValue = compendium_entries.get(iS);
+			compound.setString("compentry" + c, iValue);
+			compound.setString("compentryname" + c, iS);
+			c++;
+		}
+		compound.setInteger("compendiumsize", compendium_entries.size());
 	}
 
 	@Override
@@ -1227,11 +1240,49 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		for (int j = 0; j < compound.getInteger("persistentobjsize"); j++) {
 			extra_properties.put(compound.getString("persistentobjname" + j), compound.getString("persistentobj" + j));
 		}
+
+		for (int j = 0; j < compound.getInteger("compendiumsize"); j++) {
+			compendium_entries.put(compound.getString("compentryname" + j), compound.getString("compentry" + j));
+		}
 	}
 
 	public void addToExtraVariables(String name, String value) {
 		extra_properties.put(name, value);
 		setFullSync();
+	}
+
+	public void setCompendiumEntry(String name, String value) {
+		compendium_entries.put(name, value);
+		syncCompendiumEntries();
+	}
+
+	private void syncCompendiumEntries() { // this is separate from the rest of syncing to ease load on network
+		AMDataWriter writer = new AMDataWriter();
+		NBTTagCompound compendium_data = new NBTTagCompound();
+		int c = 0;
+		for (Object o : compendium_entries.keySet()) {
+			String iS = (String)o;
+			String iValue = compendium_entries.get(iS);
+			compendium_data.setString("compentry" + c, iValue);
+			compendium_data.setString("compentryname" + c, iS);
+			c++;
+		}
+		compendium_data.setInteger("compendiumsize", compendium_entries.size());
+		writer.add(compendium_data);
+		AMNetHandler.INSTANCE.sendPacketToServer(AMPacketIDs.SYNCCOMPENDIUM, writer.generate());
+	}
+
+	public void onSyncCompendiumDataPacket(byte[] remaining) {
+		AMDataReader rdr = new AMDataReader(remaining, false);
+		compendium_entries.clear();
+		NBTTagCompound nbt = rdr.getNBTTagCompound();
+		for (int j = 0; j < nbt.getInteger("compendiumsize"); j++) {
+			compendium_entries.put(nbt.getString("compentryname" + j), nbt.getString("compentry" + j));
+		}
+	}
+
+	public void setCompendiumEntryNoSync(String name, String value) {
+		compendium_entries.put(name, value);
 	}
 
 	public void removeFromExtraVariables(String name) {
@@ -1259,6 +1310,23 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 	public boolean hasExtraVariable(String name) {
 		return extra_properties.get(name) != null;
 	}
+
+	public boolean hasCompendiumEntry(String name) {
+		return compendium_entries.get(name) != null;
+	}
+
+	public boolean isEntryLocked(String name) {
+		return compendium_entries.get(name).contains("L");
+	}
+
+	public boolean isEntryNew(String name) {
+		return compendium_entries.get(name).contains("N");
+	}
+
+	public Iterator<Map.Entry<String, String>> getCompendiumIterator() {
+		return compendium_entries.entrySet().iterator();
+	}
+
 
 	@Override
 	public void init(Entity entity, World world){

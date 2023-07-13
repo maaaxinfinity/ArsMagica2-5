@@ -14,6 +14,9 @@ import am2.buffs.BuffList;
 import am2.entities.EntityShadowHelper;
 import am2.guis.AMGuiHelper;
 import am2.items.ItemsCommonProxy;
+import am2.network.AMDataWriter;
+import am2.network.AMNetHandler;
+import am2.network.AMPacketIDs;
 import am2.playerextensions.ExtendedProperties;
 import am2.power.PowerNodeEntry;
 import am2.utility.EntityUtilities;
@@ -23,8 +26,12 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiPlayerInfo;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -40,8 +47,13 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.tclproject.mysteriumlib.asm.fixes.MysteriumPatchesFixesMagicka;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AMClientEventHandler{
 	@SubscribeEvent
@@ -287,6 +299,37 @@ public class AMClientEventHandler{
 	public void onEntityJoinWorld(EntityJoinWorldEvent event){
 		if (event.entity instanceof EntityShadowHelper){
 			((EntityShadowHelper)event.entity).onJoinWorld(event.world);
+		}
+	}
+
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void onEntityJoinWorldClient(EntityJoinWorldEvent event){
+		if (event.entity instanceof EntityPlayer) {
+			if (event.entity != Minecraft.getMinecraft().thePlayer) {
+				AMDataWriter writer = new AMDataWriter();
+				writer.add(MysteriumPatchesFixesMagicka.playerModelMap.size());
+				for (Map.Entry<String, String> entry : MysteriumPatchesFixesMagicka.playerModelMap.entrySet()) {
+					writer.add(entry.getKey());
+					writer.add(entry.getValue());
+				}
+				AMNetHandler.INSTANCE.sendPacketToServer(AMPacketIDs.SYNCMAPTOSERVER, writer.generate());
+				return;
+				// syncs the map to everyone, and as a consequence, the new player too
+			}
+			ServerData serverData = Minecraft.getMinecraft().func_147104_D();
+			if (serverData == null) {
+				MysteriumPatchesFixesMagicka.playerModelMap.clear();
+				return; // singleplayer
+			}
+
+			List<String> tablist = ((List<GuiPlayerInfo>) Minecraft.getMinecraft().thePlayer.sendQueue.playerInfoList).stream().map(r -> r.name).collect(Collectors.toList());
+			if (tablist.contains(Minecraft.getMinecraft().thePlayer.getDisplayName())) tablist.remove(Minecraft.getMinecraft().thePlayer.getDisplayName());
+			if (tablist.contains(Minecraft.getMinecraft().thePlayer.getCommandSenderName())) tablist.remove(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
+			if (event.entity == Minecraft.getMinecraft().thePlayer && tablist.size() == 0) { // no players to sync the map from, clear it instead
+				MysteriumPatchesFixesMagicka.playerModelMap.clear();
+				return;
+			}
 		}
 	}
 	

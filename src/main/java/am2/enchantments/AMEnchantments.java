@@ -9,13 +9,13 @@ import net.minecraft.item.ItemStack;
 
 public class AMEnchantments{
 	public static EnchantMagicResist magicResist = registerEnchantment(EnchantMagicResist.class, 5, "magic_resist", 100);
-	public static EnchantmentSoulbound soulbound = registerEnchantment(EnchantmentSoulbound.class, 5, "soulbound", 101);
+	public static EnchantmentSoulbound soulbound = registerEnchantment(EnchantmentSoulbound.class, 0, "soulbound", 101);
 
 	public void Init(){
 		int defMR = AMCore.config.getConfigurableEnchantmentID("magic_resist", 100);
 
 		Enchantment.addToBookList(magicResist);
-		Enchantment.addToBookList(soulbound);
+//		Enchantment.addToBookList(soulbound); // no soulbound book! Bad!
 
 		LanguageRegistry.instance().addStringLocalization("enchantment.magicresist", "en_US", "Magic Resistance");
 		LanguageRegistry.instance().addStringLocalization("enchantment.soulbound", "en_US", "Soulbound");

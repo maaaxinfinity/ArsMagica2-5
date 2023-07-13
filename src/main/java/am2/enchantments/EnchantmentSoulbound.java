@@ -2,6 +2,7 @@ package am2.enchantments;
 
 import am2.items.ItemSpellBook;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.item.ItemStack;
 
@@ -34,6 +35,26 @@ public class EnchantmentSoulbound extends Enchantment{
 
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack){
-		return stack != null && stack.getItem() instanceof ItemSpellBook;
+		return false;
+	}
+
+	@Override
+	public boolean canApplyTogether(Enchantment p_77326_1_)
+	{
+		String lowercaseName = p_77326_1_.getName().toLowerCase();
+		if (lowercaseName.contains("soul")) // soul tether
+		{
+			return false;
+		}
+		else
+		{
+			return super.canApplyTogether(p_77326_1_);
+		}
+	}
+
+	@Override
+	public boolean isAllowedOnBooks()
+	{
+		return false;
 	}
 }

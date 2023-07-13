@@ -107,6 +107,8 @@ public class AMConfig extends Configuration{
 	private final String KEY_SunstoneMax = "SunstoneMaxHeight";
 	private final String KEY_SunstoneVein = "SunstoneVeinSize";
 	private final String KEY_SunstoneFreq = "SunstoneFrequency";
+
+	private final String KEY_MoonstoneFreq = "MoonstoneFrequency";
 	
 	/**
 	 * Beta Particles
@@ -301,6 +303,7 @@ public class AMConfig extends Configuration{
 	private int sunstoneMaxHeight;
 	private int sunstoneVeinSize;
 	private int sunstoneFrequency;
+	private int moonstoneFrequency;
 
 
 	public static final String DEFAULT_LANGUAGE = "en_US";
@@ -430,7 +433,8 @@ public class AMConfig extends Configuration{
 		sunstoneMaxHeight = get(CATEGORY_GENERAL, KEY_SunstoneMax, 120, "The maximum height for sunstone to generate.").getInt(120);
 		sunstoneVeinSize = get(CATEGORY_GENERAL, KEY_SunstoneVein, 3, "The number of blocks in a vein of sunstone.").getInt(3);
 		sunstoneFrequency = get(CATEGORY_GENERAL, KEY_SunstoneFreq, 20, "The number of sunstone veins generated per chunk.").getInt(20);
-		
+		moonstoneFrequency = get(CATEGORY_GENERAL, KEY_MoonstoneFreq, 48000, "The frequency of moonstone meteors. Lower number = less delay between meteors.").getInt(48000);
+
 		enderAffinityAbilityCooldown = get(CATEGORY_GENERAL, KEY_EnderAffinityAbilityCooldown, 100, "Set this to the number of ticks between ender affinity teleports.").getInt();
 
 		String digBlacklistString = get(CATEGORY_GENERAL, KEY_DigDisabledBlocks, "", "Comma-separated list of block IDs that dig cannot break.  If a block is flagged as unbreackable in code, Dig will already be unable to break it.  There is no need to set it here (eg, bedrock, etc.).  Dig also makes use of Forge block harvest checks.  This is mainly for fine-tuning.").getString();
@@ -902,6 +906,10 @@ public class AMConfig extends Configuration{
 	
 	public int getSunstoneFrequency(){
 		return this.sunstoneFrequency;
+	}
+
+	public int getMoonstoneFrequency(){
+		return this.moonstoneFrequency;
 	}
 
 	//====================================================================================

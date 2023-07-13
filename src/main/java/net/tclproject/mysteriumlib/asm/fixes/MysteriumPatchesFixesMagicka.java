@@ -2,6 +2,7 @@ package net.tclproject.mysteriumlib.asm.fixes;
 
 import am2.AMCore;
 import am2.AMEventHandler;
+import am2.LogHelper;
 import am2.affinity.AffinityHelper;
 import am2.armor.BoundArmor;
 import am2.blocks.liquid.BlockLiquidEssence;
@@ -16,6 +17,7 @@ import am2.network.AMPacketProcessorClient;
 import am2.network.TickrateMessage;
 import am2.playerextensions.ExtendedProperties;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventBus;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.*;
@@ -30,6 +32,7 @@ import net.minecraft.client.model.ModelSkeleton;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderCaveSpider;
@@ -59,13 +62,18 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraftforge.common.ForgeHooks;
 import net.tclproject.mysteriumlib.asm.annotations.EnumReturnSetting;
 import net.tclproject.mysteriumlib.asm.annotations.Fix;
 import net.tclproject.mysteriumlib.asm.annotations.ReturnedValue;
+import net.tclproject.mysteriumlib.asm.common.CustomLoadingPlugin;
 import scala.Int;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static am2.blocks.liquid.BlockLiquidEssence.liquidEssenceMaterial;
@@ -166,15 +174,40 @@ public class MysteriumPatchesFixesMagicka{
 		return false;
 	}
 
-	@Fix(returnSetting = EnumReturnSetting.ALWAYS)
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE, anotherMethodReturned = "renderPlayerSpecial")
 	@SideOnly(Side.CLIENT)
-	public static Render getEntityRenderObject(RenderManager rm, Entity ent)
+	public static boolean getEntityRenderObject(RenderManager rm, Entity ent)
 	{
 		if (ent instanceof EntityPlayer) {
-			if (playerModelMap.get(((EntityPlayer)ent).getCommandSenderName()) != null && playerModelMap.get(((EntityPlayer)ent).getCommandSenderName()).startsWith("maid")) return new RenderPlayerSpecial();
+			if (playerModelMap.get(((EntityPlayer)ent).getCommandSenderName()) != null && playerModelMap.get(((EntityPlayer)ent).getCommandSenderName()).startsWith("maid")) return true;
 		}
-		return rm.getEntityClassRenderObject(ent.getClass());
+		return false;
 	}
+
+	@SideOnly(Side.CLIENT)
+	public static Render renderPlayerSpecial(RenderManager rm, Entity ent) {
+		return new RenderPlayerSpecial();
+	}
+
+	// hacky fix for foamfix (foamfix, why must you do this?!)
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean register(EventBus eb, Object target)
+	{
+		if (target.getClass().getName().contains("Ears")) {
+			LogHelper.warn("--------------------------!!!--------------------------");
+			LogHelper.warn("The Ears mod transformer was found and disabled. This most likely means you're using FoamFix's hacky 1.8+ skin support.");
+			LogHelper.warn("Please disable it in FoamFix's config and use (preferably, as its solution is much more compatible and elegant) EtFuturumRequiem, or (if need be) SkinPort instead.");
+			LogHelper.warn("--------------------------!!!--------------------------");
+			return true; // Do not register the Ears transformer, for it is evil.
+		}
+		return false; // continue as normal
+	}
+
+	//	@cpw.mods.fml.common.Optional.Method(modid="FoamFixCore")
+//	@Fix(returnSetting = EnumReturnSetting.ALWAYS) // foamfix compat doesn't work this way
+//	public static boolean applyEarsPatch(pl.asie.foamfix.bugfixmod.coremod.BugfixModClassTransformer transformer) {
+//		return false;
+//	}
 
 //	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
 //	@SideOnly(Side.CLIENT)
@@ -412,6 +445,66 @@ public class MysteriumPatchesFixesMagicka{
 		} else { // Server
 			AMCore.NETWORK.sendTo(new TickrateMessage(ticksPerSecond), (EntityPlayerMP)player);
 		}
+	}
+
+	private static final MethodHandle isDrawingGet = createIsDrawingGet();
+
+	private static MethodHandle createIsDrawingGet() {
+		try {
+			Minecraft.getMinecraft(); // roundabout way to check for client
+			return createIsDrawingGetDelegate();
+		} catch (RuntimeException e) {
+		} catch (NoClassDefFoundError e) {
+		} catch (Exception e) {
+		}
+		return null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private static MethodHandle createIsDrawingGetDelegate() {
+		try {
+			Field field = CustomLoadingPlugin.isObfuscated() ? Tessellator.class.getDeclaredField("field_78415_z") : Tessellator.class.getDeclaredField("isDrawing");
+			field.setAccessible(true);
+			return MethodHandles.publicLookup().unreflectGetter(field);
+		} catch (Exception e) {
+			LogHelper.error("Did not find tesselator isDrawing field! Only report this error if you're seeing it on a client!");
+			return null;
+		}
+	}
+
+	// Completely removes the "already tessellating" error
+	@SideOnly(Side.CLIENT)
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean startDrawing(Tessellator tsl, int p_78371_1_)
+	{
+		boolean isDrawing = false;
+		try {
+			isDrawing = (boolean) isDrawingGet.invokeExact((Tessellator) tsl);
+		} catch (Throwable e) {
+			throw new RuntimeException("Could not invoke isDrawing field! Only report this error if you're seeing it on a client!", e);
+		}
+		if (isDrawing)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	// Completely removes the "already tessellating" error - part 2, electric boogaloo
+	@SideOnly(Side.CLIENT)
+	@Fix(returnSetting = EnumReturnSetting.ON_TRUE)
+	public static boolean draw(Tessellator tsl) {
+		boolean isDrawing = false;
+		try {
+			isDrawing = (boolean) isDrawingGet.invokeExact((Tessellator) tsl);
+		} catch (Throwable e) {
+			throw new RuntimeException("Could not invoke isDrawing field! Only report this error if you're seeing it on a client!", e);
+		}
+		if (!isDrawing)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	private static Field timerField = null;

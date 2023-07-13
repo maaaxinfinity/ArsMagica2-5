@@ -24,7 +24,7 @@ public class MeteorSpawnHelper{
 		if (ticksSinceLastMeteor == 0){
 			if (MinecraftServer.getServer().worldServers.length < 1) return;
 			WorldServer ws = MinecraftServer.getServer().worldServers[0];
-			if (rand.nextInt(2500 + (1000 * ws.provider.getMoonPhase(ws.provider.getWorldTime()))) == 0){
+			if (rand.nextInt((AMCore.config.getMoonstoneFrequency() / 19) + (1000 * ws.provider.getMoonPhase(ws.provider.getWorldTime()))) == 0){
 				spawnMeteor();
 			}
 		}else{
@@ -33,7 +33,7 @@ public class MeteorSpawnHelper{
 	}
 
 	public void spawnMeteor(){
-		ticksSinceLastMeteor = 48000;
+		ticksSinceLastMeteor = AMCore.config.getMoonstoneFrequency();
 		if (MinecraftServer.getServer().worldServers.length < 1) return;
 
 		WorldServer ws = null;
@@ -52,7 +52,13 @@ public class MeteorSpawnHelper{
 			int playerID = rand.nextInt(ws.playerEntities.size());
 			EntityPlayer player = (EntityPlayer)ws.playerEntities.get(playerID);
 
-			if (ExtendedProperties.For(player).getMagicLevel() < AMCore.config.getMeteorMinSpawnLevel()) return;
+			int tries = 0; // note: this code runs rarely; as such performance isn't impacted in any way
+			while ((ExtendedProperties.For(player).getMagicLevel() < AMCore.config.getMeteorMinSpawnLevel())) {
+				playerID = rand.nextInt(ws.playerEntities.size());
+				player = (EntityPlayer)ws.playerEntities.get(playerID);
+				tries++;
+				if (tries > 100) return; // nobody likely has the needed level
+			}
 
 			AMVector3 spawnCoord = new AMVector3(player);
 			boolean found = false;

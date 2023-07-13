@@ -285,7 +285,6 @@ public class ClientProxy extends CommonProxy{
 
 	@Override
 	public void setCompendiumSaveBase(String compendiumBase){
-		ArcaneCompendium.instance.setSaveLocation(compendiumBase);
 	}
 
 	@Override
