@@ -115,6 +115,11 @@
       <desc>I held my hands in front of me, and with a sharp crack a bolt of brilliant white lightning forked across the sky.  His metal armor acted as a lightning rod, drawing each bolt down into him.  Lightning does an exceptional amount of damage, but carries a hefty mana cost.</desc>
       <modifiedBy>DAMAGE</modifiedBy>
     </component>
+    <component id="LightningStrike">
+      <name>Lightning Strike</name>
+      <desc>I have at once perfected my mastery of electricity.  No longer do I have to get by with puny discharges - for now I can summon entire lightnings!</desc>
+      <modifiedBy></modifiedBy>
+    </component>
     <component id="FireDamage">
       <name>Fire Damage</name>
       <desc>With a word, I released my will and fire erupted from out in front of me, searing everything in its path.  Fire damage is hard hitting, but many nether mobs are immune to its effects.</desc>
@@ -245,6 +250,11 @@
       <name>Dispel</name>
       <desc>Creating a localized field of deficit, you can remove a number of effects on your target.  Dispel also wreaks havoc on summoned creatures, banishing them back into the ether.</desc>
       <modifiedBy></modifiedBy>
+    </component>
+    <component id="Bless">
+      <name>Bless</name>
+      <desc>Wiping all effects can often be handy, but the cost to re-apply the good ones afterwards is often great, both in mana and time.  You have finally found a solution - Bless; an advanced version of Dispel, not only does it avoid removing beneficial effects, it amplifies them!</desc>
+      <modifiedBy>BUFF_POWER,DURATION</modifiedBy>
     </component>
     <component id="Repel">
       <name>Repel</name>
@@ -514,8 +524,8 @@
     </component>
     <component id="Curse">
       <name>Curse</name>
-      <desc>During your study of the visions from fractal worlds, you have uncovered a technique to expose an unknowing enemy to one creature from there for a temporary period of time. </desc>
-      <modifiedBy>DURATION</modifiedBy>
+      <desc>During your study of the visions from fractal worlds, you have uncovered a technique to expose an unknowing enemy to one creature from there for a temporary period of time.  In addition, the side effects may include the removal of positive buff effects and amplification of negative ones - a complete and utter opposite of Bless.  </desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
     </component>
     <component id="WizardsAutumn">
       <desc>You have learned to focus your digging magic into a small radius that directly affects leaves.  This component has a built in AoE that can be modified with Radius modifiers.  You can use it to clear those pesky hard to reach leaves.</desc>
