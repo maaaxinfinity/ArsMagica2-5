@@ -36,7 +36,7 @@ public class MiningPower implements ISpellModifier{
 	}
 
 	@Override
-	public float getManaCostMultiplier(ItemStack spellStack, int stage, int quantity){
+	public float getManaCostMultiplier(ItemStack spellStack, int stage, int quantity, EntityLivingBase caster){
 		return 1.25f * quantity;
 	}
 

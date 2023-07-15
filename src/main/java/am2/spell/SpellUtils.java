@@ -401,7 +401,7 @@ public class SpellUtils implements ISpellUtils{
 			}
 
 			for (ISpellModifier modifier : modifierWithQuantity.keySet()){
-				stageManaCost *= modifier.getManaCostMultiplier(stack, i, modifierWithQuantity.get(modifier));
+				stageManaCost *= modifier.getManaCostMultiplier(stack, i, modifierWithQuantity.get(modifier), caster);
 			}
 
 			manaCost += (stageManaCost * shape.manaCostMultiplier(stack));

@@ -34,8 +34,9 @@ public interface ISpellModifier extends ISpellPart{
 	 * @param spellStack The itemstack comprising the spell (in case you want to base it on other modifiers added)
 	 * @param stage      The stage in which this modifier has been added (if the modifier is added to multiple stages, this will be called multiple times, once per stage)
 	 * @param quantity   The quantity of this multiplier in the specified stage.
+	 * @param caster   The caster.
 	 */
-	public float getManaCostMultiplier(ItemStack spellStack, int stage, int quantity);
+	public float getManaCostMultiplier(ItemStack spellStack, int stage, int quantity, EntityLivingBase caster);
 
 	/**
 	 * Gets any metadata needed by this modifier for the current spell.  Used, for example, in the color modifier to determine what color was specified.

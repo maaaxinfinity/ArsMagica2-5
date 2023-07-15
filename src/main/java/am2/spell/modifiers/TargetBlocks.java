@@ -40,7 +40,7 @@ public class TargetBlocks implements ISpellModifier{
 	}
 
 	@Override
-	public float getManaCostMultiplier(ItemStack spellStack, int stage, int quantity){
+	public float getManaCostMultiplier(ItemStack spellStack, int stage, int quantity, EntityLivingBase caster){
 		return 1.05f * quantity;
 	}
 
