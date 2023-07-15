@@ -14,6 +14,7 @@ import am2.buffs.BuffList;
 import am2.entities.EntityShadowHelper;
 import am2.guis.AMGuiHelper;
 import am2.items.ItemsCommonProxy;
+import am2.lore.ArcaneCompendium;
 import am2.network.AMDataWriter;
 import am2.network.AMNetHandler;
 import am2.network.AMPacketIDs;
@@ -305,6 +306,9 @@ public class AMClientEventHandler{
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onEntityJoinWorldClient(EntityJoinWorldEvent event){
+		if (event.entity instanceof EntityPlayer) {
+			if (event.entity == Minecraft.getMinecraft().thePlayer) ArcaneCompendium.instance.loadUnlockData();
+		}
 		if (event.entity instanceof EntityPlayer) {
 			if (event.entity != Minecraft.getMinecraft().thePlayer) {
 				AMDataWriter writer = new AMDataWriter();

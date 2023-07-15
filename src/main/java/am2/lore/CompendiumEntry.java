@@ -10,14 +10,14 @@ import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 
 public abstract class CompendiumEntry implements Comparable<CompendiumEntry>{
-	protected CompendiumEntryType type;
-	protected String name;
-	protected String description;
-	protected String id;
-	protected int order;
-	protected CompendiumEntry parent;
-	protected boolean isLocked;
-	protected boolean isNew;
+	public CompendiumEntryType type;
+	public String name;
+	public String description;
+	public String id;
+	public int order;
+	public CompendiumEntry parent;
+	public boolean isLocked;
+	public boolean isNew;
 
 	protected ArrayList<CompendiumEntry> subItems;
 	protected ArrayList<String> relatedItems;

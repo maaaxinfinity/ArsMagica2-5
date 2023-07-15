@@ -83,6 +83,9 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 			case AMPacketIDs.SYNCMAPTOCLIENTS:
 				handleSyncMap(remaining);
 				break;
+			case AMPacketIDs.SYNCCOMPENDIUMRESPONSE:
+				handleCompendiumSync(remaining);
+				break;
 			case AMPacketIDs.SYNCWORLDDATATOCLIENTS:
 				handleSyncWorldData(remaining);
 				break;
@@ -186,6 +189,10 @@ public class AMPacketProcessorClient extends AMPacketProcessorServer{
 				t.printStackTrace();
 			}
 		}
+	}
+
+	private void handleCompendiumSync(byte[] remaining) {
+		ExtendedProperties.For(Minecraft.getMinecraft().thePlayer).onSyncCompendiumDataPacket(remaining);
 	}
 
 	private void handleSyncWorldData(byte[] remaining) {

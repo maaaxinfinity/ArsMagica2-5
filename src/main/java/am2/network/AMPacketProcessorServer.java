@@ -27,6 +27,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -63,6 +64,9 @@ public class AMPacketProcessorServer{
 				break;
 			case AMPacketIDs.SYNCCOMPENDIUM:
 				handleSyncCompendium(remaining, (EntityPlayerMP)player);
+				break;
+			case AMPacketIDs.SYNCCOMPENDIUMREQUEST:
+				handleSyncCompendiumRequest(remaining, (EntityPlayerMP)player);
 				break;
 			case AMPacketIDs.REQUESTWORLDDATACHANGE:
 				handleRequestWorldDataChange(remaining, (EntityPlayerMP)player);
@@ -139,6 +143,27 @@ public class AMPacketProcessorServer{
 		}
 	}
 
+	public static void handleSyncCompendiumRequest(byte[] remaining, EntityPlayerMP player) {
+		ExtendedProperties ep = ExtendedProperties.For(player);
+		if (ep != null) {
+			AMDataWriter writer = new AMDataWriter();
+			NBTTagCompound compendium_data = new NBTTagCompound();
+			int c = 0;
+			for (Object o : ep.getAllCompendiumEntries().keySet()) {
+				String iS = (String) o;
+				String iValue = ep.getAllCompendiumEntries().get(iS);
+				compendium_data.setString("compentry" + c, iValue);
+				compendium_data.setString("compentryname" + c, iS);
+				c++;
+			}
+			compendium_data.setInteger("compendiumsize", ep.getAllCompendiumEntries().size());
+			writer.add(compendium_data);
+			AMNetHandler.INSTANCE.sendPacketToClientPlayer(player, AMPacketIDs.SYNCCOMPENDIUMRESPONSE, writer.generate());
+		} else {
+			LogHelper.warn("Attempted to request sync for null properties!");
+		}
+	}
+
 	private void handleRequestWorldDataChange(byte[] remaining, EntityPlayerMP player) {
 		AMDataReader rdr = new AMDataReader(remaining, false);
 		World world = DimensionManager.getWorld(rdr.getInt());
@@ -148,7 +173,7 @@ public class AMPacketProcessorServer{
 	}
 
 	private void handleSyncCompendium(byte[] remaining, EntityPlayerMP entity) {
-		ExtendedProperties.For(entity).onSyncCompendiumDataPacket(remaining);
+		ExtendedProperties.For(entity).onSyncCompendiumDataPacketServer(remaining);
 	}
 
 	private void handleSyncMapServer(byte[] remaining) {

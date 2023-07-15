@@ -18,6 +18,8 @@ import am2.guis.AMGuiHelper;
 import am2.items.ItemManaStone;
 import am2.items.ItemSoulspike;
 import am2.items.ItemsCommonProxy;
+import am2.lore.ArcaneCompendium;
+import am2.lore.CompendiumEntry;
 import am2.network.AMDataReader;
 import am2.network.AMDataWriter;
 import am2.network.AMNetHandler;
@@ -26,6 +28,9 @@ import am2.particles.AMLineArc;
 import am2.spell.SkillManager;
 import am2.spell.SkillTreeManager;
 import am2.spell.SpellHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -354,8 +359,9 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 		}
 		try {
 			if (this.entity instanceof EntityPlayer) {
-				if (this.entity.isPotionActive(BuffList.manaBoost))
+				if (this.entity.getActivePotionEffect(BuffList.manaBoost) != null) {
 					max *= 1 + (0.25 * (this.entity.getActivePotionEffect(BuffList.manaBoost).getAmplifier() + 1));
+				}
 			}
 		} catch (NullPointerException npe) {;} // just in case
 		try {
@@ -1253,32 +1259,69 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 
 	public void setCompendiumEntry(String name, String value) {
 		compendium_entries.put(name, value);
-		syncCompendiumEntries();
+		syncCompendiumEntries(name, value);
 	}
 
-	private void syncCompendiumEntries() { // this is separate from the rest of syncing to ease load on network
+	public void requestEntriesUpdateFromServer() {
+		AMDataWriter writer = new AMDataWriter();
+		AMNetHandler.INSTANCE.sendPacketToServer(AMPacketIDs.SYNCCOMPENDIUMREQUEST, writer.generate());
+	}
+
+	private void syncCompendiumEntries(String name, String value) { // this is separate from the rest of syncing to ease load on network
 		AMDataWriter writer = new AMDataWriter();
 		NBTTagCompound compendium_data = new NBTTagCompound();
-		int c = 0;
-		for (Object o : compendium_entries.keySet()) {
-			String iS = (String)o;
-			String iValue = compendium_entries.get(iS);
-			compendium_data.setString("compentry" + c, iValue);
-			compendium_data.setString("compentryname" + c, iS);
-			c++;
+		if (name == null && value == null) {
+			int c = 0;
+			for (Object o : compendium_entries.keySet()) {
+				String iS = (String) o;
+				String iValue = compendium_entries.get(iS);
+				compendium_data.setString("compentry" + c, iValue);
+				compendium_data.setString("compentryname" + c, iS);
+				c++;
+			}
+			compendium_data.setInteger("compendiumsize", compendium_entries.size());
+			writer.add(compendium_data);
+			AMNetHandler.INSTANCE.sendPacketToServer(AMPacketIDs.SYNCCOMPENDIUM, writer.generate());
+		} else {
+			compendium_data.setString("compentry" + 0, value);
+			compendium_data.setString("compentryname" + 0, name);
+			compendium_data.setInteger("compendiumsize", 1);
+			writer.add(compendium_data);
+			AMNetHandler.INSTANCE.sendPacketToServer(AMPacketIDs.SYNCCOMPENDIUM, writer.generate());
 		}
-		compendium_data.setInteger("compendiumsize", compendium_entries.size());
-		writer.add(compendium_data);
-		AMNetHandler.INSTANCE.sendPacketToServer(AMPacketIDs.SYNCCOMPENDIUM, writer.generate());
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void onSyncCompendiumDataPacket(byte[] remaining) {
+		onSyncCompendiumDataPacketServer(remaining);
+
+		Iterator it = this.getCompendiumIterator(); // update the clientside compendium list
+		while (it.hasNext()) {
+			Map.Entry<String, String> pair = (Map.Entry<String, String>) it.next();
+			CompendiumEntry entry = ArcaneCompendium.instance.getEntryAbsolute(pair.getKey());
+			if (entry == null) continue;
+			entry.isLocked = pair.getValue().contains("L");
+			entry.isNew = pair.getValue().contains("N");
+		}
+	}
+
+	public void onSyncCompendiumDataPacketServer(byte[] remaining) {
 		AMDataReader rdr = new AMDataReader(remaining, false);
-		compendium_entries.clear();
 		NBTTagCompound nbt = rdr.getNBTTagCompound();
+		if (nbt.getInteger("compendiumsize") == 0) { // if it's a new, previously-not-loaded world
+			setDefaultCompendiumEntryValues();
+		}
+		if (nbt.getInteger("compendiumsize") > 1) compendium_entries.clear(); // full sync
 		for (int j = 0; j < nbt.getInteger("compendiumsize"); j++) {
 			compendium_entries.put(nbt.getString("compentryname" + j), nbt.getString("compentry" + j));
 		}
+	}
+
+	private void setDefaultCompendiumEntryValues() {
+		// set them for client
+		ArcaneCompendium.instance.init(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage());
+		// sync all the defaults to server.
+		ArcaneCompendium.instance.saveUnlockData();
 	}
 
 	public void setCompendiumEntryNoSync(String name, String value) {
@@ -1309,6 +1352,10 @@ public class ExtendedProperties implements IExtendedProperties, IExtendedEntityP
 
 	public boolean hasExtraVariable(String name) {
 		return extra_properties.get(name) != null;
+	}
+
+	public Map<String, String> getAllCompendiumEntries() {
+		return compendium_entries;
 	}
 
 	public boolean hasCompendiumEntry(String name) {

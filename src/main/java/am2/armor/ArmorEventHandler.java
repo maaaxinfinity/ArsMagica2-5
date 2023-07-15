@@ -426,82 +426,81 @@ public class ArmorEventHandler{
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onPlayerRender(RenderPlayerEvent.Post event) {
-		if (event.entityPlayer.getCurrentArmor(3) != null) {
-			if (event.entityPlayer.getCurrentArmor(3).getItem() == ItemsCommonProxy.archmageHood) {
-				EntityPlayer p_76986_1_ = event.entityPlayer;
-				int i1 = Minecraft.getMinecraft().gameSettings.limitFramerate;
-				float p_76986_9_ = System.nanoTime() + (long)(1000000000 / i1);
-				float f5 = 0.0625F;
-				float f2 = 0; // interpolateRotation(p_76986_1_.prevRenderYawOffset, p_76986_1_.renderYawOffset, p_76986_9_);
-				float f3 = -p_76986_1_.prevRotationYawHead; // , p_76986_1_.rotationYawHead, p_76986_9_);
-				float f4 = 0;
-				float f13 = 63;
-				float f6 = p_76986_1_.prevLimbSwingAmount + (p_76986_1_.limbSwingAmount - p_76986_1_.prevLimbSwingAmount) * p_76986_9_;
-				float f7 = p_76986_1_.limbSwing - p_76986_1_.limbSwingAmount * (1.0F - p_76986_9_);
-				if (f6 > 1.0F)
-				{
-					f6 = 1.0F;
+		if (event.entityPlayer == Minecraft.getMinecraft().thePlayer) { // these additions only render clientside/SP
+			if (event.entityPlayer.getCurrentArmor(3) != null) {
+				if (event.entityPlayer.getCurrentArmor(3).getItem() == ItemsCommonProxy.archmageHood) {
+					EntityPlayer p_76986_1_ = event.entityPlayer;
+					int i1 = Minecraft.getMinecraft().gameSettings.limitFramerate;
+					float p_76986_9_ = System.nanoTime() + (long) (1000000000 / i1);
+					float f5 = 0.0625F;
+					float f2 = 0; // interpolateRotation(p_76986_1_.prevRenderYawOffset, p_76986_1_.renderYawOffset, p_76986_9_);
+					float f3 = -p_76986_1_.prevRotationYawHead; // , p_76986_1_.rotationYawHead, p_76986_9_);
+					float f4 = 0;
+					float f13 = 63;
+					float f6 = p_76986_1_.prevLimbSwingAmount + (p_76986_1_.limbSwingAmount - p_76986_1_.prevLimbSwingAmount) * p_76986_9_;
+					float f7 = p_76986_1_.limbSwing - p_76986_1_.limbSwingAmount * (1.0F - p_76986_9_);
+					if (f6 > 1.0F) {
+						f6 = 1.0F;
+					}
+					GL11.glPushMatrix();
+					GL11.glTranslated(0, 0.4, 0);
+					Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("arsmagica2:" + ResourceManager.getMobTexturePath("bosses/fire_guardian.png")));
+					ModelLibrary.instance.fireEars.saveValues = true;
+					ModelLibrary.instance.fireEars.render(event.entityPlayer, f7, f6, f4, f3, -f13, f5);
+					GL11.glPopMatrix();
 				}
-				GL11.glPushMatrix();
-				GL11.glTranslated(0, 0.4, 0);
-				Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("arsmagica2:" + ResourceManager.getMobTexturePath("bosses/fire_guardian.png")));
-				ModelLibrary.instance.fireEars.saveValues = true;
-				ModelLibrary.instance.fireEars.render(event.entityPlayer, f7, f6, f4, f3, -f13, f5);
-				GL11.glPopMatrix();
 			}
-		}
-		if (event.entityPlayer.getCurrentArmor(2) != null) {
-			if (event.entityPlayer.getCurrentArmor(2).getItem() == ItemsCommonProxy.archmageArmor) {
-				EntityPlayer p_76986_1_ = event.entityPlayer;
-				int i1 = Minecraft.getMinecraft().gameSettings.limitFramerate;
-				float p_76986_9_ = System.nanoTime() + (long)(1000000000 / i1);
-				float f5 = 0.0625F;
-				float f2 = 0; // interpolateRotation(p_76986_1_.prevRenderYawOffset, p_76986_1_.renderYawOffset, p_76986_9_);
-				float f3 = -p_76986_1_.rotationYawHead; // , p_76986_1_.rotationYawHead, p_76986_9_);
-				float f4 = 0;
-				float f13 = 0;
-				float f6 = 0; // p_76986_1_.prevLimbSwingAmount + (p_76986_1_.limbSwingAmount - p_76986_1_.prevLimbSwingAmount) * p_76986_9_;
-				float f7 = p_76986_1_.limbSwing - p_76986_1_.limbSwingAmount * (1.0F - p_76986_9_) + 50;
-				if (f6 > 1.0F)
-				{
-					f6 = 1.0F;
+			if (event.entityPlayer.getCurrentArmor(2) != null) {
+				if (event.entityPlayer.getCurrentArmor(2).getItem() == ItemsCommonProxy.archmageArmor) {
+					EntityPlayer p_76986_1_ = event.entityPlayer;
+					int i1 = Minecraft.getMinecraft().gameSettings.limitFramerate;
+					float p_76986_9_ = System.nanoTime() + (long) (1000000000 / i1);
+					float f5 = 0.0625F;
+					float f2 = 0; // interpolateRotation(p_76986_1_.prevRenderYawOffset, p_76986_1_.renderYawOffset, p_76986_9_);
+					float f3 = -p_76986_1_.rotationYawHead; // , p_76986_1_.rotationYawHead, p_76986_9_);
+					float f4 = 0;
+					float f13 = 0;
+					float f6 = 0; // p_76986_1_.prevLimbSwingAmount + (p_76986_1_.limbSwingAmount - p_76986_1_.prevLimbSwingAmount) * p_76986_9_;
+					float f7 = p_76986_1_.limbSwing - p_76986_1_.limbSwingAmount * (1.0F - p_76986_9_) + 50;
+					if (f6 > 1.0F) {
+						f6 = 1.0F;
+					}
+					GL11.glPushMatrix();
+					GL11.glTranslated(0, -0.75, 0);
+					GL11.glScaled(0.6, 0.6, 0.6);
+					setRotation(rotation + 1);
+					GL11.glRotated(rotation, 0, 1, 0);
+					Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("arsmagica2:" + ResourceManager.getMobTexturePath("bosses/earth_guardian.png")));
+					ModelLibrary.instance.earthArmor.saveValues = true;
+					ModelLibrary.instance.earthArmor.renderArms(event.entityPlayer, f7, f6, f4, f3, f13, f5);
+					GL11.glPopMatrix();
 				}
-				GL11.glPushMatrix();
-				GL11.glTranslated(0, -0.75, 0);
-				GL11.glScaled(0.6, 0.6, 0.6);
-				setRotation(rotation+1);
-				GL11.glRotated(rotation, 0, 1, 0);
-				Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("arsmagica2:" + ResourceManager.getMobTexturePath("bosses/earth_guardian.png")));
-				ModelLibrary.instance.earthArmor.saveValues = true;
-				ModelLibrary.instance.earthArmor.renderArms(event.entityPlayer, f7, f6, f4, f3, f13, f5);
-				GL11.glPopMatrix();
 			}
-		}
-		if (event.entityPlayer.getCurrentArmor(1) != null) {
-			if (event.entityPlayer.getCurrentArmor(1).getItem() == ItemsCommonProxy.archmageLeggings) {
-				EntityPlayer p_76986_1_ = event.entityPlayer;
-				int i1 = Minecraft.getMinecraft().gameSettings.limitFramerate;
-				float p_76986_9_ = System.nanoTime() + (long)(1000000000 / i1);
-				float f5 = 0.0625F;
-				float f2 = 0; // interpolateRotation(p_76986_1_.prevRenderYawOffset, p_76986_1_.renderYawOffset, p_76986_9_);
-				float f3 = -p_76986_1_.rotationYawHead; // , p_76986_1_.rotationYawHead, p_76986_9_);
-				float f4 = 0;
-				float f13 = 0;
-				float f6 = 0; // p_76986_1_.prevLimbSwingAmount + (p_76986_1_.limbSwingAmount - p_76986_1_.prevLimbSwingAmount) * p_76986_9_;
-				float f7 = p_76986_1_.limbSwing - p_76986_1_.limbSwingAmount * (1.0F - p_76986_9_) + 50;
-				if (f6 > 1.0F)
-				{
-					f6 = 1.0F;
+			if (event.entityPlayer.getCurrentArmor(1) != null) {
+				if (event.entityPlayer.getCurrentArmor(1).getItem() == ItemsCommonProxy.archmageLeggings) {
+					EntityPlayer p_76986_1_ = event.entityPlayer;
+					int i1 = Minecraft.getMinecraft().gameSettings.limitFramerate;
+					float p_76986_9_ = System.nanoTime() + (long) (1000000000 / i1);
+					float f5 = 0.0625F;
+					float f2 = 0; // interpolateRotation(p_76986_1_.prevRenderYawOffset, p_76986_1_.renderYawOffset, p_76986_9_);
+					float f3 = -p_76986_1_.rotationYawHead; // , p_76986_1_.rotationYawHead, p_76986_9_);
+					float f4 = 0;
+					float f13 = 0;
+					float f6 = 0; // p_76986_1_.prevLimbSwingAmount + (p_76986_1_.limbSwingAmount - p_76986_1_.prevLimbSwingAmount) * p_76986_9_;
+					float f7 = p_76986_1_.limbSwing - p_76986_1_.limbSwingAmount * (1.0F - p_76986_9_) + 50;
+					if (f6 > 1.0F) {
+						f6 = 1.0F;
+					}
+					GL11.glPushMatrix();
+					GL11.glTranslated(0, -1.3, 0);
+					GL11.glScaled(1.05, 1.05, 1.05);
+					setRotation2(rotation2 + 0.4f);
+					GL11.glRotatef(rotation2, 0, -1, 0);
+					Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("arsmagica2:" + ResourceManager.getMobTexturePath("bosses/water_guardian.png")));
+					ModelLibrary.instance.earthArmor.saveValues = true;
+					ModelLibrary.instance.waterOrbs.render(event.entityPlayer, f7, f6, f4, f3, f13, f5);
+					GL11.glPopMatrix();
 				}
-				GL11.glPushMatrix();
-				GL11.glTranslated(0, -1.3, 0);
-				GL11.glScaled(1.05, 1.05, 1.05);
-				setRotation2(rotation2+0.4f);
-				GL11.glRotatef(rotation2, 0, -1, 0);
-				Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("arsmagica2:" + ResourceManager.getMobTexturePath("bosses/water_guardian.png")));
-				ModelLibrary.instance.earthArmor.saveValues = true;
-				ModelLibrary.instance.waterOrbs.render(event.entityPlayer, f7, f6, f4, f3, f13, f5);
-				GL11.glPopMatrix();
 			}
 		}
 	}

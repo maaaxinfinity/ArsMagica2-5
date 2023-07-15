@@ -74,6 +74,7 @@ public class ArcaneCompendium implements ILoreHelper{
 
 		try{
 			if (Minecraft.getMinecraft().thePlayer != null && ExtendedProperties.For(Minecraft.getMinecraft().thePlayer) != null) {
+				System.out.println("Saving Unlock Data!");
 				for (CompendiumEntry entry : compendium.values()){
 					String id = "U";
 					if (entry.isLocked)
@@ -101,15 +102,8 @@ public class ArcaneCompendium implements ILoreHelper{
 		try{
 			if (Minecraft.getMinecraft().thePlayer != null && ExtendedProperties.For(Minecraft.getMinecraft().thePlayer) != null) {
 				hasLoaded = true;
-
-				Iterator it = ExtendedProperties.For(Minecraft.getMinecraft().thePlayer).getCompendiumIterator();
-				while (it.hasNext()) {
-					Map.Entry<String, String> pair = (Map.Entry<String, String>) it.next();
-					CompendiumEntry entry = this.getEntryAbsolute(pair.getKey());
-					if (entry == null) continue;
-					entry.isLocked = pair.getValue().contains("L");
-					entry.isNew = pair.getValue().contains("N");
-				}
+				System.out.println("Loading Unlock Data!");
+				ExtendedProperties.For(Minecraft.getMinecraft().thePlayer).requestEntriesUpdateFromServer();
 			}
 		}catch (Exception e){
 			LogHelper.error("Compendium unlock state failed to load! Please report this error!");

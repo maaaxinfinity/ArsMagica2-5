@@ -1589,9 +1589,10 @@ public class AMEventHandler{
 			oldKnockbackValue = -1;
 		}
 
-		if (event.entityLiving.isPotionActive(BuffList.magicShield)){
+		PotionEffect magicShield = event.entityLiving.getActivePotionEffect(BuffList.magicShield);
+		if (magicShield != null){
 			event.ammount *= 0.5f;
-			event.ammount *= (1 / (event.entityLiving.getActivePotionEffect(BuffList.magicShield).getAmplifier() + 1));
+			event.ammount *= (1 / (magicShield.getAmplifier() + 1));
 		}
 
 		if (event.entityLiving.isPotionActive(BuffList.manaShield)){
