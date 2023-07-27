@@ -65,6 +65,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.brewing.PotionBrewedEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
@@ -1512,9 +1513,8 @@ public class AMEventHandler{
 
 	@SubscribeEvent
 	public void onEntityInteract(EntityInteractEvent event){
-		if (event.target instanceof EntityItemFrame){
+		if (!(event.entityLiving instanceof FakePlayer) && event.target instanceof EntityItemFrame)
 			AMCore.proxy.itemFrameWatcher.startWatchingFrame((EntityItemFrame)event.target);
-		}
 	}
 
 	@SubscribeEvent
