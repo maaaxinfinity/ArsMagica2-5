@@ -763,7 +763,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 			}
 		}
 
-		return (int)instability;
+		return (int) (instability > 1.0F ? instability : 1.0F);
 	}
 
 	private int stabilityCheckFail(){
