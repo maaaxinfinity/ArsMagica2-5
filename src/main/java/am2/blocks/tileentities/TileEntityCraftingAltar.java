@@ -741,7 +741,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 
 		ArrayList blockList = new ArrayList();
 		for (int x = -5; x <= 5; x++) {
-			for (int z = -5; z < -5; z++) {
+			for (int z = -5; z <= 5; z++) {
 				for (int y = -6; y < -2; y++) {
 					blockList.add(worldObj.getBlock(this.xCoord + x, this.yCoord + y, this.zCoord + z));
 				}
