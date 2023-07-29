@@ -706,9 +706,9 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 
 		if (shapeGroupGuide != null){
 			for (int[] shapeGroup : shapeGroupGuide){
+				Set<Integer> unique = new HashSet<>();
+				Set<Integer> duplicate = new HashSet<>();
 				for (int i = 0; i < shapeGroup.length; ++i){
-					Set<Integer> unique = new HashSet<>();
-					Set<Integer> duplicate = new HashSet<>();
 					if (duplicate.contains(shapeGroup[i])){
 						instability += 0.75F;
 					}else if (unique.contains(shapeGroup[i])){
