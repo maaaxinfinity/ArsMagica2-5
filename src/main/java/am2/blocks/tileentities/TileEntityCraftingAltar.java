@@ -655,9 +655,10 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 	}
 
 	private void addItemToRecipe(ItemStack stack){
-		if (stabilityCheckFail() > 0) {
+		int stability = stabilityCheckFail(); // no need to scan twice
+		if (stability > 0) {
 			if (!worldObj.isRemote){
-				randomInstabilityEffect(stabilityCheckFail());
+				randomInstabilityEffect(stability);
 			}
 			return;
 		}
