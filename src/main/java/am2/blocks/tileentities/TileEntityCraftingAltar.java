@@ -470,8 +470,8 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		return count <= this.maxEffects;
 	}
 
-	public float get(){
-		return this.;
+	public float getStability(){
+		return this.stability;
 	}
 
 	public boolean structureValid(){
