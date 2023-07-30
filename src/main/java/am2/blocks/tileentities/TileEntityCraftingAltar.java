@@ -772,12 +772,10 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 	}
 
 	private int stabilityCheckFail(){
-		return (int)(new Random().nextInt(getInstability()) - this.stability);
+		return (int)(worldObj.rand.nextInt(getInstability()) - this.stability);
 	}
 
 	private void randomInstabilityEffect(int fail) {
-		Random random = new Random();
-		int effect = random.nextInt(6);
 		EntityPlayer player = null;
 		// search for player in range
 		final double range = 50.0D;
@@ -795,6 +793,9 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 			return; // No player? What on earth could be going on?
 			// altair hack is going on.
 		}
+		
+		Random random = worldObj.rand;
+		int effect = random.nextInt(6);
 		if (fail > 2) { // attact elementals if > 2 instability
 			for (int i = 0; i <= fail; i++){
 				int elementalType = random.nextInt(4);
