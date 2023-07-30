@@ -693,14 +693,14 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		if (outputCombo != null){
 			Set<Integer> unique = new HashSet<>();
 			Set<Integer> duplicate = new HashSet<>(); // Stacking 3 solar? bad boy
-			for (int i = 0; i < outputCombo.length; ++i){
-				if (duplicate.contains(outputCombo[i])) { // second time being duplicated
+			for (int i : outputCombo){
+				if (duplicate.contains(i)){ // second time being duplicated
 					instability += 1.5F;
-				} else if (unique.contains(outputCombo[i])) { // first time being duplicated
+				} else if (unique.contains(i)){ // first time being duplicated
 					instability += 0.5F;
-					duplicate.add(outputCombo[i]);
-				} else {
-					unique.add(outputCombo[i]);
+					duplicate.add(i);
+				} else{
+					unique.add(i);
 				}
 			}
 		}
@@ -709,23 +709,23 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 			for (int[] shapeGroup : shapeGroupGuide){
 				Set<Integer> unique = new HashSet<>();
 				Set<Integer> duplicate = new HashSet<>();
-				for (int i = 0; i < shapeGroup.length; ++i){
-					if (duplicate.contains(shapeGroup[i])){
+				for (int i : shapeGroup){
+					if (duplicate.contains(i)){
 						instability += 0.75F;
-					}else if (unique.contains(shapeGroup[i])){
+					} else if (unique.contains(i)){
 						instability += 0.25F;
-						duplicate.add(shapeGroup[i]);
-					}else{
-						unique.add(shapeGroup[i]);
+						duplicate.add(i);
+					} else{
+						unique.add(i);
 					}
 				}
 			}
 		}
 
 		int countPlayers = -1;
-		for (int i = 0; i < worldObj.playerEntities.size(); ++i)
+		for (Object objectPlayer : worldObj.playerEntities)
 		{
-			EntityPlayer entityplayer1 = (EntityPlayer)worldObj.playerEntities.get(i);
+			EntityPlayer entityplayer1 = (EntityPlayer)objectPlayer;
 			double d5 = entityplayer1.getDistanceSq(this.xCoord, this.yCoord, this.zCoord);
 
 			if ((d5 < 20 * 20))
@@ -740,7 +740,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		if (worldObj.canBlockSeeTheSky(this.xCoord, this.yCoord, this.zCoord)) instability -= 0.5F;
 		if (!worldObj.isDaytime()) instability -= 0.5;
 
-		ArrayList blockList = new ArrayList();
+		ArrayList<Block> blockList = new ArrayList();
 		for (int x = -5; x <= 5; x++) {
 			for (int z = -5; z <= 5; z++) {
 				for (int y = -6; y < -2; y++) {
@@ -750,8 +750,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		}
 
 		boolean celestialPrismCounted = false, darkAuremCounted = false;
-		for (int i = 0; i < blockList.size(); i++) {
-			Block block = (Block)blockList.get(i);
+		for (Block block : blockList) {
 			if (block instanceof BlockWizardsChalk) instability -= 0.2F;
 			if (block instanceof BlockLiquidEssence) instability -= 0.25F;
 			if (block == BlocksCommonProxy.celestialPrism && !celestialPrismCounted){
