@@ -132,7 +132,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		checkCounter = 0;
 		setNoPowerRequests();
 		maxEffects = 2;
-		stability = 1;
+		stability = 1F;
 
 		spellDef = new ArrayList<KeyValuePair<ISpellPart, byte[]>>();
 		shapeGroups = new ArrayList<ArrayList<KeyValuePair<ISpellPart, byte[]>>>();
@@ -470,8 +470,8 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		return count <= this.maxEffects;
 	}
 
-	public float getStability(){
-		return this.stability;
+	public float get(){
+		return this.;
 	}
 
 	public boolean structureValid(){
@@ -682,8 +682,14 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		}
 	}
 
+	private double getDistanceSqXZ(Entity entity, double x, double z) {
+		double dx = entity.posX - x;
+		double dz = entity.posZ - z;
+		return dx * dx + dz * dz;
+	}
+
 	private int getInstability() {
-		float instability = 1;
+		float instability = 1F;
 
 		// ADD INSTABILITY
 
@@ -723,22 +729,21 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		}
 
 		int countPlayers = -1;
+		// 20 sounds magic number a lot... maybe fix it in the future
+		final double range = 20D;
 		for (Object objectPlayer : worldObj.playerEntities)
 		{
-			EntityPlayer entityplayer1 = (EntityPlayer)objectPlayer;
-			double d5 = entityplayer1.getDistanceSq(this.xCoord, this.yCoord, this.zCoord);
-
-			if ((d5 < 20 * 20))
+			if (getDistanceSqXZ((EntityPlayer)objectPlayer, xCoord, zCoord) < range * range) // only XZ check to prevent stupidest altair hack
 			{
 				countPlayers++;
 			}
 		}
-		instability += countPlayers * 2;
+		instability += countPlayers * 2.0F;
 
 		// SUBTRACT INSTABILITY (mostly, except for black aurem)
 
 		if (worldObj.canBlockSeeTheSky(this.xCoord, this.yCoord, this.zCoord)) instability -= 0.5F;
-		if (!worldObj.isDaytime()) instability -= 0.5;
+		if (!worldObj.isDaytime()) instability -= 0.5F;
 
 		ArrayList<Block> blockList = new ArrayList();
 		for (int x = -5; x <= 5; x++) {
@@ -763,7 +768,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 			}
 		}
 
-		return (int) (instability > 1.0F ? instability : 1.0F);
+		return instability > 1F ? (int) instability : 1;
 	}
 
 	private int stabilityCheckFail(){
@@ -773,11 +778,24 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 	private void randomInstabilityEffect(int fail) {
 		Random random = new Random();
 		int effect = random.nextInt(6);
-		EntityPlayer player = this.worldObj.getClosestPlayer(this.xCoord, this.yCoord, this.zCoord, 50);
+		EntityPlayer player = null;
+		// search for player in range
+		final double range = 50.0D;
+		double distance = Double.MAX_VALUE;
+		EntityPlayer player = null;
+		for (Object objectPlayer : worldObj.playerEntities){
+			EntityPlayer entityplayer1 = (EntityPlayer)objectPlayer;
+			double newDistance = getDistanceSqXZ(entityplayer1, xCoord, zCoord); // only XZ check to prevent stupidest altair hack
+			if ((newDistance < range * range) && (newDistance < distance)){
+				distance = newDistance;
+				player = entityplayer1;
+			}
+		}
 		if (player == null) {
 			return; // No player? What on earth could be going on?
+			// altair hack is going on.
 		}
-		if (fail > 2) { // attact elementals if >2 instability
+		if (fail > 2) { // attact elementals if > 2 instability
 			for (int i = 0; i <= fail; i++){
 				int elementalType = random.nextInt(4);
 				Entity elemental;
@@ -922,7 +940,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		//locate lectern and lever & material groups
 		if (primaryvalid || secondaryvalid){
 			maxEffects = 0;
-			stability = 1;
+			stability = 1F;
 			ArrayList<StructureGroup> lecternGroups = null;
 			ArrayList<StructureGroup> augmatlGroups = null;
 			ArrayList<StructureGroup> mainmatlGroups = null;
