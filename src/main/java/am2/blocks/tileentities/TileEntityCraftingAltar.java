@@ -132,7 +132,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		checkCounter = 0;
 		setNoPowerRequests();
 		maxEffects = 2;
-		stability = 1;
+		stability = 1F;
 
 		spellDef = new ArrayList<KeyValuePair<ISpellPart, byte[]>>();
 		shapeGroups = new ArrayList<ArrayList<KeyValuePair<ISpellPart, byte[]>>>();
@@ -655,9 +655,10 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 	}
 
 	private void addItemToRecipe(ItemStack stack){
-		if (stabilityCheckFail() > 0) {
+		int stability = stabilityCheckFail(); // no need to scan twice
+		if (stability > 0) {
 			if (!worldObj.isRemote){
-				randomInstabilityEffect(stabilityCheckFail());
+				randomInstabilityEffect(stability);
 			}
 			return;
 		}
@@ -681,8 +682,14 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		}
 	}
 
+	private double getDistanceSqXZ(Entity entity, double x, double z) {
+		double dx = entity.posX - x;
+		double dz = entity.posZ - z;
+		return dx * dx + dz * dz;
+	}
+
 	private int getInstability() {
-		float instability = 1;
+		float instability = 1F;
 
 		// ADD INSTABILITY
 
@@ -692,54 +699,53 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		if (outputCombo != null){
 			Set<Integer> unique = new HashSet<>();
 			Set<Integer> duplicate = new HashSet<>(); // Stacking 3 solar? bad boy
-			for (int i = 0; i < outputCombo.length; ++i){
-				if (duplicate.contains(outputCombo[i])) { // second time being duplicated
+			for (int i : outputCombo){
+				if (duplicate.contains(i)){ // second time being duplicated
 					instability += 1.5F;
-				} else if (unique.contains(outputCombo[i])) { // first time being duplicated
+				} else if (unique.contains(i)){ // first time being duplicated
 					instability += 0.5F;
-					duplicate.add(outputCombo[i]);
-				} else {
-					unique.add(outputCombo[i]);
+					duplicate.add(i);
+				} else{
+					unique.add(i);
 				}
 			}
 		}
 
 		if (shapeGroupGuide != null){
 			for (int[] shapeGroup : shapeGroupGuide){
-				for (int i = 0; i < shapeGroup.length; ++i){
-					Set<Integer> unique = new HashSet<>();
-					Set<Integer> duplicate = new HashSet<>();
-					if (duplicate.contains(shapeGroup[i])){
+				Set<Integer> unique = new HashSet<>();
+				Set<Integer> duplicate = new HashSet<>();
+				for (int i : shapeGroup){
+					if (duplicate.contains(i)){
 						instability += 0.75F;
-					}else if (unique.contains(shapeGroup[i])){
+					} else if (unique.contains(i)){
 						instability += 0.25F;
-						duplicate.add(shapeGroup[i]);
-					}else{
-						unique.add(shapeGroup[i]);
+						duplicate.add(i);
+					} else{
+						unique.add(i);
 					}
 				}
 			}
 		}
 
 		int countPlayers = -1;
-		for (int i = 0; i < worldObj.playerEntities.size(); ++i)
+		// 20 sounds magic number a lot... maybe fix it in the future
+		final double range = 20D;
+		for (Object objectPlayer : worldObj.playerEntities)
 		{
-			EntityPlayer entityplayer1 = (EntityPlayer)worldObj.playerEntities.get(i);
-			double d5 = entityplayer1.getDistanceSq(this.xCoord, this.yCoord, this.zCoord);
-
-			if ((d5 < 20 * 20))
+			if (getDistanceSqXZ((EntityPlayer)objectPlayer, xCoord, zCoord) < range * range) // only XZ check to prevent stupidest altair hack
 			{
 				countPlayers++;
 			}
 		}
-		instability += countPlayers * 2;
+		instability += countPlayers * 2.0F;
 
 		// SUBTRACT INSTABILITY (mostly, except for black aurem)
 
 		if (worldObj.canBlockSeeTheSky(this.xCoord, this.yCoord, this.zCoord)) instability -= 0.5F;
-		if (!worldObj.isDaytime()) instability -= 0.5;
+		if (!worldObj.isDaytime()) instability -= 0.5F;
 
-		ArrayList blockList = new ArrayList();
+		ArrayList<Block> blockList = new ArrayList();
 		for (int x = -5; x <= 5; x++) {
 			for (int z = -5; z <= 5; z++) {
 				for (int y = -6; y < -2; y++) {
@@ -749,8 +755,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		}
 
 		boolean celestialPrismCounted = false, darkAuremCounted = false;
-		for (int i = 0; i < blockList.size(); i++) {
-			Block block = (Block)blockList.get(i);
+		for (Block block : blockList) {
 			if (block instanceof BlockWizardsChalk) instability -= 0.2F;
 			if (block instanceof BlockLiquidEssence) instability -= 0.25F;
 			if (block == BlocksCommonProxy.celestialPrism && !celestialPrismCounted){
@@ -763,21 +768,35 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 			}
 		}
 
-		return (int) (instability > 1.0F ? instability : 1.0F);
+		return instability > 1F ? (int) instability : 1;
 	}
 
 	private int stabilityCheckFail(){
-		return (int)(new Random().nextInt(getInstability()) - this.stability);
+		return (int)(worldObj.rand.nextInt(getInstability()) - this.stability);
 	}
 
 	private void randomInstabilityEffect(int fail) {
-		Random random = new Random();
-		int effect = random.nextInt(6);
-		EntityPlayer player = this.worldObj.getClosestPlayer(this.xCoord, this.yCoord, this.zCoord, 50);
+		EntityPlayer player = null;
+		// search for player in range
+		final double range = 50.0D;
+		double distance = Double.MAX_VALUE;
+		EntityPlayer player = null;
+		for (Object objectPlayer : worldObj.playerEntities){
+			EntityPlayer entityplayer1 = (EntityPlayer)objectPlayer;
+			double newDistance = getDistanceSqXZ(entityplayer1, xCoord, zCoord); // only XZ check to prevent stupidest altair hack
+			if ((newDistance < range * range) && (newDistance < distance)){
+				distance = newDistance;
+				player = entityplayer1;
+			}
+		}
 		if (player == null) {
 			return; // No player? What on earth could be going on?
+			// altair hack is going on.
 		}
-		if (fail > 2) { // attact elementals if >2 instability
+		
+		Random random = worldObj.rand;
+		int effect = random.nextInt(6);
+		if (fail > 2) { // attact elementals if > 2 instability
 			for (int i = 0; i <= fail; i++){
 				int elementalType = random.nextInt(4);
 				Entity elemental;
@@ -922,7 +941,7 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 		//locate lectern and lever & material groups
 		if (primaryvalid || secondaryvalid){
 			maxEffects = 0;
-			stability = 1;
+			stability = 1F;
 			ArrayList<StructureGroup> lecternGroups = null;
 			ArrayList<StructureGroup> augmatlGroups = null;
 			ArrayList<StructureGroup> mainmatlGroups = null;
