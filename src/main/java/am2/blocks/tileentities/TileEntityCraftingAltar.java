@@ -776,7 +776,6 @@ public class TileEntityCraftingAltar extends TileEntityAMPower implements IMulti
 	}
 
 	private void randomInstabilityEffect(int fail) {
-		EntityPlayer player = null;
 		// search for player in range
 		final double range = 50.0D;
 		double distance = Double.MAX_VALUE;
