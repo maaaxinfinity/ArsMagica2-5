@@ -111,7 +111,13 @@ public class AMConfig extends Configuration{
 	private final String KEY_SunstoneFreq = "SunstoneFrequency";
 
 	private final String KEY_MoonstoneFreq = "MoonstoneFrequency";
-	
+
+	private final String KEY_blacklistAffectOres = "blacklistAffectOres";
+	private final String KEY_blacklistAffectFlora = "blacklistAffectFlora";
+	private final String KEY_blacklistAffectTrees = "blacklistAffectTrees";
+
+	private final String KEY_blacklistAffectPools = "blacklistAffectPools";
+
 	/**
 	 * Beta Particles
 	 **/
@@ -223,6 +229,12 @@ public class AMConfig extends Configuration{
 	private int mageVillagerProfessionID;
 	private String[] digBlacklist;
 	private int[] worldgenBlacklist;
+
+	private boolean blacklistAffectOres;
+	private boolean blacklistAffectFlora;
+	private boolean blacklistAffectTrees;
+
+	private boolean blacklistAffectPools;
 	private int[] worldgenWhitelist;
 	private int[] mobBlacklist;
 	private boolean enableWitchwoodForest;
@@ -481,6 +493,11 @@ public class AMConfig extends Configuration{
 
 		String mobBlackList = get(CATEGORY_GENERAL, KEY_MobBlacklist, "-27,-28,-29", "Comma-separated list of dimension IDs that AM should *not* spawn mobs in.").getString();
 		String[] split2 = worldgenBlackList.split(",");
+		blacklistAffectOres = get(CATEGORY_GENERAL, KEY_blacklistAffectOres, true, "Should Dimension Worldgen Blacklists apply to ores?").getBoolean(true);
+		blacklistAffectFlora = get(CATEGORY_GENERAL, KEY_blacklistAffectFlora, true, "Should Dimension Worldgen Blacklists apply to flora?").getBoolean(true);
+		blacklistAffectTrees = get(CATEGORY_GENERAL, KEY_blacklistAffectTrees, true, "Should Dimension Worldgen Blacklists apply to trees?").getBoolean(true);
+		blacklistAffectPools = get(CATEGORY_GENERAL, KEY_blacklistAffectPools, true, "Should Dimension Worldgen Blacklists apply to essence pools>").getBoolean(true);
+
 		mobBlacklist = new int[split2.length];
 		int count2 = 0;
 		for (String s : split2){
@@ -919,6 +936,19 @@ public class AMConfig extends Configuration{
 	public int getMoonstoneFrequency(){
 		return this.moonstoneFrequency;
 	}
+	public boolean BlacklistAffectOres(){
+		return this.blacklistAffectOres;
+	}
+
+	public boolean BlacklistAffectFlora(){
+		return this.blacklistAffectFlora;
+	}
+	public boolean BlacklistAffectTrees(){
+		return this.blacklistAffectTrees;
+	}
+	public boolean BlacklistAffectPools(){
+		return this.blacklistAffectPools;
+	}
 
 	//====================================================================================
 	// Getters - Aura
@@ -963,7 +993,6 @@ public class AMConfig extends Configuration{
 	public float getAuraAlpha(){
 		return AuraAlpha;
 	}
-
 
 	//====================================================================================
 	// Getters - Direct
