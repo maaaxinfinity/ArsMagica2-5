@@ -412,10 +412,8 @@ public class GuiInscriptionTable extends GuiContainer{
 		//main recipe
 		for (int i = 0; i < ((ContainerInscriptionTable)this.inventorySlots).getCurrentRecipeSize(); ++i){
 			ISpellPart part = ((ContainerInscriptionTable)this.inventorySlots).getRecipeItemAt(i);
-			// missingShape, missingComponent, missingModifier check. Temporary solution until someone figures out a good API.
-			if (SkillManager.instance.getSkillName(part) == null){
+			if (part == SkillManager.instance.missingShape)
 				continue;
-			}
 			String name = SkillManager.instance.getDisplayName(part);
 
 			if (drawIcon(part, false)){
@@ -431,10 +429,6 @@ public class GuiInscriptionTable extends GuiContainer{
 		for (int i = 0; i < ((ContainerInscriptionTable)this.inventorySlots).getNumStageGroups(); ++i){
 			for (int n = 0; n < ((ContainerInscriptionTable)this.inventorySlots).getShapeGroupSize(i); ++n){
 				ISpellPart part = ((ContainerInscriptionTable)this.inventorySlots).getShapeGroupPartAt(i, n);
-				// missingShape, missingComponent, missingModifier check. Temporary solution until someone figures out a good API.
-				if (SkillManager.instance.getSkillName(part) == null) {
-					continue;
-				}
 				String name = SkillManager.instance.getDisplayName(part);
 
 				int SGX = shapeGroupX + ((shapeGroupWidth + shapeGroupPadding) * i) + 1;
@@ -455,9 +449,13 @@ public class GuiInscriptionTable extends GuiContainer{
 	}
 
 	private boolean drawAvailableParts(ArrayList<String> labelText){
+
 		iconX = IIconXStart_upper;
 		iconY = IIconYStart_upper;
-		return drawPartIcons(labelText);
+
+		boolean b = drawPartIcons(labelText);
+
+		return b;
 	}
 
 	private boolean drawPartIcons(ArrayList<String> labelText){
@@ -473,10 +471,9 @@ public class GuiInscriptionTable extends GuiContainer{
 		for (Integer i : ids){
 			ISkillTreeEntry part = SkillManager.instance.getSkill(i);
 
-			// skip if part is null (how?), !if it's missingShape, missingComponent, missingModifier!, or disabled in config
-			if (part == null || SkillManager.instance.getSkillName(part) == null || SkillTreeManager.instance.isSkillDisabled(part)){
+			if (part != null && SkillTreeManager.instance.isSkillDisabled(part))
 				continue;
-			}
+
 			String name = SkillManager.instance.getDisplayName(part);
 
 			String filterText = searchBar.getText().toLowerCase();

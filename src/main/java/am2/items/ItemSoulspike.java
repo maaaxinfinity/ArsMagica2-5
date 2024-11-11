@@ -89,7 +89,6 @@ public class ItemSoulspike extends ItemSword {
     }
 
     public static void removeTagFromBoots(ItemStack boots) {
-        if (boots == null) return;
         if (boots.stackTagCompound == null)
         {
             return;
@@ -105,7 +104,6 @@ public class ItemSoulspike extends ItemSword {
     }
 
     public static boolean bootsHaveEtherealTag(ItemStack boots) {
-        if (boots == null) return false;
         if (boots.stackTagCompound == null)
         {
             return false;
